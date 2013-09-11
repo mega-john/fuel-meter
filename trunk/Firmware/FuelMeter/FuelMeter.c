@@ -28,7 +28,7 @@ Temperature range 		-20 - +60 °C
 
 volatile uint8_t in_fuel = 0;
 volatile uint8_t out_fuel = 0;
-volatile uint32_t total_fuel = 0;
+volatile double total_fuel = 0;
 volatile status_flags flags;
 volatile time_struct ts; 
 extern button_struct bs[4];
@@ -61,7 +61,6 @@ int main(void)
 	init_ports();
 	init_int0();
 	init_int1();
-	init_timers();
 	
 	flags.update_fuel_values = 0;
 	flags.update_time = 0;
@@ -76,7 +75,7 @@ int main(void)
 	ts.minutes = 0;
 	ts.seconds = 0;
 	
-	uint8_t tmp[20];
+	char tmp[20];
 
 	//bs[UP].stat = BS_UNKNOWN;
 	//bs[DOWN].stat = BS_UNKNOWN;
@@ -101,14 +100,15 @@ int main(void)
 	
 	menu_Init();
 	
+	init_timers();
 	sei();
 
-	ks0108SelectFont(Arial_Bold_14, ks0108ReadFontData, BLACK);
-	ks0108GotoXY(10 , 10);
-	ks0108Puts("fuel meter"); //пишем им
+	ks0108SelectFont(SC, ks0108ReadFontData, BLACK);
+	//ks0108GotoXY(10 , 10);
+	//ks0108Puts("fuel meter"); //пишем им
 
 
-	//MFPtr(0);
+	MFPtr(0);
 
     while(1)
     {
@@ -142,12 +142,21 @@ int main(void)
 		if(flags.update_fuel_values == 1)
 		{
 			ks0108ClearScreen();
-			flags.update_fuel_values = 0;
 			uint8_t total = in_fuel - out_fuel;
-			consumption = total * GRAMMS_PER_SECOND + 0.1;
-			sprintf(tmp, "fuel  %f l/h", consumption);
+			consumption = total / IMPULSES_PER_GRAM_SECOND;
 			ks0108GotoXY(0, 0);
+			sprintf(tmp, "consumption  %.2f l/h", consumption);
 			ks0108Puts(tmp);
+
+			total_fuel += consumption;
+			ks0108GotoXY(0, 16);
+			sprintf(tmp, "total  %.2fl l/h", total_fuel);
+			ks0108Puts(tmp);
+
+			ks0108GotoXY(0, 32);
+			sprintf(tmp, "work time %02u:%02u:%02u", ts.hours, ts.minutes, ts.seconds);
+			ks0108Puts(tmp);
+			flags.update_fuel_values = 0;
 		}
 
 		//itoa(in_fuel, tmp, 10);

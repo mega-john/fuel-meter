@@ -9,26 +9,26 @@
 
 #define MAX_MENU_LENGTH 32
 
-const uint8_t main_menu[][MAX_MENU_LENGTH] PROGMEM =
+const char main_menu[][MAX_MENU_LENGTH] PROGMEM =
 {
 	{"1 measure\0"},
 	{"2 history \0"},
 	{"3 calibrate\0"}
 };
 
-const uint8_t sub_menu_0[][MAX_MENU_LENGTH] PROGMEM =
+const char sub_menu_0[][MAX_MENU_LENGTH] PROGMEM =
 {
 	{"11 real time\0"},
 };
 
-const uint8_t sub_menu_1[][MAX_MENU_LENGTH] PROGMEM =
+const char sub_menu_1[][MAX_MENU_LENGTH] PROGMEM =
 {
 	{"21 view\0"},
 	{"22 average\0"},
 	{"23 reset\0"}
 };
 
-const uint8_t sub_menu_2[][MAX_MENU_LENGTH] PROGMEM =
+const char sub_menu_2[][MAX_MENU_LENGTH] PROGMEM =
 {
 	{"31 default\0"},
 	{"32 start\0"},
@@ -103,10 +103,10 @@ void MainMenu( uint8_t cmd )
 		for (char i = 0; i < 3; i++)
 		{
 			ks0108GotoXY(2, i * 14 + 1);
-			ks0108Puts_P((PGM_P)main_menu[i]);
+			ks0108Puts_P(main_menu[i]);
 			if(MN.menuNo == i)
 			{
-				ks0108DrawRect(0, i * 14, ks0108StringWidth_P((PGM_P)main_menu[i]) + 3, 14, BLACK);
+				ks0108DrawRect(0, i * 14, ks0108StringWidth_P(main_menu[i]) + 3, 14, BLACK);
 			}
 		}
 		flags.update_menu = 0;
