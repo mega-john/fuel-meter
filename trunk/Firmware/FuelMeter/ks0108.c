@@ -19,16 +19,21 @@ ks0108FontCallback	ks0108FontRead;
 uint8_t				ks0108FontColor;
 const uint8_t*		ks0108Font;
 
-void ks0108DrawLine(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2, uint8_t color) {
+inline uint8_t ks0108ReadData(void);
+
+void ks0108DrawLine(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2, uint8_t color) 
+{
 	uint8_t length, i, y, yAlt, xTmp, yTmp;
 	int16_t m;
 	
 	//
 	// vertical line
 	//
-	if(x1 == x2) {
+	if(x1 == x2) 
+	{
 		// x1|y1 must be the upper point
-		if(y1 > y2) {
+		if(y1 > y2)
+		{
 			yTmp = y1;
 			y1 = y2;
 			y2 = yTmp;
@@ -38,9 +43,12 @@ void ks0108DrawLine(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2, uint8_t colo
 	//
 	// horizontal line
 	//
-	} else if(y1 == y2) {	
+	} 
+	else if(y1 == y2) 
+	{	
 		// x1|y1 must be the left point
-		if(x1 > x2) {
+		if(x1 > x2) 
+		{
 			xTmp = x1;
 			x1 = x2;
 			x2 = xTmp;
@@ -50,11 +58,14 @@ void ks0108DrawLine(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2, uint8_t colo
 	//
 	// schiefe line :)
 	//
-	} else {
+	} else 
+	{
 		// angle >= 45°
-		if((y2-y1) >= (x2-x1) || (y1-y2) >= (x2-x1)) {
+		if((y2-y1) >= (x2-x1) || (y1-y2) >= (x2-x1)) 
+		{
 			// x1 must be smaller than x2
-			if(x1 > x2) {
+			if(x1 > x2) 
+			{
 				xTmp = x1;
 				yTmp = y1;
 				x1 = x2;
@@ -67,7 +78,8 @@ void ks0108DrawLine(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2, uint8_t colo
 			m = ((y2-y1)*200)/length;
 			yAlt = y1;
 			
-			for(i=0; i<=length; i++) {
+			for(i=0; i<=length; i++) 
+			{
 				y = ((m*i)/200)+y1;
 				
 				if((m*i)%200 >= 100)
@@ -86,9 +98,12 @@ void ks0108DrawLine(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2, uint8_t colo
 			}
 		
 		// angle < 45°
-		} else {
+		} 
+		else 
+		{
 			// y1 must be smaller than y2
-			if(y1 > y2) {
+			if(y1 > y2) 
+			{
 				xTmp = x1;
 				yTmp = y1;
 				x1 = x2;
@@ -101,7 +116,8 @@ void ks0108DrawLine(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2, uint8_t colo
 			m = ((x2-x1)*200)/length;
 			yAlt = x1;
 			
-			for(i=0; i<=length; i++) {
+			for(i=0; i<=length; i++) 
+			{
 				y = ((m*i)/200)+x1;
 				
 				if((m*i)%200 >= 100)
@@ -121,18 +137,21 @@ void ks0108DrawLine(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2, uint8_t colo
 	}
 }
 
-void ks0108DrawRect(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t color) {
+void ks0108DrawRect(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t color) 
+{
 	ks0108DrawHoriLine(x, y, width, color);				// top
 	ks0108DrawHoriLine(x, y+height, width, color);		// bottom
 	ks0108DrawVertLine(x, y, height, color);			// left
 	ks0108DrawVertLine(x+width, y, height, color);		// right
 }
 
-void ks0108DrawRoundRect(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t radius, uint8_t color) {
+void ks0108DrawRoundRect(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t radius, uint8_t color) 
+{
   	int16_t tSwitch, x1 = 0, y1 = radius;
   	tSwitch = 3 - 2 * radius;
 	
-	while (x1 <= y1) {
+	while (x1 <= y1) 
+	{
 	    ks0108SetDot(x+radius - x1, y+radius - y1, color);
 	    ks0108SetDot(x+radius - y1, y+radius - x1, color);
 
@@ -145,9 +164,12 @@ void ks0108DrawRoundRect(uint8_t x, uint8_t y, uint8_t width, uint8_t height, ui
 	    ks0108SetDot(x+radius - x1, y+height-radius + y1, color);
 	    ks0108SetDot(x+radius - y1, y+height-radius + x1, color);
 
-	    if (tSwitch < 0) {
+	    if (tSwitch < 0) 
+		{
 	    	tSwitch += (4 * x1 + 6);
-	    } else {
+	    } 
+		else 
+		{
 	    	tSwitch += (4 * (x1 - y1) + 10);
 	    	y1--;
 	    }
@@ -163,54 +185,69 @@ void ks0108DrawRoundRect(uint8_t x, uint8_t y, uint8_t width, uint8_t height, ui
 /*
  * Hardware-Functions 
  */
-void ks0108FillRect(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t color) {
+void ks0108FillRect(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t color) 
+{
 	uint8_t mask, pageOffset, h, i, data;
 	height++;
 	
-	pageOffset = y%8;
+	pageOffset = y % 8;
 	y -= pageOffset;
 	mask = 0xFF;
-	if(height < 8-pageOffset) {
-		mask >>= (8-height);
+	if(height < 8 - pageOffset)
+	{
+		mask >>= (8 - height);
 		h = height;
-	} else {
-		h = 8-pageOffset;
+	} 
+	else 
+	{
+		h = 8 - pageOffset;
 	}
 	mask <<= pageOffset;
 	
 	ks0108GotoXY(x, y);
-	for(i=0; i<=width; i++) {
+	for(i = 0; i <= width; i++) 
+	{
 		data = ks0108ReadData();
 		
-		if(color == BLACK) {
+		if(color == BLACK) 
+		{
 			data |= mask;
-		} else {
+		} 
+		else 
+		{
 			data &= ~mask;
 		}
 
 		ks0108WriteData(data);
 	}
 	
-	while(h+8 <= height) {
+	while(h+8 <= height) 
+	{
 		h += 8;
 		y += 8;
 		ks0108GotoXY(x, y);
 		
-		for(i=0; i<=width; i++) {
+		for(i=0; i<=width; i++) 
+		{
 			ks0108WriteData(color);
 		}
 	}
 	
-	if(h < height) {
+	if(h < height) 
+	{
 		mask = ~(0xFF << (height-h));
 		ks0108GotoXY(x, y+8);
 		
-		for(i=0; i<=width; i++) {
+		for(i=0; i<=width; i++) 
+		{
 			data = ks0108ReadData();
 		
-			if(color == BLACK) {
+			if(color == BLACK) 
+			{
 				data |= mask;
-			} else {
+			} 
+			else 
+			{
 				data &= ~mask;
 			}
 	
@@ -219,45 +256,54 @@ void ks0108FillRect(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t
 	}
 }
 
-void ks0108InvertRect(uint8_t x, uint8_t y, uint8_t width, uint8_t height) {
+void ks0108InvertRect(uint8_t x, uint8_t y, uint8_t width, uint8_t height) 
+{
 	uint8_t mask, pageOffset, h, i, data, tmpData;
 	height++;
 	
 	pageOffset = y%8;
 	y -= pageOffset;
 	mask = 0xFF;
-	if(height < 8-pageOffset) {
+	if(height < 8-pageOffset) 
+	{
 		mask >>= (8-height);
 		h = height;
-	} else {
+	} 
+	else 
+	{
 		h = 8-pageOffset;
 	}
 	mask <<= pageOffset;
 	
 	ks0108GotoXY(x, y);
-	for(i=0; i<=width; i++) {
+	for(i=0; i<=width; i++) 
+	{
 		data = ks0108ReadData();
 		tmpData = ~data;
 		data = (tmpData & mask) | (data & ~mask);
 		ks0108WriteData(data);
 	}
 	
-	while(h+8 <= height) {
+	while(h+8 <= height) 
+	{
 		h += 8;
 		y += 8;
 		ks0108GotoXY(x, y);
 		
-		for(i=0; i<=width; i++) {
+		for(i=0; i<=width; i++) 
+		{
 			data = ks0108ReadData();
 			ks0108WriteData(~data);
 		}
 	}
 	
-	if(h < height) {
+	if(h < height) 
+	{
 		mask = ~(0xFF << (height-h));
 		ks0108GotoXY(x, y+8);
 		
-		for(i=0; i<=width; i++) {
+		for(i=0; i<=width; i++) 
+		{
 			data = ks0108ReadData();
 			tmpData = ~data;
 			data = (tmpData & mask) | (data & ~mask);
@@ -266,23 +312,29 @@ void ks0108InvertRect(uint8_t x, uint8_t y, uint8_t width, uint8_t height) {
 	}
 }
 
-void ks0108SetInverted(uint8_t invert) {
-	if(ks0108Inverted != invert) {
+void ks0108SetInverted(uint8_t invert) 
+{
+	if(ks0108Inverted != invert) 
+	{
 		ks0108InvertRect(0,0,127,63);
 		ks0108Inverted = invert;
 	}
 }
 
-void ks0108SetDot(uint8_t x, uint8_t y, uint8_t color) {
+void ks0108SetDot(uint8_t x, uint8_t y, uint8_t color) 
+{
 	uint8_t data;
 	
-	ks0108GotoXY(x, y-y%8);					// read data from display memory
+	ks0108GotoXY(x, y - y % 8);					// read data from display memory
 	data = ks0108ReadData();
 	
-	if(color == BLACK) {
-		data |= 0x01 << (y%8);				// set dot
-	} else {
-		data &= ~(0x01 << (y%8));			// clear dot
+	if(color == BLACK) 
+	{
+		data |= 0x01 << (y % 8);				// set dot
+	} 
+	else 
+	{
+		data &= ~(0x01 << (y % 8));			// clear dot
 	}
 	
 	ks0108WriteData(data);					// write data back to display
@@ -316,38 +368,49 @@ int ks0108PutChar(char c)
 	uint16_t index = 0;
 	uint8_t x = ks0108Coord.x, y = ks0108Coord.y;
 	
-	if(c < firstChar || c >= (firstChar+charCount)) {
+	if(c < firstChar || c >= (firstChar+charCount)) 
+	{
 		return 1;
 	}
 	c-= firstChar;
 	
 	// read width data, to get the index
-	for(uint8_t i=0; i<c; i++) {
+	for(uint8_t i=0; i<c; i++) 
+	{
 		index += ks0108FontRead(ks0108Font+FONT_WIDTH_TABLE+i);
 	}
 	index = index*bytes+charCount+FONT_WIDTH_TABLE;
 	width = ks0108FontRead(ks0108Font+FONT_WIDTH_TABLE+c);
 	
 	// last but not least, draw the character
-	for(uint8_t i=0; i<bytes; i++) {
+	for(uint8_t i=0; i<bytes; i++) 
+	{
 		uint8_t page = i*width;
-		for(uint8_t j=0; j<width; j++) {
+		for(uint8_t j=0; j<width; j++) 
+		{
 			uint8_t data = ks0108FontRead(ks0108Font+index+page+j);
 			
-			if(height < (i+1)*8) {
+			if(height < (i+1)*8) 
+			{
 				data >>= (i+1)*8-height;
 			}
 			
-			if(ks0108FontColor == BLACK) {
+			if(ks0108FontColor == BLACK) 
+			{
 				ks0108WriteData(data);
-			} else {
+			} 
+			else 
+			{
 				ks0108WriteData(~data);
 			}
 		}
 		// 1px gap between chars
-		if(ks0108FontColor == BLACK) {
+		if(ks0108FontColor == BLACK) 
+		{
 			ks0108WriteData(0x00);
-		} else {
+		} 
+		else 
+		{
 			ks0108WriteData(0xFF);
 		}
 		ks0108GotoXY(x, ks0108Coord.y+8);
@@ -357,65 +420,82 @@ int ks0108PutChar(char c)
 	return 0;
 }
 
-void ks0108Puts(char* str) {
+void ks0108Puts(char* str) 
+{
 	int x = ks0108Coord.x;
-	while(*str != 0) {
-		if(*str == '\n') {
+	while(*str != 0) 
+	{
+		if(*str == '\n') 
+		{
 			ks0108GotoXY(x, ks0108Coord.y+ks0108FontRead(ks0108Font+FONT_HEIGHT));
-		} else {
+		} 
+		else 
+		{
 			ks0108PutChar(*str);
 		}
 		str++;
 	}
 }
 
-void ks0108Puts_P(PGM_P str) {
+void ks0108Puts_P(PGM_P str) 
+{
 	int x = ks0108Coord.x;
-	while(pgm_read_byte(str) != 0) {
-		if(pgm_read_byte(str) == '\n') {
+	while(pgm_read_byte(str) != 0) 
+	{
+		if(pgm_read_byte(str) == '\n') 
+		{
 			ks0108GotoXY(x, ks0108Coord.y+ks0108FontRead(ks0108Font+FONT_HEIGHT));
-		} else {
+		} 
+		else 
+		{
 			ks0108PutChar(pgm_read_byte(str));
 		}
 		str++;
 	}
 }
 
-uint8_t ks0108CharWidth(char c) {
+uint8_t ks0108CharWidth(char c) 
+{
 	uint8_t width = 0;
 	uint8_t firstChar = ks0108FontRead(ks0108Font+FONT_FIRST_CHAR);
 	uint8_t charCount = ks0108FontRead(ks0108Font+FONT_CHAR_COUNT);
 	
 	// read width data
-	if(c >= firstChar && c < (firstChar+charCount)) {
+	if(c >= firstChar && c < (firstChar + charCount)) 
+	{
 		c -= firstChar;
-		width = ks0108FontRead(ks0108Font+FONT_WIDTH_TABLE+c)+1;
+		width = ks0108FontRead(ks0108Font+FONT_WIDTH_TABLE + c) + 1;
 	}
 	
 	return width;
 }
 
-uint16_t ks0108StringWidth(char* str) {
+uint16_t ks0108StringWidth(char* str) 
+{
 	uint16_t width = 0;
 	
-	while(*str != 0) {
+	while(*str != 0) 
+	{
 		width += ks0108CharWidth(*str++);
 	}
 	
 	return width;
 }
 
-uint16_t ks0108StringWidth_P(PGM_P str) {
+uint16_t ks0108StringWidth_P(PGM_P str) 
+{
 	uint16_t width = 0;
 	
-	while(pgm_read_byte(str) != 0) {
+	while(pgm_read_byte(str) != 0) 
+	{
 		width += ks0108CharWidth(pgm_read_byte(str++));
 	}
 	
 	return width;
 }
 
-void ks0108GotoXY(uint8_t x, uint8_t y) {
+void ks0108GotoXY(uint8_t x, uint8_t y) 
+{
 	uint8_t chip = CHIP1, cmd;
 	
 	if(x > 127) x = 0;								// ensure that coordinates are legal
@@ -423,9 +503,10 @@ void ks0108GotoXY(uint8_t x, uint8_t y) {
 	
 	ks0108Coord.x = x;								// save new coordinates
 	ks0108Coord.y = y;
-	ks0108Coord.page = y/8;
+	ks0108Coord.page = y / 8;
 	
-	if(x >= 64) {									// select the right chip
+	if(x >= 64) 
+	{									// select the right chip
 		x -= 64;
 		chip = CHIP2;
 	}
@@ -437,7 +518,8 @@ void ks0108GotoXY(uint8_t x, uint8_t y) {
 	ks0108WriteCommand(cmd, CHIP2);
 }
 
-void ks0108Init(uint8_t invert) {
+void ks0108Init(uint8_t invert) 
+{
 	ks0108Coord.x = 0;
 	ks0108Coord.y = 0;
 	ks0108Coord.page = 0;
@@ -454,7 +536,8 @@ void ks0108Init(uint8_t invert) {
 	ks0108GotoXY(0,0);
 }
 
-inline void ks0108Enable(void) {
+inline void ks0108Enable(void) 
+{
 	LCD_CMD_PORT |= 0x01 << EN;						// EN high level width: min. 450ns
 	asm volatile("nop\n\t"
 				 "nop\n\t"
@@ -464,21 +547,26 @@ inline void ks0108Enable(void) {
 	for(volatile uint8_t i=0; i<8; i++);			// a little delay loop (faster than reading the busy flag)
 }
 
-uint8_t ks0108DoReadData(uint8_t first) {
+uint8_t ks0108DoReadData(uint8_t first) 
+{
 	uint8_t data;
 	volatile uint8_t i;
 	
 	LCD_DATA_OUT = 0x00;
 	LCD_DATA_DIR = 0x00;							// data port is input
 	
-	if(ks0108Coord.x < 64) {
+	if(ks0108Coord.x < 64) 
+	{
 		LCD_CMD_PORT &= ~(0x01 << CSEL2);			// deselect chip 2
 		LCD_CMD_PORT |= 0x01 << CSEL1;				// select chip 1
-	} else if(ks0108Coord.x >= 64) {
+	} 
+	else if(ks0108Coord.x >= 64) 
+	{
 		LCD_CMD_PORT &= ~(0x01 << CSEL1);			// deselect chip 1
 		LCD_CMD_PORT |= 0x01 << CSEL2;				// select chip 2
 	}
-	if(ks0108Coord.x == 64 && first) {				// chip2 X-address = 0
+	if(ks0108Coord.x == 64 && first) 
+	{				// chip2 X-address = 0
 		ks0108WriteCommand(LCD_SET_ADD, CHIP2); 	// wuff wuff
 	}
 	
@@ -505,16 +593,21 @@ uint8_t ks0108DoReadData(uint8_t first) {
 	return data;
 }
 
-inline uint8_t ks0108ReadData(void) {
+inline uint8_t ks0108ReadData(void)
+{
 	ks0108DoReadData(1);							// dummy read
 	return ks0108DoReadData(0);						// "real" read
 }
 
-void ks0108WriteCommand(uint8_t cmd, uint8_t chip) {
-	if(chip == CHIP1) {
+void ks0108WriteCommand(uint8_t cmd, uint8_t chip) 
+{
+	if(chip == CHIP1) 
+	{
 		LCD_CMD_PORT &= ~(0x01 << CSEL2);			// deselect chip 2
 		LCD_CMD_PORT |= 0x01 << CSEL1;				// select chip 1
-	} else if(chip == CHIP2) {
+	} 
+	else if(chip == CHIP2) 
+	{
 		LCD_CMD_PORT &= ~(0x01 << CSEL1);			// deselect chip 1
 		LCD_CMD_PORT |= 0x01 << CSEL2;				// select chip 2
 	}
@@ -527,7 +620,8 @@ void ks0108WriteCommand(uint8_t cmd, uint8_t chip) {
 	LCD_DATA_OUT = 0x00;
 }
 
-void ks0108WriteData(uint8_t data) {
+void ks0108WriteData(uint8_t data) 
+{
 	uint8_t displayData, yOffset, cmdPort;
 
 #ifdef DEBUG
@@ -538,10 +632,13 @@ void ks0108WriteData(uint8_t data) {
 	if(ks0108Coord.x >= 128)
 		return;
 
-	if(ks0108Coord.x < 64) {
+	if(ks0108Coord.x < 64) 
+	{
 		LCD_CMD_PORT &= ~(0x01 << CSEL2);			// deselect chip 2
 		LCD_CMD_PORT |= 0x01 << CSEL1;				// select chip 1
-	} else if(ks0108Coord.x >= 64) {
+	} 
+	else if(ks0108Coord.x >= 64) 
+	{
 		LCD_CMD_PORT &= ~(0x01 << CSEL1);			// deselect chip 1
 		LCD_CMD_PORT |= 0x01 << CSEL2;				// select chip 2
 	}
@@ -554,7 +651,8 @@ void ks0108WriteData(uint8_t data) {
 	
 	
 	yOffset = ks0108Coord.y%8;
-	if(yOffset != 0) {
+	if(yOffset != 0) 
+	{
 		// first page
 		cmdPort = LCD_CMD_PORT;						// save command port
 		displayData = ks0108ReadData();
@@ -583,7 +681,9 @@ void ks0108WriteData(uint8_t data) {
 		ks0108Enable();								// enable
 		
 		ks0108GotoXY(ks0108Coord.x+1, ks0108Coord.y-8);
-	} else {
+	} 
+	else 
+	{
 		if(ks0108Inverted)
 			data = ~data;
 		LCD_DATA_OUT = data;						// write data

@@ -23,7 +23,7 @@
 //flag required for exiting from functions loops
 volatile static uint8_t Flag = 0;
 
-typedef void (*MenuFunctionPtr)(char cmd);
+typedef void (*MenuFunctionPtr)(uint8_t cmd);
 
 //function pointer
 MenuFunctionPtr MFPtr;
@@ -37,17 +37,17 @@ struct Menu_State
 
 
 //Functions for each menu item
-void MeasureMenu(char cmd);
-void MainMenu(char cmd);
-void MainSub1(char cmd);
-void MainSub2(char cmd);
-void MainSub3(char cmd);
-void func201(char cmd);
-void func202(char cmd);
-void func301(char cmd);
-void func302(char cmd);
-void func401(char cmd);
-void func402(char cmd);
+void MeasureMenu(uint8_t cmd);
+void MainMenu(uint8_t cmd);
+void MainSub1(uint8_t cmd);
+void MainSub2(uint8_t cmd);
+void MainSub3(uint8_t cmd);
+void func201(uint8_t cmd);
+void func202(uint8_t cmd);
+void func301(uint8_t cmd);
+void func302(uint8_t cmd);
+void func401(uint8_t cmd);
+void func402(uint8_t cmd);
 
 
 //SubMenu and Function table pointer update
@@ -56,6 +56,6 @@ uint8_t MFIndex(uint8_t, uint8_t);
 void menu_Init(void);
 void delay1s(void);
 
-//unsigned char* read_pgm_string(const char *FlashLoc);
+//uint8_t* read_pgm_string(const char *FlashLoc);
 
 #endif /* MENU_H_ */

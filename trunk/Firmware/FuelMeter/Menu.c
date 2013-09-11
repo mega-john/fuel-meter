@@ -9,32 +9,32 @@
 
 #define MAX_MENU_LENGTH 32
 
-const char main_menu[][MAX_MENU_LENGTH] PROGMEM =
+const uint8_t main_menu[][MAX_MENU_LENGTH] PROGMEM =
 {
 	{"1 measure\0"},
 	{"2 history \0"},
 	{"3 calibrate\0"}
 };
 
-const char sub_menu_0[][MAX_MENU_LENGTH] PROGMEM =
+const uint8_t sub_menu_0[][MAX_MENU_LENGTH] PROGMEM =
 {
 	{"11 real time\0"},
 };
 
-const char sub_menu_1[][MAX_MENU_LENGTH] PROGMEM =
+const uint8_t sub_menu_1[][MAX_MENU_LENGTH] PROGMEM =
 {
 	{"21 view\0"},
 	{"22 average\0"},
 	{"23 reset\0"}
 };
 
-const char sub_menu_2[][MAX_MENU_LENGTH] PROGMEM =
+const uint8_t sub_menu_2[][MAX_MENU_LENGTH] PROGMEM =
 {
 	{"31 default\0"},
 	{"32 start\0"},
 };
 
-volatile static char menu_index = 0;
+volatile static uint8_t menu_index = 0;
 extern status_flags flags;
 
 
@@ -42,7 +42,7 @@ extern status_flags flags;
 //[0] -Number of level 0 menu items
 //[1]...[n] number of second level menu items
 //Eg. MSTR2[1] shows that menu item 1 has 3 submenus
-const char menu_structure[] PROGMEM =
+const uint8_t menu_structure[] PROGMEM =
 {
 	3,	//number of menu items
 	1,	//Number of submenu items of menu item 1
@@ -61,7 +61,7 @@ const MenuFunctionPtr FuncPtrTable[] PROGMEM=
 	func401, func402			//functions for submenus of menu 4
 };
 
-const char MenuIndexes[] PROGMEM = 
+const uint8_t MenuIndexes[] PROGMEM = 
 {
 	0, 1, 2, 3,
 	10, 11, 12 ,13,
@@ -95,7 +95,7 @@ void delay1s(void)
 	}
 }
 
-void MainMenu( char cmd )
+void MainMenu( uint8_t cmd )
 {
 	if(flags.update_menu == 1)
 	{
@@ -103,60 +103,60 @@ void MainMenu( char cmd )
 		for (char i = 0; i < 3; i++)
 		{
 			ks0108GotoXY(2, i * 14 + 1);
-			ks0108Puts_P(main_menu[i]);
+			ks0108Puts_P((PGM_P)main_menu[i]);
 			if(MN.menuNo == i)
 			{
-				ks0108DrawRect(0, i * 14, ks0108StringWidth_P(main_menu[i]) + 3, 14, BLACK);
+				ks0108DrawRect(0, i * 14, ks0108StringWidth_P((PGM_P)main_menu[i]) + 3, 14, BLACK);
 			}
 		}
 		flags.update_menu = 0;
 	}
 }
 
-void MainSub1(char cmd)
+void MainSub1(uint8_t cmd)
 {
 
 }
 
-void MainSub2(char cmd)
+void MainSub2(uint8_t cmd)
 {
 }
 
-void MainSub3(char cmd)
+void MainSub3(uint8_t cmd)
 {
 }
 
-void func201(char cmd)
+void func201(uint8_t cmd)
 {
 }
 
-void func202(char cmd)
+void func202(uint8_t cmd)
 {
 }
 
-void func301(char cmd)
-{
-
-}
-
-void func302(char cmd)
+void func301(uint8_t cmd)
 {
 
 }
 
-void func401(char cmd)
+void func302(uint8_t cmd)
 {
 
 }
 
-void func402(char cmd)
+void func401(uint8_t cmd)
 {
 
 }
 
-//unsigned char* read_pgm_string( const char *FlashLoc )
+void func402(uint8_t cmd)
+{
+
+}
+
+//uint8_t* read_pgm_string( const char *FlashLoc )
 //{
-	//unsigned char tmp[128];
+	//uint8_t tmp[128];
 	//uint8_t i;
 	//for(i = 0; (char)pgm_read_byte(&FlashLoc[i]); i++)
 	//{
@@ -165,7 +165,7 @@ void func402(char cmd)
 	//return &tmp[0];
 //}
 
-void MeasureMenu( char cmd )
+void MeasureMenu( uint8_t cmd )
 {
 	ks0108DrawRoundRect(0, 0, SCREEN_WIDTH - 1, SCREEN_HEIGHT - 1, 10, BLACK);
 }

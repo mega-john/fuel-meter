@@ -3,12 +3,30 @@
  *
  * Created: 15.08.2013 21:04:46
  *  Author: john
+ 
+Type 					FCH-m-POM-LC
+Dimensions 				(L x W x H) 58 x 41 x 27 mm
+Impulse number 			D1: 10000 Impulse/l, D3: 2500 Impulse/l
+Operating voltage 		5 - 24 Vdc
+Connection 				2 x 9.73 mm (G 1/8") + 2 x M5
+Accuracy 				±2 %
+Current consumption 	8 mA
+Measurement range 		(with nozzle 1 mm) 0.01 - 1.0 l/min/(without nozzle, D = 3 mm) 0.05 - 3.5 l/min
+Output current 			20 mA
+Material 				POM, O-Ring: FKM
+Pressure 				Max 4 bar
+Temperature range 		-20 - +60 °C
+
+использовать будем с жиклером, итого имеем максимум 10000 импульсов в минуту или 166,6 в секунду.
+если будем снимать показания раз в секунду, то вполне хватит переменной типа char
  */ 
+
+
 #include "FuelMeter.h"
 #include "timer.h"
 
-volatile unsigned char in_fuel = 0;
-volatile unsigned char out_fuel = 0;
+volatile uint8_t in_fuel = 0;
+volatile uint8_t out_fuel = 0;
 volatile uint32_t total_fuel = 0;
 volatile status_flags flags;
 volatile time_struct ts; 
@@ -55,7 +73,7 @@ int main(void)
 	ts.minutes = 0;
 	ts.seconds = 0;
 	
-	char tmp[20];
+	uint8_t tmp[20];
 
 	//bs[UP].stat = BS_UNKNOWN;
 	//bs[DOWN].stat = BS_UNKNOWN;
@@ -72,7 +90,7 @@ int main(void)
 	count=0xabcd;
 	WriteMeasurementsCount(count);
 	// Initialize the LCD
-	ks0108Init(count);
+	ks0108Init(0);
 	
 	menu_Init();
 	

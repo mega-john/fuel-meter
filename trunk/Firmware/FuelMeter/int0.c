@@ -5,7 +5,7 @@
 #include "int0.h"
 #include "global.h"
 
-volatile unsigned char in_fuel_value;
+volatile uint8_t in_fuel_value;
 
 ISR(INT0_vect)
 {

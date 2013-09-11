@@ -1,6 +1,8 @@
 #ifndef GLOBAL_H_
 #define GLOBAL_H_
 
+#include <avr/io.h>
+
 typedef struct  
 {
 	unsigned update_fuel_values:1   ;
@@ -22,9 +24,9 @@ typedef struct
 
 typedef struct 
 {
-	unsigned char hours;
-	unsigned char minutes;
-	unsigned char seconds;	
+	uint8_t hours;
+	uint8_t minutes;
+	uint8_t seconds;	
 }time_struct;
 #define TIME_STRUCT_SIZE	sizeof(time_struct)
 
@@ -44,7 +46,7 @@ typedef struct
 #define tb(port, bit) (port ^= _BV(bit))	//toggle bit
 #define compare_bit(byte1, byte2, bit) ((!(_SFR_BYTE(byte1) & _BV(bit))) && (_SFR_BYTE(byte2) & _BV(bit)))
 
-typedef unsigned char BOOL;
+typedef uint8_t BOOL;
 
 #define UP		0
 #define RIGHT	1
