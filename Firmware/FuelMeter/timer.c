@@ -56,7 +56,6 @@ inline void ProcessButtonLeft(){};
 ISR(TIMER0_OVF_vect)
 {
 	TCNT0 = TIMER_0_INITIAL_VALUE;
-	//if button UP pressed
 	ProcessButton(UP);
 	ProcessButton(DOWN);
 	ProcessButton(RIGHT);
