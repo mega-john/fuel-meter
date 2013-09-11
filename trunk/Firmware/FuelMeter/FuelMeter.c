@@ -17,8 +17,9 @@ Material 				POM, O-Ring: FKM
 Pressure 				Max 4 bar
 Temperature range 		-20 - +60 ∞C
 
-использовать будем с жиклером, итого имеем максимум 10000 импульсов в минуту или 166,6 в секунду.
-если будем снимать показани€ раз в секунду, то вполне хватит переменной типа char
+использовать будем с жиклером, итого имеем максимум 10000 импульсов в минуту на литр, или 166.6 в секунду.
+если будем снимать показани€ раз в секунду, то вполне хватит переменной типа uint8_t
+на грамм получаетс€ 0,1666666666666667
  */ 
 
 
@@ -31,6 +32,8 @@ volatile uint32_t total_fuel = 0;
 volatile status_flags flags;
 volatile time_struct ts; 
 extern button_struct bs[4];
+volatile 	float f = 0.1666;
+volatile	double consumption = 0.0;
 
 void init_ports(void)
 {
@@ -83,12 +86,16 @@ int main(void)
 	// Wait a little while the display starts up
 	for(volatile uint16_t i = 0; i < 15000; i++);
 	
-	ts.hours = MEASUREMENT_STRUCT_SIZE;
-	ts.minutes = BUTTON_STRUCT_SIZE;
-	
-	int count = ReadMeasurementsCount();
-	count=0xabcd;
-	WriteMeasurementsCount(count);
+	//ts.hours = MEASUREMENT_STRUCT_SIZE;
+	//ts.minutes = BUTTON_STRUCT_SIZE;
+	//
+	//int count = ReadMeasurementsCount();
+	//count=0xabcd;
+	//WriteMeasurementsCount(count);
+	//
+	//f = GRAMMS_PER_SECOND;
+	//WriteMeasurementsCount((uint16_t)f);
+//
 	// Initialize the LCD
 	ks0108Init(0);
 	
@@ -96,23 +103,23 @@ int main(void)
 	
 	sei();
 
-	//ks0108SelectFont(Arial_Bold_14, ks0108ReadFontData, BLACK);
-	//ks0108GotoXY(10 , 10);
-	//ks0108Puts("√рафические экраны, "); //пишем им
+	ks0108SelectFont(Arial_Bold_14, ks0108ReadFontData, BLACK);
+	ks0108GotoXY(10 , 10);
+	ks0108Puts("fuel meter"); //пишем им
 
 
-	MFPtr(0);
+	//MFPtr(0);
 
     while(1)
     {
-		_delay_ms(2000);
-		tb(PORTB, PINC5);
-		//
+		//_delay_ms(2000);
+		//tb(PORTB, PINC5);
+		////
 		//set flag to 1
 		//when button menu changes flag sets to 0
 		//Flag = 1;
 		//execute function that is pointed by FPtr
-		MFPtr(0);
+		//MFPtr(0);
 
 		
 	//ks0108DrawCircle(25, 60, 20, WHITE);
@@ -132,12 +139,16 @@ int main(void)
 				//}
 			//}
 		//}
-		//if(flags.update_fuel_values == 1)
-		//{
-			//flags.update_fuel_values = 0;
-			//char total = in_fuel - out_fuel;
-			//sprintf(tmp, "fuel  %u l/h", total);
-		//}
+		if(flags.update_fuel_values == 1)
+		{
+			ks0108ClearScreen();
+			flags.update_fuel_values = 0;
+			uint8_t total = in_fuel - out_fuel;
+			consumption = total * GRAMMS_PER_SECOND + 0.1;
+			sprintf(tmp, "fuel  %f l/h", consumption);
+			ks0108GotoXY(0, 0);
+			ks0108Puts(tmp);
+		}
 
 		//itoa(in_fuel, tmp, 10);
 		//tb(PORTC, PINC1);

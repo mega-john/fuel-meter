@@ -60,4 +60,6 @@ typedef uint8_t BOOL;
 #define DEBOUNCE	10//ms
 #define LONG_PRESS	50
 
+static const float GRAMMS_PER_SECOND = (1.0/6.0);
+
 #endif /* GLOBAL_H_ */
