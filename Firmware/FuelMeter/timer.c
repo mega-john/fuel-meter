@@ -6,10 +6,10 @@
 #include "Menu.h"
 #include <stdlib.h>
 
-extern unsigned char in_fuel;
-extern unsigned char out_fuel;
-extern unsigned char in_fuel_value;
-extern unsigned char out_fuel_value;
+extern uint8_t in_fuel;
+extern uint8_t out_fuel;
+extern uint8_t in_fuel_value;
+extern uint8_t out_fuel_value;
 extern status_flags flags;
 extern struct Menu_State MN;
 extern time_struct ts;
@@ -17,7 +17,7 @@ extern time_struct ts;
 //static volatile char count = 0;
 volatile button_struct bs[4];
 
-void ProcessButton(char button_index)
+void ProcessButton(uint8_t button_index)
 {
 	if (bit_is_clear(BT_PIN, button_index))
 	{

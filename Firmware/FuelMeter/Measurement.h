@@ -15,6 +15,6 @@
 
 uint16_t ReadMeasurementsCount(void);
 void WriteMeasurementsCount(uint16_t count);
-measurement_struct ReadMeasurement(unsigned int index);
+measurement_struct ReadMeasurement(uint16_t index);
 
 #endif /* MEASUREMENT_H_ */

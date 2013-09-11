@@ -20,3 +20,9 @@ void WriteMeasurementsCount( uint16_t count )
 {
 	eeprom_write_word((uint16_t*)MEASUREMENTS_COUNT_CELL, count);
 }
+
+measurement_struct ReadMeasurement( uint16_t index )
+{
+	measurement_struct ms;
+	return ms;
+}

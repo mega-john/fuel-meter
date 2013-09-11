@@ -43,7 +43,7 @@
 #define ARIAL_BOLD_14_WIDTH 10
 #define ARIAL_BOLD_14_HEIGHT 14
 
-static const char Arial_Bold_14[] PROGMEM = {
+static const uint8_t Arial_Bold_14[] PROGMEM = {
     0x22, 0x08, // size
     0x0A, // width
     0x0E, // height

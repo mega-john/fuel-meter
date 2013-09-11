@@ -98,7 +98,7 @@ uint16_t ks0108StringWidth_P(PGM_P str);
 // Control Functions
 void ks0108GotoXY(uint8_t x, uint8_t y);
 void ks0108Init(uint8_t invert);
-inline uint8_t ks0108ReadData(void);
+//inline uint8_t ks0108ReadData(void);
 void ks0108WriteCommand(uint8_t cmd, uint8_t chip);
 void ks0108WriteData(uint8_t data);
 
