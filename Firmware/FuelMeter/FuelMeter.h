@@ -22,7 +22,7 @@
 #include "timer.h"
 #include "ks0108.h"
 #include "arial_bold_14.h"
-//#include "SC.h"
+#include "SC.h"
 //#include "Bitmap.h"
 #include "Menu.h"
 #include "Measurement.h"

@@ -21,7 +21,7 @@ void ProcessButton(uint8_t button_index)
 {
 	if (bit_is_clear(BT_PIN, button_index))
 	{
-		_delay_ms(DEBOUNCE);
+		//_delay_ms(DEBOUNCE);
 		if(bs[button_index].state == BS_UNPRESSED)
 		{
 			bs[button_index].pressed_time = 0;
@@ -41,7 +41,7 @@ void ProcessButton(uint8_t button_index)
 			{
 				tb(PORTC, PINC5);
 			}
-			else
+			else if(bs[button_index].pressed_time > DEBOUNCE)
 			{
 				tb(PORTC, PINC6);
 			}
@@ -62,8 +62,10 @@ ISR(TIMER0_OVF_vect)
 	ProcessButton(LEFT);
 }
 
-ISR(TIMER1_OVF_vect, ISR_BLOCK)
+ISR(TIMER1_OVF_vect/*, ISR_BLOCK*/)
 {
+	TCNT1 = TIMER_1_INITIAL_VALUE;
+	//cli();
 	in_fuel = in_fuel_value;
 	in_fuel_value = 0;
 	out_fuel = out_fuel_value;
@@ -82,16 +84,15 @@ ISR(TIMER1_OVF_vect, ISR_BLOCK)
 			}
 		}
 	}	
-	TCNT1H = 11;
-	TCNT1L = 220;
-	tb(PORTC, PINC7);
+
+	//sei();
 }
 
 void timer0_init(void)
 {
-	sb(TIMSK, TOIE0);//разрешить прерывание по переполнению
 	TCCR0 = PRESCALLER0;
 	TCNT0 = TIMER_0_INITIAL_VALUE;
+	sb(TIMSK, TOIE0);//разрешить прерывание по переполнению
 }
 
 void timer1_init(void)
@@ -101,9 +102,9 @@ void timer1_init(void)
 	//// init counter
 	//TCNT1H = 11;
 	//TCNT1L = 220;
-	sb(TIMSK, TOIE1); // Timer1 Overflow Interrupt Enable
 	TCCR1B = PRESCALLER1;
 	TCNT1 = TIMER_1_INITIAL_VALUE;
+	sb(TIMSK, TOIE1); // Timer1 Overflow Interrupt Enable
 }
 
 inline void init_timers(void) 

@@ -60,6 +60,9 @@ typedef uint8_t BOOL;
 #define DEBOUNCE	10//ms
 #define LONG_PRESS	50
 
-static const float GRAMMS_PER_SECOND = (1.0/6.0);
+//количество импульсов в секунду при максимальном потоке 
+//через датчик - литр в минуту
+static const float IMPULSES_PER_GRAM_SECOND = (10000.0/60.0);
+//static const float IMPULSES_PER_GRAM_SECOND = 160;//(1.0/6.0);
 
 #endif /* GLOBAL_H_ */
