@@ -17,14 +17,12 @@ Material 				POM, O-Ring: FKM
 Pressure 				Max 4 bar
 Temperature range 		-20 - +60 °C
 
-использовать будем с жиклером, итого имеем максимум 10000 импульсов в минуту на литр, или 166.6 в секунду.
-если будем снимать показания раз в секунду, то вполне хватит переменной типа uint8_t
-на грамм получается 0,1666666666666667
  */ 
 
 
 #include "FuelMeter.h"
 #include "timer.h"
+
 
 volatile uint8_t in_fuel = 0;
 volatile uint8_t out_fuel = 0;
@@ -32,8 +30,20 @@ volatile double total_fuel = 0;
 volatile status_flags flags;
 volatile time_struct ts; 
 extern button_struct bs[4];
-volatile 	float f = 0.1666;
-volatile	double consumption = 0.0;
+volatile float f = 0.1666;
+volatile double consumption = 0.0;
+
+union 
+{
+	uint32_t m;
+	struct
+	{	
+		uint8_t hours;
+		uint8_t minutes;
+		uint8_t seconds;
+		uint8_t mili_seconds;
+	}time;
+}test;
 
 void init_ports(void)
 {
@@ -48,12 +58,17 @@ void init_ports(void)
 	PORTB=0xFF;
 
 	// Port C initialization
-	DDRC=0xf0;
-	PORTC=0x0f;
+	DDRC=0x0f;
+	PORTC=0xf0;
 
 	// Port D initialization
 	DDRD=0xff;
 	PORTD=0xff;
+}
+
+inline uint32_t ToSeconds(time_struct* ts)
+{
+	return ts->seconds + ts->minutes*60 + ts->hours*3600;
 }
 
 int main(void)
@@ -77,6 +92,14 @@ int main(void)
 	
 	char tmp[20];
 
+	//test.time.mili_seconds = 1;
+	//test.time.seconds = 1;
+	//test.time.minutes = 1;
+	//test.time.hours = 1;
+//
+	//uint32_t tt = test.m;
+		//	consumption = IMPULSES_PER_GRAM_SECOND + 0.1;
+	
 	//bs[UP].stat = BS_UNKNOWN;
 	//bs[DOWN].stat = BS_UNKNOWN;
 	//bs[LEFT].stat = BS_UNKNOWN;
@@ -145,12 +168,14 @@ int main(void)
 			uint8_t total = in_fuel - out_fuel;
 			consumption = total / IMPULSES_PER_GRAM_SECOND;
 			ks0108GotoXY(0, 0);
-			sprintf(tmp, "consumption  %.2f l/h", consumption);
+			sprintf(tmp, "consumption  %.3f l/h", consumption);
 			ks0108Puts(tmp);
 
-			total_fuel += consumption;
+			total_fuel += (consumption / 3600);
+			//total_fuel += (total / 10000);
+			//total_fuel /= ToSeconds(&ts);
 			ks0108GotoXY(0, 16);
-			sprintf(tmp, "total  %.2fl l/h", total_fuel);
+			sprintf(tmp, "total  %.3fl l", (total_fuel));
 			ks0108Puts(tmp);
 
 			ks0108GotoXY(0, 32);

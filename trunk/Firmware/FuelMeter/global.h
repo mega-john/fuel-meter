@@ -48,10 +48,10 @@ typedef struct
 
 typedef uint8_t BOOL;
 
-#define UP		0
-#define RIGHT	1
-#define LEFT	2
-#define DOWN	3
+#define UP		4
+#define RIGHT	5
+#define LEFT	6
+#define DOWN	7
 
 #define BT_PORT PORTC
 #define BT_DDR  DDRC
@@ -62,7 +62,7 @@ typedef uint8_t BOOL;
 
 //количество импульсов в секунду при максимальном потоке 
 //через датчик - литр в минуту
-static const float IMPULSES_PER_GRAM_SECOND = (10000.0/60.0);
+static const double IMPULSES_PER_GRAM_SECOND = (10000.0 / (60.0 * 60.0));
 //static const float IMPULSES_PER_GRAM_SECOND = 160;//(1.0/6.0);
 
 #endif /* GLOBAL_H_ */

@@ -26,6 +26,8 @@
 //#include "Bitmap.h"
 #include "Menu.h"
 #include "Measurement.h"
+#include "i2c_eeprom.h"
+
 
 extern int sprintf(char *__s, const char *__fmt, ...);
 extern void *memset(void *, int, size_t);

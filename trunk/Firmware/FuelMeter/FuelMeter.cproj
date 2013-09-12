@@ -136,6 +136,12 @@
     <Compile Include="global.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="i2c_eeprom.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="i2c_eeprom.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="int0.c">
       <SubType>compile</SubType>
     </Compile>
