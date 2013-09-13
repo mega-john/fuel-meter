@@ -124,6 +124,8 @@ int main(void)
 	menu_Init();
 	
 	init_timers();
+	
+	eeInit();
 	sei();
 
 	ks0108SelectFont(SC, ks0108ReadFontData, BLACK);

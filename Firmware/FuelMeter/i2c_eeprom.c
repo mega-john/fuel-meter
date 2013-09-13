@@ -1,14 +1,4 @@
-#include <avr/io.h>
-#include <util/delay.h>
-
 #include "i2c_eeprom.h"
-
-#define _TWINT	(1 << TWINT)
-#define _TWSTA	(1 << TWSTA)
-#define _TWEN	(1 << TWEN)
-#define _TWSTO	(1 << TWSTO)
-#define _TWPS0	(1 << TWPS0)
-#define _TWPS1	(1 << TWPS1)
 
 void eeInit(void)
 {
@@ -176,7 +166,7 @@ uint8_t eeReadByte(uint16_t address)
 	/*****оепедюел юдпея времхъ********/
     TWDR = (address >> 8);
     TWCR = _TWINT | _TWEN;
-    while(!(TWCR & _TWINT));
+   while(!(TWCR & _TWINT));
 
     if((TWSR & 0xF8) != TW_MT_DATA_ACK)
         return false;

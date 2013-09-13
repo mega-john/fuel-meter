@@ -21,7 +21,7 @@
 #include "font12x16.h"
 
 //flag required for exiting from functions loops
-volatile static uint8_t Flag = 0;
+static volatile uint8_t Flag = 0;
 
 typedef void (*MenuFunctionPtr)(uint8_t cmd);
 
