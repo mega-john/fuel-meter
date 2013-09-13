@@ -90,7 +90,7 @@ int main(void)
 	ts.minutes = 0;
 	ts.seconds = 0;
 	
-	char tmp[20];
+	char tmp[20] = "asdasf asfasdf";
 
 	//test.time.mili_seconds = 1;
 	//test.time.seconds = 1;
@@ -129,11 +129,15 @@ int main(void)
 	sei();
 
 	ks0108SelectFont(SC, ks0108ReadFontData, BLACK);
-	//ks0108GotoXY(10 , 10);
-	//ks0108Puts("fuel meter"); //пишем им
+	ks0108GotoXY(0 , 0);
+	ks0108Puts((PGM_P)("fuel meter")); //пишем им
+	
 
+	uint8_t mem = 0;
+	uint8_t addr = 0;
+	//MFPtr(0);
 
-	MFPtr(0);
+	eeWriteBytes(addr, (uint8_t*)&tmp, 20);
 
     while(1)
     {
@@ -164,7 +168,7 @@ int main(void)
 				//}
 			//}
 		//}
-		if(flags.update_fuel_values == 1)
+		if(flags.update_fuel_values == 1 /*&& eeWriteByte(++addr, ++mem)*/)
 		{
 			ks0108ClearScreen();
 			uint8_t total = in_fuel - out_fuel;
@@ -182,6 +186,12 @@ int main(void)
 
 			ks0108GotoXY(0, 32);
 			sprintf(tmp, "work time %02u:%02u:%02u", ts.hours, ts.minutes, ts.seconds);
+			ks0108Puts(tmp);
+
+			ks0108GotoXY(0, 48);
+			uint8_t val;
+			eeReadByte(addr++, &val);
+			sprintf(tmp, "read byte %c", val);
 			ks0108Puts(tmp);
 			flags.update_fuel_values = 0;
 		}

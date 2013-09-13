@@ -3,6 +3,8 @@
 
 #include <avr/io.h>
 
+#define F_CPU 16000000UL
+
 typedef struct  
 {
 	unsigned update_fuel_values:1   ;
@@ -46,7 +48,7 @@ typedef struct
 #define tb(port, bit) (port ^= _BV(bit))	//toggle bit
 #define compare_bit(byte1, byte2, bit) ((!(_SFR_BYTE(byte1) & _BV(bit))) && (_SFR_BYTE(byte2) & _BV(bit)))
 
-typedef uint8_t BOOL;
+typedef uint8_t bool;
 
 #define UP		4
 #define RIGHT	5
@@ -64,5 +66,8 @@ typedef uint8_t BOOL;
 //через датчик - литр в минуту
 static const double IMPULSES_PER_GRAM_SECOND = (10000.0 / (60.0 * 60.0));
 //static const float IMPULSES_PER_GRAM_SECOND = 160;//(1.0/6.0);
+
+#define FALSE 0
+#define TRUE 1
 
 #endif /* GLOBAL_H_ */
