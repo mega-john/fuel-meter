@@ -1,5 +1,22 @@
+#ifndef i2c_eeprom_h__
+#define i2c_eeprom_h__
+
+#include <avr/io.h>
+#include <avr/interrupt.h>
+#include <avr/eeprom.h>
+#include <util/delay.h>
+#include <stdlib.h>
+#include "global.h"
+
 #define false 0
 #define true 1
+
+#define _TWINT	(1 << TWINT)
+#define _TWSTA	(1 << TWSTA)
+#define _TWEN	(1 << TWEN)
+#define _TWSTO	(1 << TWSTO)
+#define _TWPS0	(1 << TWPS0)
+#define _TWPS1	(1 << TWPS1)
 
 //#define slaveF_SCL 100000 //100 Khz
 #define slaveF_SCL 400000 //400 Khz
@@ -10,10 +27,6 @@
 //Разряды направления передачи данных
 #define READFLAG 1 //Чтение
 #define WRITEFLAG 0 //Запись
-
-void eeInit(void); //Начальная настройка TWI
-uint8_t eeWriteByte(uint16_t address,uint8_t data); //Запись байта в модуль памяти EEPROM
-uint8_t eeReadByte(uint16_t address); //Чтение байта из модуля памяти EEPROM
 
 // TWSR values (not bits)
 // (taken from avr-libc twi.h - thank you Marek Michalkiewicz)
@@ -51,3 +64,9 @@ uint8_t eeReadByte(uint16_t address); //Чтение байта из модуля памяти EEPROM
 // Misc
 #define TW_NO_INFO                  0xF8
 #define TW_BUS_ERROR                0x00
+
+void eeInit(void); //Начальная настройка TWI
+uint8_t eeWriteByte(uint16_t address,uint8_t data); //Запись байта в модуль памяти EEPROM
+uint8_t eeReadByte(uint16_t address); //Чтение байта из модуля памяти EEPROM
+
+#endif // i2c_eeprom_h__

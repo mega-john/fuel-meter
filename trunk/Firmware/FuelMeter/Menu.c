@@ -34,7 +34,7 @@ const char sub_menu_2[][MAX_MENU_LENGTH] PROGMEM =
 	{"32 start\0"},
 };
 
-volatile static uint8_t menu_index = 0;
+static volatile uint8_t menu_index = 0;
 extern status_flags flags;
 
 
@@ -100,7 +100,7 @@ void MainMenu( uint8_t cmd )
 	if(flags.update_menu == 1)
 	{
 		ks0108ClearScreen();
-		for (char i = 0; i < 3; i++)
+		for (uint8_t i = 0; i < 3; i++)
 		{
 			ks0108GotoXY(2, i * 14 + 1);
 			ks0108Puts_P(main_menu[i]);

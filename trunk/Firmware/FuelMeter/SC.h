@@ -43,7 +43,7 @@
 #define SC_WIDTH 6
 #define SC_HEIGHT 13
 
-static const char SC[] PROGMEM = {
+static const uint8_t SC[] PROGMEM = {
     0x1A, 0x4C, // size
     0x06, // width
     0x0D, // height
