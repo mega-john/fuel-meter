@@ -22,7 +22,8 @@ inline uint8_t eeConnect(uint16_t address)
 		//∆дем, пока шина даст добро (возможно, лини€ пока еще зан€та, ждем)
 		//TWINT бит устанавливаетс€ аппаратно, если TWI завершает текущее 
 		//задание и ожидает реакции программы
-        while(!(TWCR & _TWINT));
+        //while(!(TWCR & _TWINT));
+		WAIT_TRANSMIT;
 
         /*ѕровер€ем регистр статуса, а точнее биты TWS3-7,
         которые доступны только дл€ чтени€. Ёти п€ть битов 
@@ -59,7 +60,8 @@ inline uint8_t eeConnect(uint16_t address)
         TWCR = _TWINT | _TWEN;
 
         //∆дем окончани€ передачи данных
-        while(!(TWCR & _TWINT));
+        //while(!(TWCR & _TWINT));
+		WAIT_TRANSMIT;
     
 	/*≈сли нет подтверждени€ от ведомого, делаем все по-новой 
 	(либо неполадки с линией, либо ведомого с таким адресом нет).
@@ -81,7 +83,8 @@ inline uint8_t eeConnect(uint16_t address)
     //..и передаем его
     TWCR = _TWINT | _TWEN;
     //ждем окончани€ передачи
-    while(!(TWCR & _TWINT));
+    //while(!(TWCR & _TWINT));
+	WAIT_TRANSMIT;
 
 	/*ѕровер€ем регистр статуса, прин€л ли ведомый данные. ≈сли ведомый данные прин€л, 
 	то он передает "ѕодтверждение", устанавлива€ SDA в низкий уровень. Ѕлок управлени€, 
@@ -95,7 +98,8 @@ inline uint8_t eeConnect(uint16_t address)
     //ƒалее тоже самое дл€ младшего разр€да адреса
     TWDR = (address);
     TWCR = _TWINT | _TWEN;
-    while(!(TWCR & _TWINT));
+    //while(!(TWCR & _TWINT));
+	WAIT_TRANSMIT;
 
     if(TW_STATUS != TW_MT_DATA_ACK)
 	{
@@ -116,7 +120,7 @@ inline void eeStop()
 void eeInit(void)
 {
     /*Ќастраиваем √енератор скорости св€зи*/
-    TWBR = (F_CPU/slaveF_SCL - 16) >> 1;/// (2 * /* TWI_Prescaler= 4^TWPS */1);
+    TWBR = ((F_CPU/slaveF_SCL - 16) >> 1) / 4;/// (2 * /* TWI_Prescaler= 4^TWPS */1);
     
 	/*
 	≈сли TWI работает в ведущем режиме, то значение TWBR должно быть не менее 10. 
@@ -144,7 +148,8 @@ bool eeWriteByte(uint16_t address, uint8_t data)
 	
     TWDR = data;
     TWCR = _TWINT | _TWEN;
-    while(!(TWCR & _TWINT));
+    //while(!(TWCR & _TWINT));
+	WAIT_TRANSMIT;
 
     if(TW_STATUS != TW_MT_DATA_ACK)
 	{
@@ -167,7 +172,8 @@ bool eeWriteBytes( uint16_t address, uint8_t* data, uint8_t length )
 	{
 		TWDR = data[i];
 		TWCR = _TWINT | _TWEN;
-		while(!(TWCR & _TWINT));
+		//while(!(TWCR & _TWINT));
+		WAIT_TRANSMIT;
 
 		if(TW_STATUS != TW_MT_DATA_ACK)
 		{
@@ -197,7 +203,8 @@ bool eeReadByte(uint16_t address, uint8_t* data)
     //ѕовтор услови€ начала передачи
     TWCR = _TWINT | _TWSTA | _TWEN;
 	//ждем выполнени€ текущей операции
-    while(!(TWCR & _TWINT));
+    //while(!(TWCR & _TWINT));
+	WAIT_TRANSMIT;
 
 	/*ѕровер€ем статус. ”словие повтора начала передачи (0x10=TW_REP_START) должно подтвердитьс€*/
     if(TW_STATUS != TW_REP_START)
@@ -211,7 +218,8 @@ bool eeReadByte(uint16_t address, uint8_t* data)
 
 	//ќтправл€ем..
     TWCR = _TWINT | _TWEN;
-    while(!(TWCR & _TWINT));
+    //while(!(TWCR & _TWINT));
+	WAIT_TRANSMIT;
 
 	/*ѕровер€ем, нашелс€ ли ведомый с адресом 1010'000 и готов ли он работать на чтение*/
     if(TW_STATUS != TW_MR_SLA_ACK)
@@ -226,7 +234,8 @@ bool eeReadByte(uint16_t address, uint8_t* data)
     TWCR = _TWINT | _TWEN;
 
     //∆дем окончани€ приема..
-    while(!(TWCR & _TWINT));
+    //while(!(TWCR & _TWINT));
+	WAIT_TRANSMIT;
 
 	/*ѕровер€ем статус. ѕо протоколу, прием данных должен оканчиватьс€ без 
 	подтверждени€ со стороны ведущего (TW_MR_DATA_NACK = 0x58)*/
@@ -259,7 +268,8 @@ bool eeReadBytes( uint16_t address, uint8_t* data, uint8_t length )
     //ѕовтор услови€ начала передачи
     TWCR = _TWINT | _TWSTA | _TWEN;
 	//ждем выполнени€ текущей операции
-    while(!(TWCR & _TWINT));
+    //while(!(TWCR & _TWINT));
+	WAIT_TRANSMIT;
 
 	/*ѕровер€ем статус. ”словие повтора начала передачи (0x10=TW_REP_START) должно подтвердитьс€*/
     if(TW_STATUS != TW_REP_START)
@@ -273,7 +283,8 @@ bool eeReadBytes( uint16_t address, uint8_t* data, uint8_t length )
 
 	//ќтправл€ем..
     TWCR = _TWINT | _TWEN;
-    while(!(TWCR & _TWINT));
+    //while(!(TWCR & _TWINT));
+	WAIT_TRANSMIT;
 
 	/*ѕровер€ем, нашелс€ ли ведомый с адресом 1010'000 и готов ли он работать на чтение*/
     if(TW_STATUS != TW_MR_SLA_ACK)
@@ -295,7 +306,8 @@ bool eeReadBytes( uint16_t address, uint8_t* data, uint8_t length )
 		}
 
 		//∆дем окончани€ приема..
-		while(!(TWCR & _TWINT));
+		//while(!(TWCR & _TWINT));
+		WAIT_TRANSMIT;
 
 		if(TW_STATUS != ((i == length - 1) ? TW_MR_DATA_NACK : TW_MR_DATA_ACK))
 		{

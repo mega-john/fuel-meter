@@ -70,4 +70,6 @@ static const double IMPULSES_PER_GRAM_SECOND = (10000.0 / (60.0 * 60.0));
 #define FALSE 0
 #define TRUE 1
 
+#define RECORDS_COUNT_ADDRESS	0
+
 #endif /* GLOBAL_H_ */
