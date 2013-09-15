@@ -17,6 +17,8 @@
 #define _TWPS0	(1 << TWPS0)
 #define _TWPS1	(1 << TWPS1)
 
+#define WAIT_TRANSMIT	while(!(TWCR & _TWINT))
+
 //#define slaveF_SCL 100000 //100 Khz
 #define slaveF_SCL 400000 //400 Khz
 

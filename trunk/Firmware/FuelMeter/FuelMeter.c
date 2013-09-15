@@ -137,7 +137,7 @@ int main(void)
 	uint8_t addr = 0;
 	//MFPtr(0);
 
-	eeWriteBytes(addr, (uint8_t*)&tmp, 20);
+	//eeWriteBytes(addr, (uint8_t*)&tmp, 20);
 
     while(1)
     {
@@ -168,7 +168,7 @@ int main(void)
 				//}
 			//}
 		//}
-		if(flags.update_fuel_values == 1 /*&& eeWriteByte(++addr, ++mem)*/)
+		if(flags.update_fuel_values == 1/* && eeWriteByte(++addr, ++mem)*/)
 		{
 			ks0108ClearScreen();
 			uint8_t total = in_fuel - out_fuel;
@@ -178,8 +178,6 @@ int main(void)
 			ks0108Puts(tmp);
 
 			total_fuel += (consumption / 3600);
-			//total_fuel += (total / 10000);
-			//total_fuel /= ToSeconds(&ts);
 			ks0108GotoXY(0, 16);
 			sprintf(tmp, "total  %.3fl l", (total_fuel));
 			ks0108Puts(tmp);
@@ -188,12 +186,12 @@ int main(void)
 			sprintf(tmp, "work time %02u:%02u:%02u", ts.hours, ts.minutes, ts.seconds);
 			ks0108Puts(tmp);
 
-			ks0108GotoXY(0, 48);
-			uint8_t val;
-			eeReadByte(addr++, &val);
-			sprintf(tmp, "read byte %c", val);
-			ks0108Puts(tmp);
-			flags.update_fuel_values = 0;
+			//ks0108GotoXY(0, 48);
+			//uint8_t val;
+			//eeReadByte(addr++, &val);
+			//sprintf(tmp, "addr:%u byte:%u", addr, val);
+			//ks0108Puts(tmp);
+			//flags.update_fuel_values = 0;
 		}
 
 		//itoa(in_fuel, tmp, 10);
