@@ -16,13 +16,9 @@ Output current 			20 mA
 Material 				POM, O-Ring: FKM
 Pressure 				Max 4 bar
 Temperature range 		-20 - +60 °C
-
  */ 
-
-
 #include "FuelMeter.h"
 #include "timer.h"
-
 
 volatile uint8_t in_fuel = 0;
 volatile uint8_t out_fuel = 0;
@@ -90,7 +86,7 @@ int main(void)
 	ts.minutes = 0;
 	ts.seconds = 0;
 	
-	char tmp[20] = "asdasf asfasdf";
+	char tmp[20];
 
 	//test.time.mili_seconds = 1;
 	//test.time.seconds = 1;
@@ -130,12 +126,12 @@ int main(void)
 
 	ks0108SelectFont(SC, ks0108ReadFontData, BLACK);
 	ks0108GotoXY(0 , 0);
-	ks0108Puts((PGM_P)("fuel meter")); //пишем им
+	ks0108Puts(("fuel meter")); //пишем им
 	
 
 	uint8_t mem = 0;
 	uint8_t addr = 0;
-	//MFPtr(0);
+	MFPtr(0);
 
 	//eeWriteBytes(addr, (uint8_t*)&tmp, 20);
 
@@ -170,7 +166,7 @@ int main(void)
 		//}
 		if(flags.update_fuel_values == 1/* && eeWriteByte(++addr, ++mem)*/)
 		{
-			ks0108ClearScreen();
+			//ks0108ClearScreen();
 			uint8_t total = in_fuel - out_fuel;
 			consumption = total / IMPULSES_PER_GRAM_SECOND;
 			ks0108GotoXY(0, 0);
@@ -179,7 +175,9 @@ int main(void)
 
 			total_fuel += (consumption / 3600);
 			ks0108GotoXY(0, 16);
-			sprintf(tmp, "total  %.3fl l", (total_fuel));
+			ks0108DrawRect(ks0108StringWidth("total  "), 16, 70, 7, BLACK);
+			ks0108GotoXY(0, 16);
+			sprintf(tmp, "total  %.3fl L", (total_fuel));
 			ks0108Puts(tmp);
 
 			ks0108GotoXY(0, 32);
@@ -191,7 +189,7 @@ int main(void)
 			//eeReadByte(addr++, &val);
 			//sprintf(tmp, "addr:%u byte:%u", addr, val);
 			//ks0108Puts(tmp);
-			//flags.update_fuel_values = 0;
+			flags.update_fuel_values = 0;
 		}
 
 		//itoa(in_fuel, tmp, 10);
