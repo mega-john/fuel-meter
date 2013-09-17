@@ -167,5 +167,7 @@ void func402(uint8_t cmd)
 
 void MeasureMenu( uint8_t cmd )
 {
-	ks0108DrawRoundRect(0, 0, SCREEN_WIDTH - 1, SCREEN_HEIGHT - 1, 10, BLACK);
+	//ks0108DrawRoundRect(10, 10, 40, 40, 1, BLACK);
+	//ks0108DrawRect(10, 10, 40, 40, BLACK);
+	ks0108DrawHoriLine(1, 5, 128, BLACK);
 }

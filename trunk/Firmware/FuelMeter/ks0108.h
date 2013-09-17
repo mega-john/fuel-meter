@@ -10,6 +10,7 @@
 
 #include <inttypes.h>
 #include <avr/pgmspace.h>
+#include "global.h"
 
 #ifndef	KS0108_H
 #define KS0108_H

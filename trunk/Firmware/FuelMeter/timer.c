@@ -4,7 +4,7 @@
 #include "global.h"
 #include "timer.h"
 #include "Menu.h"
-#include <stdlib.h>
+//#include <stdlib.h>
 
 extern uint8_t in_fuel;
 extern uint8_t out_fuel;
@@ -98,10 +98,6 @@ void timer0_init(void)
 void timer1_init(void)
 {
 	//// Timer1 settings: ~ 8000000 ticks (1 sec)
-	//TCCR1B |= (1<<CS12); // prescaler = 256
-	//// init counter
-	//TCNT1H = 11;
-	//TCNT1L = 220;
 	TCCR1B = PRESCALLER1;
 	TCNT1 = TIMER_1_INITIAL_VALUE;
 	sb(TIMSK, TOIE1); // Timer1 Overflow Interrupt Enable

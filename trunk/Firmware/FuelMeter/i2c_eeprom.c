@@ -111,16 +111,16 @@ inline uint8_t eeConnect(uint16_t address)
 inline void eeStop()
 {
 	/*Устанавливаем условие завершения передачи данных (СТОП)(Устанавливаем бит условия СТОП)*/
-    TWCR = _TWINT | _TWEN | _TWSTO;
-    
-    //Ждем установки условия СТОП
-    while(TWCR & _TWSTO);
+	TWCR = _TWINT | _TWEN | _TWSTO;
+	
+	//Ждем установки условия СТОП
+	while(TWCR & _TWSTO);
 }
 
 void eeInit(void)
 {
     /*Настраиваем Генератор скорости связи*/
-    TWBR = ((F_CPU/slaveF_SCL - 16) >> 1) / 4;/// (2 * /* TWI_Prescaler= 4^TWPS */1);
+    TWBR = ((F_CPU / slaveF_SCL - 16) >> 1) / 4;//(2 * /* TWI_Prescaler= 4^TWPS */1);
     
 	/*
 	Если TWI работает в ведущем режиме, то значение TWBR должно быть не менее 10. 
