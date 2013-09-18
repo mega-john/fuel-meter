@@ -34,7 +34,7 @@ const char sub_menu_2[][MAX_MENU_LENGTH] PROGMEM =
 	{"32 start\0"},
 };
 
-static volatile uint8_t menu_index = 0;
+//static volatile uint8_t menu_index = 0;
 extern status_flags flags;
 
 
@@ -72,7 +72,7 @@ void menu_Init(void)
 {
 	MN.menuNo = 0;
 	MN.subMenuNo = 0;
-	MFPtr = (MenuFunctionPtr)pgm_read_word(&FuncPtrTable[0]);
+	MFPtr = (MenuFunctionPtr)pgm_read_word(&FuncPtrTable[1]);
 }
 
 uint8_t MFIndex(uint8_t mn, uint8_t sb)
@@ -100,6 +100,8 @@ void MainMenu( uint8_t cmd )
 	if(flags.update_menu == 1)
 	{
 		ks0108ClearScreen();
+		ks0108GotoXY(0, 0);
+		ks0108Puts("fuck off");
 		for (uint8_t i = 0; i < 3; i++)
 		{
 			ks0108GotoXY(2, i * 14 + 1);
@@ -165,10 +167,33 @@ void func402(uint8_t cmd)
 	//return &tmp[0];
 //}
 
+extern uint8_t in_fuel;
+extern uint8_t out_fuel;
+extern double total_fuel;
+extern time_struct ts;
+
 void MeasureMenu( uint8_t cmd )
 {
-	//ks0108DrawRoundRect(10, 10, 40, 40, 1, BLACK);
-	//ks0108DrawRect(10, 10, 40, 40, BLACK);
-	//ks0108DrawHoriLine(1, 5, 128, BLACK);
-	ks0108DrawRoundRect(5, 5, 117, 20, 8, BLACK);
+	char tmp[20];
+	uint8_t total = in_fuel - out_fuel;
+	volatile double consumption = total / IMPULSES_PER_GRAM_SECOND;
+	ks0108GotoXY(0, 0);
+	sprintf(tmp, "consumption  %.2f L/h", consumption);
+	ks0108Puts(tmp);
+
+	total_fuel += (consumption / 3600);
+	//ks0108GotoXY(0, 16);
+	//ks0108FillRect(ks0108StringWidth("total  "), 16, 70, 9, WHITE);
+	ks0108GotoXY(0, 16);
+	sprintf(tmp, "total  %.2f L", (total_fuel));
+	ks0108Puts(tmp);
+
+	ks0108GotoXY(0, 32);
+	sprintf(tmp, "work time %02u:%02u:%02u", ts.hours, ts.minutes, ts.seconds);
+	ks0108Puts(tmp);
+}
+
+void set_menu( uint8_t menu_index )
+{
+	MFPtr = (MenuFunctionPtr)pgm_read_word(&FuncPtrTable[menu_index]);	
 }

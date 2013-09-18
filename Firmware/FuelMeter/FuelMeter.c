@@ -26,20 +26,8 @@ volatile double total_fuel = 0;
 volatile status_flags flags;
 volatile time_struct ts; 
 extern button_struct bs[4];
-volatile float f = 0.1666;
+//volatile float f = 0.1666;
 volatile double consumption = 0.0;
-
-union 
-{
-	uint32_t m;
-	struct
-	{	
-		uint8_t hours;
-		uint8_t minutes;
-		uint8_t seconds;
-		uint8_t mili_seconds;
-	}time;
-}test;
 
 void init_ports(void)
 {
@@ -59,7 +47,7 @@ void init_ports(void)
 
 	// Port D initialization
 	DDRD=0xff;
-	PORTD=0xff;
+	PORTD=0x00;
 }
 
 inline uint32_t ToSeconds(time_struct* ts)
@@ -73,20 +61,11 @@ int main(void)
 	init_int0();
 	init_int1();
 	
-	flags.update_fuel_values = 0;
-	flags.update_time = 0;
-	flags.update_total_fuel = 0;
-	flags.update_menu = 1;
-	flags.bit4 = 0;
-	flags.bit5 = 0;
-	flags.bit6 = 0;
-	flags.bit7 = 0;
-	
 	ts.hours = 0;
 	ts.minutes = 0;
 	ts.seconds = 0;
 	
-	char tmp[20];
+	//char tmp[20];
 
 	//test.time.mili_seconds = 1;
 	//test.time.seconds = 1;
@@ -117,21 +96,17 @@ int main(void)
 	// Initialize the LCD
 	ks0108Init(0);
 	
-	//menu_Init();
+	menu_Init();
 	
-	//init_timers();
-	//
+	init_timers();
+	
 	//eeInit();
 	sei();
 
+	ks0108GotoXY(0 , 0);
 	ks0108ClearScreen();
-	//ks0108SelectFont(SC, ks0108ReadFontData, BLACK);
-	ks0108SelectFont(Arial_Bold_14, ks0108ReadFontData, BLACK);
-	//ks0108GotoXY(0 , 0);
-	//ks0108Puts(("fuel meter")); //пишем им
-		ks0108DrawRoundRect(5, 5, 117, 20, 8, BLACK);
-
-
+	ks0108SelectFont(SC, ks0108ReadFontData, BLACK);
+ks0108FillRect(ks0108StringWidth("total  "), 16, 70, 9, WHITE);
 	uint8_t mem = 0;
 	uint8_t addr = 0;
 	//MFPtr(0);
@@ -147,59 +122,29 @@ int main(void)
 		//when button menu changes flag sets to 0
 		//Flag = 1;
 		//execute function that is pointed by FPtr
-		//MFPtr(0);
-
 		
-	//ks0108DrawCircle(25, 60, 20, WHITE);
-		//if(flags.update_time == 1)
-		//{
-			//flags.update_time = 0;
-			//if (++ts.seconds > 59)
-			//{
-				//ts.seconds = 0;
-				//if(++ts.minutes > 59)
-				//{
-					//ts.minutes = 0;
-					//if (++ts.hours > 23)
-					//{
-						//ts.hours = 0;
-					//}
-				//}
-			//}
-		//}
-		
-		
-		//if(flags.update_fuel_values == 1/* && eeWriteByte(++addr, ++mem)*/)
-		//{
-			////ks0108ClearScreen();
+		if(flags.update_fuel_values == 1)
+		{
+			//ks0108ClearScreen();
 			//uint8_t total = in_fuel - out_fuel;
 			//consumption = total / IMPULSES_PER_GRAM_SECOND;
 			//ks0108GotoXY(0, 0);
-			//sprintf(tmp, "consumption  %.3f l/h", consumption);
+			//sprintf(tmp, "consumption  %.2f L/h", consumption);
 			//ks0108Puts(tmp);
 //
 			//total_fuel += (consumption / 3600);
 			//ks0108GotoXY(0, 16);
-			//ks0108DrawRect(ks0108StringWidth("total  "), 16, 70, 7, BLACK);
+			//ks0108FillRect(ks0108StringWidth("total  "), 16, 70, 9, WHITE);
 			//ks0108GotoXY(0, 16);
-			//sprintf(tmp, "total  %.3fl L", (total_fuel));
+			//sprintf(tmp, "total  %.2f L", (total_fuel));
 			//ks0108Puts(tmp);
 //
 			//ks0108GotoXY(0, 32);
 			//sprintf(tmp, "work time %02u:%02u:%02u", ts.hours, ts.minutes, ts.seconds);
 			//ks0108Puts(tmp);
-//
-			////ks0108GotoXY(0, 48);
-			////uint8_t val;
-			////eeReadByte(addr++, &val);
-			////sprintf(tmp, "addr:%u byte:%u", addr, val);
-			////ks0108Puts(tmp);
-			//flags.update_fuel_values = 0;
-		//}
+			MFPtr(MN.menuNo);
 
-		//itoa(in_fuel, tmp, 10);
-		//tb(PORTC, PINC1);
-		////LcdGotoXYFont(0,0);
-		//LcdStr(FONT_1X, tmp);
+			flags.update_fuel_values = 0;
+		}
    }
 }

@@ -55,6 +55,7 @@ uint8_t MFIndex(uint8_t, uint8_t);
 
 void menu_Init(void);
 void delay1s(void);
+void set_menu(uint8_t menu_index);
 
 //uint8_t* read_pgm_string(const char *FlashLoc);
 

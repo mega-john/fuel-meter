@@ -17,6 +17,40 @@ extern time_struct ts;
 //static volatile char count = 0;
 volatile button_struct bs[4];
 
+void LongButtonPress()
+{
+	if(MN.menuNo == 0)
+	{
+		MN.menuNo = 1;
+		set_menu(MN.menuNo);
+	}
+}
+
+void ShortButtonPress(uint8_t button_index)
+{
+	if (MN.menuNo == 0)
+	{
+		return;
+	}
+	
+	switch(button_index)
+	{
+		case BTN_UP:
+		break;
+		case BTN_DOWN:
+		break;
+		case BTN_RIGHT:
+		break;
+		case BTN_LEFT:
+		break;
+	}
+}
+
+void RepeatButton()
+{
+	
+}
+
 void ProcessButton(uint8_t button_index)
 {
 	if (bit_is_clear(BT_PIN, button_index))
@@ -27,39 +61,39 @@ void ProcessButton(uint8_t button_index)
 			bs[button_index].pressed_time = 0;
 			bs[button_index].state = BS_PRESSED;
 		}
-		else
+		else if(bs[button_index].state != BS_LONGPRESSED)
 		{
 			bs[button_index].pressed_time++;
+			if(bs[button_index].pressed_time++ > LONG_PRESS)
+			{
+				LongButtonPress();
+				tb(PORTD, PINC5);
+				bs[button_index].state = BS_LONGPRESSED;
+			}
 		}
 	}
 	else
 	{
 		if(bs[button_index].state == BS_PRESSED)
 		{
-			bs[button_index].state = BS_UNPRESSED;
-			if(bs[button_index].pressed_time > LONG_PRESS)
+			if(bs[button_index].pressed_time > DEBOUNCE)
 			{
-				tb(PORTC, PINC5);
-			}
-			else if(bs[button_index].pressed_time > DEBOUNCE)
-			{
-				tb(PORTC, PINC6);
+				tb(PORTD, PINC4);
+				ShortButtonPress(button_index);
 			}
 		}
+		bs[button_index].state = BS_UNPRESSED;
+		flags.update_menu = 1;
 	}
 }
-
-inline void ProcessButtonDown(){};
-inline void ProcessButtonRight(){};
-inline void ProcessButtonLeft(){};
 
 ISR(TIMER0_OVF_vect)
 {
 	TCNT0 = TIMER_0_INITIAL_VALUE;
-	ProcessButton(UP);
-	ProcessButton(DOWN);
-	ProcessButton(RIGHT);
-	ProcessButton(LEFT);
+	ProcessButton(BTN_UP);
+	ProcessButton(BTN_DOWN);
+	ProcessButton(BTN_RIGHT);
+	ProcessButton(BTN_LEFT);
 }
 
 ISR(TIMER1_OVF_vect/*, ISR_BLOCK*/)

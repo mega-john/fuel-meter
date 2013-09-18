@@ -90,13 +90,13 @@
   <avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>True</avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>
   <avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>True</avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>
   <avrgcc.compiler.optimization.level>Optimize (-O1)</avrgcc.compiler.optimization.level>
-  <avrgcc.compiler.optimization.PrepareFunctionsForGarbageCollection>False</avrgcc.compiler.optimization.PrepareFunctionsForGarbageCollection>
-  <avrgcc.compiler.optimization.PrepareDataForGarbageCollection>False</avrgcc.compiler.optimization.PrepareDataForGarbageCollection>
   <avrgcc.compiler.optimization.PackStructureMembers>True</avrgcc.compiler.optimization.PackStructureMembers>
+  <avrgcc.compiler.optimization.AllocateBytesNeededForEnum>True</avrgcc.compiler.optimization.AllocateBytesNeededForEnum>
+  <avrgcc.compiler.optimization.UseShortCalls>True</avrgcc.compiler.optimization.UseShortCalls>
   <avrgcc.compiler.optimization.DebugLevel>Maximum (-g3)</avrgcc.compiler.optimization.DebugLevel>
   <avrgcc.compiler.warnings.AllWarnings>True</avrgcc.compiler.warnings.AllWarnings>
   <avrgcc.compiler.warnings.ExtraWarnings>True</avrgcc.compiler.warnings.ExtraWarnings>
-  <avrgcc.compiler.miscellaneous.OtherFlags>-std=gnu99 -DF_CPU=16000000UL -DEBUG</avrgcc.compiler.miscellaneous.OtherFlags>
+  <avrgcc.compiler.miscellaneous.OtherFlags>-std=gnu99 -DF_CPU=16000000UL</avrgcc.compiler.miscellaneous.OtherFlags>
   <avrgcc.linker.general.UseVprintfLibrary>True</avrgcc.linker.general.UseVprintfLibrary>
   <avrgcc.linker.libraries.Libraries>
     <ListValues>
@@ -109,7 +109,7 @@
       <Value>C:\Program Files (x86)\Atmel\Atmel Toolchain\AVR8 GCC\Native\3.4.2.1002\avr8-gnu-toolchain\lib</Value>
     </ListValues>
   </avrgcc.linker.libraries.LibrarySearchPaths>
-  <avrgcc.linker.miscellaneous.LinkerFlags>-DF_CPU=16000000UL -DEBUG</avrgcc.linker.miscellaneous.LinkerFlags>
+  <avrgcc.linker.miscellaneous.LinkerFlags>-DF_CPU=16000000UL</avrgcc.linker.miscellaneous.LinkerFlags>
   <avrgcc.assembler.debugging.DebugLevel>Default (-Wa,-g)</avrgcc.assembler.debugging.DebugLevel>
 </AvrGcc>
     </ToolchainSettings>
