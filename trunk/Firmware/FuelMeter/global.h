@@ -20,7 +20,7 @@ typedef struct
 typedef struct
 {
 	char pressed_time;
-	enum states {/*BS_UNKNOWN, */BS_PRESSED, BS_UNPRESSED} state;
+	enum states {/*BS_UNKNOWN, */BS_PRESSED, BS_UNPRESSED, BS_LONGPRESSED} state;
 } button_struct;
 #define BUTTON_STRUCT_SIZE	sizeof(button_struct)
 
@@ -50,13 +50,13 @@ typedef struct
 
 typedef uint8_t bool;
 
-#define UP		4
-#define RIGHT	5
-#define LEFT	6
-#define DOWN	7
+#define BTN_UP		4
+#define BTN_RIGHT	5
+#define BTN_LEFT	6
+#define BTN_DOWN	7
 
-#define BT_PORT PORTC
-#define BT_DDR  DDRC
+//#define BT_PORT PORTC
+//#define BT_DDR  DDRC
 #define BT_PIN  PINC
 
 #define DEBOUNCE	10//ms

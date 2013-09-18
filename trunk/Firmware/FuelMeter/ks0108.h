@@ -87,8 +87,8 @@ void ks0108SetDot(uint8_t x, uint8_t y, uint8_t color);
 #define ks0108ClearScreen() {ks0108FillRect(0, 0, 127, 63, WHITE);}
 
 // Font Functions
-uint8_t ks0108ReadFontData(const uint8_t* ptr);		//Standard Read Callback
-void ks0108SelectFont(const uint8_t* font, ks0108FontCallback callback, uint8_t color);
+uint8_t ks0108ReadFontData(const char* ptr);		//Standard Read Callback
+void ks0108SelectFont(const char* font, ks0108FontCallback callback, uint8_t color);
 int ks0108PutChar(char c);
 void ks0108Puts(char* str);
 void ks0108Puts_P(PGM_P str);
