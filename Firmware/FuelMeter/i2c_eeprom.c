@@ -108,7 +108,7 @@ inline uint8_t eeConnect(uint16_t address)
 	return TRUE;
 }
 
-inline void eeStop()
+inline void eeStop(void)
 {
 	/*Устанавливаем условие завершения передачи данных (СТОП)(Устанавливаем бит условия СТОП)*/
 	TWCR = _TWINT | _TWEN | _TWSTO;

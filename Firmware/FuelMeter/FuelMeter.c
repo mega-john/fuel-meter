@@ -102,7 +102,7 @@ int main(void)
 	//bs[RIGHT].stat = BS_UNKNOWN;
 
 	// Wait a little while the display starts up
-	for(volatile uint16_t i = 0; i < 15000; i++);
+	//for(volatile uint16_t i = 0; i < 15000; i++);
 	
 	//ts.hours = MEASUREMENT_STRUCT_SIZE;
 	//ts.minutes = BUTTON_STRUCT_SIZE;
@@ -117,21 +117,24 @@ int main(void)
 	// Initialize the LCD
 	ks0108Init(0);
 	
-	menu_Init();
+	//menu_Init();
 	
-	init_timers();
-	
-	eeInit();
+	//init_timers();
+	//
+	//eeInit();
 	sei();
 
-	ks0108SelectFont(SC, ks0108ReadFontData, BLACK);
-	ks0108GotoXY(0 , 0);
-	ks0108Puts(("fuel meter")); //пишем им
-	
+	ks0108ClearScreen();
+	//ks0108SelectFont(SC, ks0108ReadFontData, BLACK);
+	ks0108SelectFont(Arial_Bold_14, ks0108ReadFontData, BLACK);
+	//ks0108GotoXY(0 , 0);
+	//ks0108Puts(("fuel meter")); //пишем им
+		ks0108DrawRoundRect(5, 5, 117, 20, 8, BLACK);
+
 
 	uint8_t mem = 0;
 	uint8_t addr = 0;
-	MFPtr(0);
+	//MFPtr(0);
 
 	//eeWriteBytes(addr, (uint8_t*)&tmp, 20);
 
@@ -164,33 +167,35 @@ int main(void)
 				//}
 			//}
 		//}
-		if(flags.update_fuel_values == 1/* && eeWriteByte(++addr, ++mem)*/)
-		{
-			//ks0108ClearScreen();
-			uint8_t total = in_fuel - out_fuel;
-			consumption = total / IMPULSES_PER_GRAM_SECOND;
-			ks0108GotoXY(0, 0);
-			sprintf(tmp, "consumption  %.3f l/h", consumption);
-			ks0108Puts(tmp);
-
-			total_fuel += (consumption / 3600);
-			ks0108GotoXY(0, 16);
-			ks0108DrawRect(ks0108StringWidth("total  "), 16, 70, 7, BLACK);
-			ks0108GotoXY(0, 16);
-			sprintf(tmp, "total  %.3fl L", (total_fuel));
-			ks0108Puts(tmp);
-
-			ks0108GotoXY(0, 32);
-			sprintf(tmp, "work time %02u:%02u:%02u", ts.hours, ts.minutes, ts.seconds);
-			ks0108Puts(tmp);
-
-			//ks0108GotoXY(0, 48);
-			//uint8_t val;
-			//eeReadByte(addr++, &val);
-			//sprintf(tmp, "addr:%u byte:%u", addr, val);
+		
+		
+		//if(flags.update_fuel_values == 1/* && eeWriteByte(++addr, ++mem)*/)
+		//{
+			////ks0108ClearScreen();
+			//uint8_t total = in_fuel - out_fuel;
+			//consumption = total / IMPULSES_PER_GRAM_SECOND;
+			//ks0108GotoXY(0, 0);
+			//sprintf(tmp, "consumption  %.3f l/h", consumption);
 			//ks0108Puts(tmp);
-			flags.update_fuel_values = 0;
-		}
+//
+			//total_fuel += (consumption / 3600);
+			//ks0108GotoXY(0, 16);
+			//ks0108DrawRect(ks0108StringWidth("total  "), 16, 70, 7, BLACK);
+			//ks0108GotoXY(0, 16);
+			//sprintf(tmp, "total  %.3fl L", (total_fuel));
+			//ks0108Puts(tmp);
+//
+			//ks0108GotoXY(0, 32);
+			//sprintf(tmp, "work time %02u:%02u:%02u", ts.hours, ts.minutes, ts.seconds);
+			//ks0108Puts(tmp);
+//
+			////ks0108GotoXY(0, 48);
+			////uint8_t val;
+			////eeReadByte(addr++, &val);
+			////sprintf(tmp, "addr:%u byte:%u", addr, val);
+			////ks0108Puts(tmp);
+			//flags.update_fuel_values = 0;
+		//}
 
 		//itoa(in_fuel, tmp, 10);
 		//tb(PORTC, PINC1);

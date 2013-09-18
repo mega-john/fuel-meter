@@ -103,4 +103,6 @@ void ks0108Init(uint8_t invert);
 void ks0108WriteCommand(uint8_t cmd, uint8_t chip);
 void ks0108WriteData(uint8_t data);
 
+void ks0108Enable(void);
+uint8_t ks0108ReadData(void);
 #endif

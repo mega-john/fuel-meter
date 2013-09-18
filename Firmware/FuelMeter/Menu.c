@@ -169,5 +169,6 @@ void MeasureMenu( uint8_t cmd )
 {
 	//ks0108DrawRoundRect(10, 10, 40, 40, 1, BLACK);
 	//ks0108DrawRect(10, 10, 40, 40, BLACK);
-	ks0108DrawHoriLine(1, 5, 128, BLACK);
+	//ks0108DrawHoriLine(1, 5, 128, BLACK);
+	ks0108DrawRoundRect(5, 5, 117, 20, 8, BLACK);
 }

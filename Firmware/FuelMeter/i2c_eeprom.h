@@ -72,4 +72,7 @@ bool eeWriteBytes(uint16_t address,uint8_t* data, uint8_t length); //Запись масс
 bool eeReadByte(uint16_t address, uint8_t* data); //Чтение байта из модуля памяти EEPROM
 bool eeReadBytes(uint16_t address, uint8_t* data, uint8_t length); //Чтение массива байт из модуля памяти EEPROM
 
+void eeStop(void);
+uint8_t eeConnect(uint16_t address);
+
 #endif // i2c_eeprom_h__
