@@ -8,13 +8,16 @@
 #ifndef FUELMETER_H_
 #define FUELMETER_H_
 
+//#define F_CPU 16000000//UL
+
+#include "global.h"
+
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <avr/eeprom.h>
 #include <util/delay.h>
 #include <stdlib.h>
 
-#include "global.h"
 #include "int0.h"
 #include "int1.h"
 #include "timer.h"
@@ -25,7 +28,7 @@
 #include "Measurement.h"
 #include "i2c_eeprom.h"
 
-extern int sprintf(char *__s, const char *__fmt, ...);
-extern void *memset(void *, int, size_t);
+//extern int sprintf(char *__s, const char *__fmt, ...);
+//extern void *memset(void *, int, size_t);
 
 #endif /* FUELMETER_H_ */

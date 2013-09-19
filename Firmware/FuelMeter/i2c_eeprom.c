@@ -120,7 +120,7 @@ inline void eeStop(void)
 void eeInit(void)
 {
     /*Настраиваем Генератор скорости связи*/
-    TWBR = ((F_CPU / slaveF_SCL - 16) >> 1) / 4;//(2 * /* TWI_Prescaler= 4^TWPS */1);
+    TWBR = ((F_CPU / slaveF_SCL - 16) >> 1) / 2;//(2 * /* TWI_Prescaler= 4^TWPS */1);
     
 	/*
 	Если TWI работает в ведущем режиме, то значение TWBR должно быть не менее 10. 

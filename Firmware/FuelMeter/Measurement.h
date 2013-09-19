@@ -10,6 +10,7 @@
 #define MEASUREMENT_H_
 
 #include "global.h"
+#include "i2c_eeprom.h"
 
 #define MEASUREMENTS_COUNT_CELL	10
 
