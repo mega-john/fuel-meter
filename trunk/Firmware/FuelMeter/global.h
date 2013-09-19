@@ -3,8 +3,6 @@
 
 #include <avr/io.h>
 
-#define F_CPU 16000000UL
-
 typedef struct  
 {
 	unsigned update_fuel_values:1   ;

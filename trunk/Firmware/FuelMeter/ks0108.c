@@ -361,12 +361,12 @@ void ks0108SetDot(uint8_t x, uint8_t y, uint8_t color)
 	ks0108WriteData(data);					// write data back to display
 }
 
-uint8_t ks0108ReadFontData(const char* ptr) 
+uint8_t ks0108ReadFontData(const uint8_t* ptr) 
 {
 	return pgm_read_byte(ptr);
 }
 
-void ks0108SelectFont(const char* font, ks0108FontCallback callback, uint8_t color) 
+void ks0108SelectFont(const uint8_t* font, ks0108FontCallback callback, uint8_t color) 
 {
 	ks0108Font = font;
 	ks0108FontRead = callback;

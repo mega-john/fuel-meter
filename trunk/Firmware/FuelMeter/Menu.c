@@ -4,6 +4,8 @@
  * Created: 31.08.2013 21:30:19
  *  Author: john
  */ 
+#include <stdio.h>
+
 #include "global.h"
 #include "Menu.h"
 
@@ -39,12 +41,10 @@ extern status_flags flags;
 
 
 //Menu structure
-//[0] -Number of level 0 menu items
-//[1]...[n] number of second level menu items
-//Eg. MSTR2[1] shows that menu item 1 has 3 submenus
 const uint8_t menu_structure[] PROGMEM =
 {
-	3,	//number of menu items
+	0,
+	3,	//number of main menu items
 	1,	//Number of submenu items of menu item 1
 	3,	//of menu item 2
 	2,	//of menu item 3
@@ -68,11 +68,16 @@ const uint8_t MenuIndexes[] PROGMEM =
 	20, 21, 22, 23,	
 };
 
-void menu_Init(void)
+volatile uint8_t menu_stack_pointer;
+volatile uint8_t menu_stack[10];
+
+
+void menu_init(void)
 {
+	menu_stack_pointer = 0;
 	MN.menuNo = 0;
 	MN.subMenuNo = 0;
-	MFPtr = (MenuFunctionPtr)pgm_read_word(&FuncPtrTable[1]);
+	MFPtr = (MenuFunctionPtr)pgm_read_word(&FuncPtrTable[0]);
 }
 
 uint8_t MFIndex(uint8_t mn, uint8_t sb)
@@ -99,16 +104,18 @@ void MainMenu( uint8_t cmd )
 {
 	if(flags.update_menu == 1)
 	{
-		ks0108ClearScreen();
-		ks0108GotoXY(0, 0);
-		ks0108Puts("fuck off");
-		for (uint8_t i = 0; i < 3; i++)
+		//ks0108ClearScreen();
+		for (uint8_t i = 0; i < pgm_read_byte(&menu_structure[MN.menuNo]); i++)
 		{
-			ks0108GotoXY(2, i * 14 + 1);
+			ks0108GotoXY(2, i * 15);
 			ks0108Puts_P(main_menu[i]);
-			if(MN.menuNo == i)
+			if(MN.subMenuNo == i)
 			{
-				ks0108DrawRect(0, i * 14, ks0108StringWidth_P(main_menu[i]) + 3, 14, BLACK);
+				ks0108DrawRect(0, i * 15, ks0108StringWidth_P(main_menu[i]) + 3, 14, BLACK);
+			}
+			else
+			{
+				ks0108DrawRect(0, i * 15, ks0108StringWidth_P(main_menu[i]) + 3, 14, WHITE);
 			}
 		}
 		flags.update_menu = 0;
@@ -175,25 +182,108 @@ extern time_struct ts;
 void MeasureMenu( uint8_t cmd )
 {
 	char tmp[20];
-	uint8_t total = in_fuel - out_fuel;
-	volatile double consumption = total / IMPULSES_PER_GRAM_SECOND;
-	ks0108GotoXY(0, 0);
-	sprintf(tmp, "consumption  %.2f L/h", consumption);
-	ks0108Puts(tmp);
+	uint8_t total;
+	volatile double consumption;
+	if(flags.update_fuel_values == 1)
+	{
+		ks0108ClearScreen();
+		total = in_fuel - out_fuel;
+		consumption = total / IMPULSES_PER_GRAM_SECOND;
+		//ks0108GotoXY(3, 5);
+		//ks0108FillRect(ks0108StringWidth("consumption  "), 5, 50, 10, WHITE);
+		ks0108GotoXY(3, 5);
+		sprintf(tmp, "consumption %.2f L/h", consumption);
+		ks0108Puts(tmp);
 
-	total_fuel += (consumption / 3600);
-	//ks0108GotoXY(0, 16);
-	//ks0108FillRect(ks0108StringWidth("total  "), 16, 70, 9, WHITE);
-	ks0108GotoXY(0, 16);
-	sprintf(tmp, "total  %.2f L", (total_fuel));
-	ks0108Puts(tmp);
+		total_fuel += (consumption / 3600);
+		//ks0108GotoXY(3, 25);
+		//ks0108FillRect(ks0108StringWidth("total  "), 25, 50, 10, WHITE);
+		ks0108GotoXY(3, 25);
+		sprintf(tmp, "total %.2f L", (total_fuel));
+		ks0108Puts(tmp);
 
-	ks0108GotoXY(0, 32);
-	sprintf(tmp, "work time %02u:%02u:%02u", ts.hours, ts.minutes, ts.seconds);
-	ks0108Puts(tmp);
+		//ks0108GotoXY(3, 45);
+		//ks0108FillRect(ks0108StringWidth("work time  "), 45, 50, 10, WHITE);
+		ks0108GotoXY(3, 45);
+		sprintf(tmp, "work time %02u:%02u:%02u", ts.hours, ts.minutes, ts.seconds);
+		ks0108Puts(tmp);
+		
+		flags.update_fuel_values = 0;
+	}
 }
 
 void set_menu( uint8_t menu_index )
 {
+	ks0108ClearScreen();
 	MFPtr = (MenuFunctionPtr)pgm_read_word(&FuncPtrTable[menu_index]);	
+}
+
+void LongButtonPress()
+{
+	if(MN.menuNo == 0)
+	{
+		MN.menuNo = 1;
+		set_menu(MN.menuNo);
+	}
+}
+
+void ShortButtonPress(uint8_t button_index)
+{
+	if (MN.menuNo == 0)
+	{
+		return;
+	}
+	
+	//if(button_index == BTN_UP)
+	//{
+	//if(MN.subMenuNo - 1 <= 0)
+	//{
+	//MN.subMenuNo = 0;
+	//}
+	//}
+	//else if(button_index == BTN_DOWN)
+	//{
+	//
+	//}
+	//else if(button_index == BTN_RIGHT)
+	//{
+	//
+	//}
+	//else if(button_index == BTN_LEFT)
+	//{
+	//
+	//}
+	
+	
+	switch(button_index)
+	{
+		case BTN_UP:
+		{
+			if(MN.subMenuNo - 1 <= 0)
+			{
+				MN.subMenuNo = 0;
+			}
+			else
+			{
+				MN.subMenuNo--;
+			}
+		}
+		break;
+		case BTN_DOWN:
+		{
+			if(MN.subMenuNo + 1 >= 2)
+			{
+				MN.subMenuNo = 2;
+			}
+			else
+			{
+				MN.subMenuNo++;
+			}
+		}
+		break;
+		case BTN_RIGHT:
+		break;
+		case BTN_LEFT:
+		break;
+	}
 }

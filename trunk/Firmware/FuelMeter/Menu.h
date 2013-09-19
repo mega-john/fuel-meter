@@ -53,7 +53,7 @@ void func402(uint8_t cmd);
 //SubMenu and Function table pointer update
 uint8_t MFIndex(uint8_t, uint8_t);
 
-void menu_Init(void);
+void menu_init(void);
 void delay1s(void);
 void set_menu(uint8_t menu_index);
 

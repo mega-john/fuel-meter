@@ -65,50 +65,23 @@ int main(void)
 	ts.minutes = 0;
 	ts.seconds = 0;
 	
-	//char tmp[20];
-
-	//test.time.mili_seconds = 1;
-	//test.time.seconds = 1;
-	//test.time.minutes = 1;
-	//test.time.hours = 1;
-//
-	//uint32_t tt = test.m;
-		//	consumption = IMPULSES_PER_GRAM_SECOND + 0.1;
-	
-	//bs[UP].stat = BS_UNKNOWN;
-	//bs[DOWN].stat = BS_UNKNOWN;
-	//bs[LEFT].stat = BS_UNKNOWN;
-	//bs[RIGHT].stat = BS_UNKNOWN;
-
 	// Wait a little while the display starts up
 	//for(volatile uint16_t i = 0; i < 15000; i++);
 	
-	//ts.hours = MEASUREMENT_STRUCT_SIZE;
-	//ts.minutes = BUTTON_STRUCT_SIZE;
-	//
-	//int count = ReadMeasurementsCount();
-	//count=0xabcd;
-	//WriteMeasurementsCount(count);
-	//
-	//f = GRAMMS_PER_SECOND;
-	//WriteMeasurementsCount((uint16_t)f);
-//
-	// Initialize the LCD
-	ks0108Init(0);
-	
-	menu_Init();
+	menu_init();
 	
 	init_timers();
 	
-	//eeInit();
+	eeInit();
+	
+	ks0108Init(0);
+
 	sei();
 
-	ks0108GotoXY(0 , 0);
-	ks0108ClearScreen();
 	ks0108SelectFont(SC, ks0108ReadFontData, BLACK);
-ks0108FillRect(ks0108StringWidth("total  "), 16, 70, 9, WHITE);
-	uint8_t mem = 0;
-	uint8_t addr = 0;
+	//ks0108DrawRoundRect(0, 0, 127, 63, 4, BLACK);
+	//uint8_t mem = 0;
+	//uint8_t addr = 0;
 	//MFPtr(0);
 
 	//eeWriteBytes(addr, (uint8_t*)&tmp, 20);
@@ -123,8 +96,8 @@ ks0108FillRect(ks0108StringWidth("total  "), 16, 70, 9, WHITE);
 		//Flag = 1;
 		//execute function that is pointed by FPtr
 		
-		if(flags.update_fuel_values == 1)
-		{
+		//if(flags.update_fuel_values == 1)
+		//{
 			//ks0108ClearScreen();
 			//uint8_t total = in_fuel - out_fuel;
 			//consumption = total / IMPULSES_PER_GRAM_SECOND;
@@ -144,7 +117,7 @@ ks0108FillRect(ks0108StringWidth("total  "), 16, 70, 9, WHITE);
 			//ks0108Puts(tmp);
 			MFPtr(MN.menuNo);
 
-			flags.update_fuel_values = 0;
-		}
+			//flags.update_fuel_values = 0;
+		//}
    }
 }
