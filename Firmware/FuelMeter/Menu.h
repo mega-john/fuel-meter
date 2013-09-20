@@ -44,19 +44,15 @@ void MainSub2(uint8_t cmd);
 void MainSub3(uint8_t cmd);
 void func201(uint8_t cmd);
 void func202(uint8_t cmd);
+void func203(uint8_t cmd);
 void func301(uint8_t cmd);
 void func302(uint8_t cmd);
-void func401(uint8_t cmd);
-void func402(uint8_t cmd);
+
 
 
 //SubMenu and Function table pointer update
-uint8_t MFIndex(uint8_t, uint8_t);
+//uint8_t MFIndex(uint8_t, uint8_t);
 
 void menu_init(void);
-void delay1s(void);
-void set_menu(uint8_t menu_index);
-
-//uint8_t* read_pgm_string(const char *FlashLoc);
 
 #endif /* MENU_H_ */
