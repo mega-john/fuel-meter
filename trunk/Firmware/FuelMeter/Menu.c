@@ -39,7 +39,6 @@ const char sub_menu_2[][MAX_MENU_LENGTH] PROGMEM =
 //static volatile uint8_t menu_index = 0;
 extern status_flags flags;
 
-
 //Menu structure
 const uint8_t menu_structure[] PROGMEM =
 {
@@ -55,129 +54,110 @@ const MenuFunctionPtr FuncPtrTable[] PROGMEM=
 {
 	MeasureMenu,
 	MainMenu,
-	MainSub1, MainSub2, MainSub3,	//functions for submenus of menu 1
-	func201, func202, 			//functions for submenus of menu 2
+	MainSub1,	//functions for submenus of menu 1
+	func201, func202, func203, 			//functions for submenus of menu 2
 	func301, func302, 			//functions for submenus of menu 3
-	func401, func402			//functions for submenus of menu 4
-};
-
-const uint8_t MenuIndexes[] PROGMEM = 
-{
-	0, 1, 2, 3,
-	10, 11, 12 ,13,
-	20, 21, 22, 23,	
 };
 
 volatile uint8_t menu_stack_pointer;
 volatile uint8_t menu_stack[10];
 
+extern uint8_t in_fuel;
+extern uint8_t out_fuel;
+extern double total_fuel;
+extern time_struct ts;
+
+volatile uint8_t current_menu_items_count;
+
+void set_menu(uint8_t menu_index)
+{
+	ks0108ClearScreen();
+	current_menu_items_count = pgm_read_byte(&menu_structure[menu_index]);
+	MFPtr = (MenuFunctionPtr)pgm_read_word(&FuncPtrTable[menu_index]);	
+	flags.update_menu = 1;
+}
 
 void menu_init(void)
 {
 	menu_stack_pointer = 0;
 	MN.menuNo = 0;
 	MN.subMenuNo = 0;
-	MFPtr = (MenuFunctionPtr)pgm_read_word(&FuncPtrTable[0]);
+	set_menu(MN.menuNo);
 }
 
-uint8_t MFIndex(uint8_t mn, uint8_t sb)
+//uint8_t MFIndex(uint8_t mn, uint8_t sb)
+//{
+	//uint8_t p = 0;//points to menu in table of function pointer
+	//for(uint8_t i = 0; i < (mn - 1); i++)
+	//{
+		//p = p + pgm_read_byte(&menu_structure[i + 1]);
+	//}
+	//p = p + sb - 1;
+	//return p;
+//}
+//
+
+void LongButtonPress()
 {
-	uint8_t p = 0;//points to menu in table of function pointer
-	for(uint8_t i = 0; i < (mn - 1); i++)
+	if(MN.menuNo == 0)
 	{
-		p = p + pgm_read_byte(&menu_structure[i + 1]);
+		MN.menuNo = 1;
+		set_menu(MN.menuNo);
 	}
-	p = p + sb - 1;
-	return p;
 }
 
-void delay1s(void)
+void ShortButtonPress(uint8_t button_index)
 {
-	uint8_t i;
-	for(i = 0; i < 10; i++)
+	if (MN.menuNo == 0)
 	{
-		_delay_ms(10);
+		return;
 	}
-}
-
-void MainMenu( uint8_t cmd )
-{
-	if(flags.update_menu == 1)
+	
+	switch(button_index)
 	{
-		//ks0108ClearScreen();
-		for (uint8_t i = 0; i < pgm_read_byte(&menu_structure[MN.menuNo]); i++)
+		case BTN_UP:
 		{
-			ks0108GotoXY(2, i * 15);
-			ks0108Puts_P(main_menu[i]);
-			if(MN.subMenuNo == i)
+			MN.subMenuNo--;
+			if(MN.subMenuNo == 255)
 			{
-				ks0108DrawRect(0, i * 15, ks0108StringWidth_P(main_menu[i]) + 3, 14, BLACK);
-			}
-			else
-			{
-				ks0108DrawRect(0, i * 15, ks0108StringWidth_P(main_menu[i]) + 3, 14, WHITE);
+				MN.subMenuNo = current_menu_items_count - 1;
 			}
 		}
-		flags.update_menu = 0;
+		break;
+		
+		case BTN_DOWN:
+		{
+			MN.subMenuNo++;
+			if(MN.subMenuNo >= current_menu_items_count)
+			{
+				MN.subMenuNo = 0;
+			}
+		}
+		break;
+		
+		case BTN_RIGHT:
+		{			
+			if(MN.menuNo == 1)
+			{
+				MN.menuNo = 2 + MN.subMenuNo;
+				MN.subMenuNo = 0;
+				set_menu(MN.menuNo);
+			}
+			//if(MN.menuNo == 2)
+			//{
+				//MN.menuNo = 2 + MN.subMenuNo;
+				//set_menu(MN.menuNo);
+			//}
+		}
+		break;
+		
+		case BTN_LEFT:
+		{
+			
+		}
+		break;
 	}
 }
-
-void MainSub1(uint8_t cmd)
-{
-
-}
-
-void MainSub2(uint8_t cmd)
-{
-}
-
-void MainSub3(uint8_t cmd)
-{
-}
-
-void func201(uint8_t cmd)
-{
-}
-
-void func202(uint8_t cmd)
-{
-}
-
-void func301(uint8_t cmd)
-{
-
-}
-
-void func302(uint8_t cmd)
-{
-
-}
-
-void func401(uint8_t cmd)
-{
-
-}
-
-void func402(uint8_t cmd)
-{
-
-}
-
-//uint8_t* read_pgm_string( const char *FlashLoc )
-//{
-	//uint8_t tmp[128];
-	//uint8_t i;
-	//for(i = 0; (char)pgm_read_byte(&FlashLoc[i]); i++)
-	//{
-		//tmp [i] = (char)pgm_read_byte(&FlashLoc[i]);
-	//}	
-	//return &tmp[0];
-//}
-
-extern uint8_t in_fuel;
-extern uint8_t out_fuel;
-extern double total_fuel;
-extern time_struct ts;
 
 void MeasureMenu( uint8_t cmd )
 {
@@ -212,78 +192,81 @@ void MeasureMenu( uint8_t cmd )
 	}
 }
 
-void set_menu( uint8_t menu_index )
+void MainMenu( uint8_t cmd )
 {
-	ks0108ClearScreen();
-	MFPtr = (MenuFunctionPtr)pgm_read_word(&FuncPtrTable[menu_index]);	
-}
-
-void LongButtonPress()
-{
-	if(MN.menuNo == 0)
+	if(flags.update_menu == 1)
 	{
-		MN.menuNo = 1;
-		set_menu(MN.menuNo);
-	}
-}
-
-void ShortButtonPress(uint8_t button_index)
-{
-	if (MN.menuNo == 0)
-	{
-		return;
-	}
-	
-	//if(button_index == BTN_UP)
-	//{
-	//if(MN.subMenuNo - 1 <= 0)
-	//{
-	//MN.subMenuNo = 0;
-	//}
-	//}
-	//else if(button_index == BTN_DOWN)
-	//{
-	//
-	//}
-	//else if(button_index == BTN_RIGHT)
-	//{
-	//
-	//}
-	//else if(button_index == BTN_LEFT)
-	//{
-	//
-	//}
-	
-	
-	switch(button_index)
-	{
-		case BTN_UP:
+		for (uint8_t i = 0; i < current_menu_items_count; i++)
 		{
-			if(MN.subMenuNo - 1 <= 0)
+			ks0108GotoXY(2, i * 15 + 1);
+			ks0108Puts_P(main_menu[i]);
+			if(MN.subMenuNo == i)
 			{
-				MN.subMenuNo = 0;
+				ks0108DrawRect(0, i * 15, ks0108StringWidth_P(main_menu[i]) + 3, 14, BLACK);
 			}
 			else
 			{
-				MN.subMenuNo--;
+				ks0108DrawRect(0, i * 15, ks0108StringWidth_P(main_menu[i]) + 3, 14, WHITE);
 			}
 		}
-		break;
-		case BTN_DOWN:
+		flags.update_menu = 0;
+	}
+}
+
+void MainSub1(uint8_t cmd)
+{
+	if(flags.update_menu == 1)
+	{
+		for (uint8_t i = 0; i < current_menu_items_count; i++)
 		{
-			if(MN.subMenuNo + 1 >= 2)
+			ks0108GotoXY(2, i * 15 + 1);
+			ks0108Puts_P(sub_menu_0[i]);
+			if(MN.subMenuNo == i)
 			{
-				MN.subMenuNo = 2;
+				ks0108DrawRect(0, i * 15, ks0108StringWidth_P(sub_menu_0[i]) + 3, 14, BLACK);
 			}
 			else
 			{
-				MN.subMenuNo++;
+				ks0108DrawRect(0, i * 15, ks0108StringWidth_P(sub_menu_0[i]) + 3, 14, WHITE);
 			}
 		}
-		break;
-		case BTN_RIGHT:
-		break;
-		case BTN_LEFT:
-		break;
+		flags.update_menu = 0;
 	}
+}
+
+void func201(uint8_t cmd)
+{
+	if(flags.update_menu == 1)
+	{
+		for (uint8_t i = 0; i < current_menu_items_count; i++)
+		{
+			ks0108GotoXY(2, i * 15 + 1);
+			ks0108Puts_P(sub_menu_1[i]);
+			if(MN.subMenuNo == i)
+			{
+				ks0108DrawRect(0, i * 15, ks0108StringWidth_P(sub_menu_1[i]) + 3, 14, BLACK);
+			}
+			else
+			{
+				ks0108DrawRect(0, i * 15, ks0108StringWidth_P(sub_menu_1[i]) + 3, 14, WHITE);
+			}
+		}
+		flags.update_menu = 0;
+	}
+}
+
+void func202(uint8_t cmd)
+{
+}
+
+void func203(uint8_t cmd)
+{
+}
+
+void func301(uint8_t cmd)
+{
+}
+
+void func302(uint8_t cmd)
+{
 }
