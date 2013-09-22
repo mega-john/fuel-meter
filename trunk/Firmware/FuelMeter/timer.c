@@ -25,7 +25,7 @@ void RepeatButton()
 
 void ProcessButton(uint8_t button_index)
 {
-	if (bit_is_clear(BT_PIN, button_index))
+	if (bit_is_clear(BTN_PIN, button_index))
 	{
 		if(bs[button_index].state == BS_UNPRESSED)
 		{
@@ -38,7 +38,7 @@ void ProcessButton(uint8_t button_index)
 			if(bs[button_index].pressed_time++ > LONG_PRESS)
 			{
 				LongButtonPress();
-				tb(PORTD, PINC5);
+				//tb(PORTD, PINC5);
 				bs[button_index].state = BS_LONGPRESSED;
 				flags.update_menu = 1;
 			}
@@ -50,7 +50,7 @@ void ProcessButton(uint8_t button_index)
 		{
 			if(bs[button_index].pressed_time > DEBOUNCE)
 			{
-				tb(PORTD, PINC4);
+				//tb(PORTD, PINC4);
 				ShortButtonPress(button_index);
 				flags.update_menu = 1;
 			}

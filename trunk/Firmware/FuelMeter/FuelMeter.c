@@ -42,12 +42,13 @@ void init_ports(void)
 	PORTB=0xFF;
 
 	// Port C initialization
-	DDRC=0x0f;
-	PORTC=0xf0;
+	//если DDRx pin установлен в единицу, то вывод назначен как выход, если 0 то вход
+	DDRC=0x02;
+	PORTC=0xff;
 
 	// Port D initialization
-	DDRD=0xff;
-	PORTD=0x00;
+	DDRD=0x00;
+	PORTD=0xff;
 }
 
 inline uint32_t ToSeconds(time_struct* ts)
@@ -78,7 +79,10 @@ int main(void)
 
 	sei();
 
-	ks0108SelectFont(SC, ks0108ReadFontData, BLACK);
+	ks0108SelectFont(Arial_Bold_14, ks0108ReadFontData, BLACK);
+	//ks0108GotoXY(0, 0);
+	//ks0108Puts("mega_john@mail.ru");
+	//ks0108SelectFont(SC, ks0108ReadFontData, BLACK);	
 	//ks0108DrawRoundRect(0, 0, 127, 63, 4, BLACK);
 	//uint8_t mem = 0;
 	//uint8_t addr = 0;
