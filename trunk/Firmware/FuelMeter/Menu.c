@@ -11,31 +11,12 @@
 
 #define MAX_MENU_LENGTH 32
 
-//const char main_menu[][MAX_MENU_LENGTH] PROGMEM =
-//{
-////	{"1 measure\0"},
-	//{"1 history \0"},
-////	{"3 calibrate\0"}
-//};
-//
-//const char sub_menu_0[][MAX_MENU_LENGTH] PROGMEM =
-//{
-	//{"11 real time\0"},
-//};
-
 const char history_menu[][MAX_MENU_LENGTH] PROGMEM =
 {
-//	{"history\0"},
-	{"view\0"},
-	{"average\0"},
-	{"reset\0"}
+	{"VIEW\0"},
+	{"AVERAGE\0"},
+	{"RESET\0"}
 };
-
-//const char sub_menu_2[][MAX_MENU_LENGTH] PROGMEM =
-//{
-	//{"31 default\0"},
-	//{"32 start\0"},
-//};
 
 //static volatile uint8_t menu_index = 0;
 extern status_flags flags;
@@ -67,16 +48,27 @@ extern uint8_t in_fuel;
 extern uint8_t out_fuel;
 extern double total_fuel;
 extern time_struct ts;
+static uint8_t offset;
 
 volatile uint8_t current_menu_items_count;
 
+uint8_t place_header(const char* header)
+{
+	ks0108SelectFont(SC, ks0108ReadFontData, BLACK);
+	ks0108DrawRoundRect(0, 0, 127, SC_HEIGHT - 1, 4, BLACK);
+	ks0108GotoXY((SCREEN_WIDTH >> 1) - (ks0108StringWidth(header) >> 1), 1);
+	ks0108Puts(header);	
+	ks0108SelectFont(Arial_Bold_14, ks0108ReadFontData, BLACK);
+	return SC_HEIGHT;
+}
+
 void set_menu(uint8_t menu_index)
 {
-	//ks0108ClearScreen();
+	ks0108FillRect(0, 0, 127, 63, WHITE);
 	current_menu_items_count = pgm_read_byte(&menu_structure[menu_index]);
 	MFPtr = (MenuFunctionPtr)pgm_read_word(&FuncPtrTable[menu_index]);	
+	ks0108FillRect(0, 0, 127, 63, WHITE);
 	flags.update_menu = 1;
-	ks0108ClearScreen();
 }
 
 void menu_init(void)
@@ -89,6 +81,7 @@ void menu_init(void)
 
 void LongButtonPress()
 {
+	ks0108FillRect(0, 0, 127, 63, WHITE);
 	if(MN.menuNo == 0)
 	{
 		MN.menuNo = 1;
@@ -102,6 +95,7 @@ void ShortButtonPress(uint8_t button_index)
 	{
 		return;
 	}
+	ks0108FillRect(0, 0, 127, 63, WHITE);
 	
 	switch(button_index)
 	{
@@ -156,33 +150,46 @@ void MeasurePage( uint8_t cmd )
 	char tmp[20];
 	static uint8_t total;
 	static double consumption;
+	static uint16_t addr = RECORDS_COUNT_ADDRESS;
+	static uint8_t val;
+	offset = place_header("MEASURE");
 	if(flags.update_fuel_values == 1)
 	{
 		//ks0108ClearScreen();
-		ks0108DrawRoundRect(0, 0, 127, 14, 4, BLACK);
-		ks0108GotoXY((SCREEN_WIDTH >> 1) - (ks0108StringWidth("measure") >> 1), 0);
-		ks0108Puts("measure");
 		//ks0108DrawRoundRect(0, 12, 127, 51, 4, BLACK);
 		total = in_fuel - out_fuel;
 		consumption = total / IMPULSES_PER_GRAM_SECOND;
-		//ks0108GotoXY(3, 5);
-		//ks0108FillRect(ks0108StringWidth("CURRENT: "), 5, 50, 10, WHITE);
-		ks0108GotoXY(3, 19);
+		ks0108GotoXY(3, offset);
+		ks0108FillRect(ks0108StringWidth("current: "), offset, 60, 10, WHITE);
+		ks0108GotoXY(3, offset);
 		sprintf(tmp, "current: %.2f L/h", consumption);
 		ks0108Puts(tmp);
-
+	
+		
 		total_fuel += (consumption / 3600);
-		//ks0108GotoXY(3, 18);
-		//ks0108FillRect(ks0108StringWidth("TOTAL: "), 18, 50, 10, WHITE);
-		ks0108GotoXY(3, 32);
+		offset += ARIAL_BOLD_14_HEIGHT - 2;
+		ks0108GotoXY(3, offset);
+		ks0108FillRect(ks0108StringWidth("total: "), offset, 60, 10, WHITE);
+		ks0108GotoXY(3, offset);
 		sprintf(tmp, "total: %.2f L", (total_fuel));
 		ks0108Puts(tmp);
 
-		//ks0108GotoXY(3, 31);
-		//ks0108FillRect(ks0108StringWidth("Work time: "), 31, 50, 10, WHITE);
-		ks0108GotoXY(3, 45);
+		offset += ARIAL_BOLD_14_HEIGHT - 2;
+		ks0108GotoXY(3, offset);
+		ks0108FillRect(ks0108StringWidth("time:"), offset, 60, 10, WHITE);
+		ks0108GotoXY(3, offset);
 		sprintf(tmp, "time: %02u:%02u:%02u", ts.hours, ts.minutes, ts.seconds);
 		ks0108Puts(tmp);
+		
+		ks0108SelectFont(SC, ks0108ReadFontData, BLACK);
+		offset += ARIAL_BOLD_14_HEIGHT - 4;
+		ks0108GotoXY(3, offset);
+		ks0108FillRect(ks0108StringWidth("ext eeprom: "), offset, 60, 10, WHITE);
+		ks0108GotoXY(3, offset);
+		eeReadByte(addr, &val);
+		sprintf(tmp, "ext eeprom: %02u:%c", addr++, val++);
+		ks0108Puts(tmp);
+		ks0108SelectFont(Arial_Bold_14, ks0108ReadFontData, BLACK);
 		
 		flags.update_fuel_values = 0;
 	}
@@ -192,24 +199,23 @@ void HistoryPageMenu( uint8_t cmd )
 {
 	if(flags.update_menu == 1)
 	{
-		ks0108ClearScreen();
-		ks0108DrawRoundRect(0, 0, 127, 14, 4, BLACK);
-		ks0108GotoXY((SCREEN_WIDTH >> 1) - (ks0108StringWidth("history") >> 1), 1);
-		ks0108Puts("history");
+		//ks0108ClearScreen();
+		offset = place_header("HISTORY");
 		//ks0108DrawRoundRect(0, 12, 127, 51, 4, BLACK);
-
+		uint8_t y;
 		for (uint8_t i = 0; i < current_menu_items_count; i++)
 		{
-			ks0108GotoXY(5, i * 14 + 15);
+			y = i * ARIAL_BOLD_14_HEIGHT + offset;
+			ks0108GotoXY(5, y);
 			ks0108Puts_P(history_menu[i]);
 			if(MN.subMenuNo == i)
 			{
-				ks0108GotoXY(ks0108StringWidth_P(history_menu[i]) + 10, i * 14 + 15);
+				ks0108GotoXY(ks0108StringWidth_P(history_menu[i]) + 10, y);
 				ks0108Puts(">");
 			}
 			else
 			{
-				ks0108FillRect(ks0108StringWidth_P(history_menu[i]) + 10, i * 14 + 15, 6, 15, WHITE);				
+				ks0108FillRect(ks0108StringWidth_P(history_menu[i]) + 10, y, 6, ARIAL_BOLD_14_HEIGHT, WHITE);				
 			}
 		}
 		flags.update_menu = 0;
