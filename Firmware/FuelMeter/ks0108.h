@@ -93,8 +93,8 @@ int ks0108PutChar(char c);
 void ks0108Puts(char* str);
 void ks0108Puts_P(PGM_P str);
 uint8_t ks0108CharWidth(char c);
-uint16_t ks0108StringWidth(char* str);
-uint16_t ks0108StringWidth_P(PGM_P str);
+uint8_t ks0108StringWidth(char* str);
+uint8_t ks0108StringWidth_P(PGM_P str);
 
 // Control Functions
 void ks0108GotoXY(uint8_t x, uint8_t y);

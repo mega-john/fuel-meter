@@ -487,9 +487,9 @@ uint8_t ks0108CharWidth(char c)
 	return width;
 }
 
-uint16_t ks0108StringWidth(char* str) 
+uint8_t ks0108StringWidth(char* str) 
 {
-	uint16_t width = 0;
+	uint8_t width = 0;
 	
 	while(*str != 0) 
 	{
@@ -499,9 +499,9 @@ uint16_t ks0108StringWidth(char* str)
 	return width;
 }
 
-uint16_t ks0108StringWidth_P(PGM_P str) 
+uint8_t ks0108StringWidth_P(PGM_P str) 
 {
-	uint16_t width = 0;
+	uint8_t width = 0;
 	
 	while(pgm_read_byte(str) != 0) 
 	{

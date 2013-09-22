@@ -35,23 +35,17 @@ struct Menu_State
 	uint8_t subMenuNo;//1,2,3
 } MN;
 
-
 //Functions for each menu item
-void MeasureMenu(uint8_t cmd);
-void MainMenu(uint8_t cmd);
-void MainSub1(uint8_t cmd);
+void MeasurePage(uint8_t cmd);
+void HistoryPageMenu(uint8_t cmd);
+void ViewHistory(uint8_t cmd);
 void MainSub2(uint8_t cmd);
 void MainSub3(uint8_t cmd);
-void func201(uint8_t cmd);
+void AverageHistory(uint8_t cmd);
 void func202(uint8_t cmd);
 void func203(uint8_t cmd);
 void func301(uint8_t cmd);
-void func302(uint8_t cmd);
-
-
-
-//SubMenu and Function table pointer update
-//uint8_t MFIndex(uint8_t, uint8_t);
+void ResetHistory(uint8_t cmd);
 
 void menu_init(void);
 
