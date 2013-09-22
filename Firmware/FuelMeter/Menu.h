@@ -18,7 +18,7 @@
 #include "ks0108.h"
 #include "arial_bold_14.h"
 #include "corsiva_12.h"
-#include "font12x16.h"
+#include "sc.h"
 
 //flag required for exiting from functions loops
 static volatile uint8_t Flag = 0;
