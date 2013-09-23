@@ -12,8 +12,6 @@
 #include "global.h"
 #include "i2c_eeprom.h"
 
-#define MEASUREMENTS_COUNT_CELL	10
-
 uint16_t ReadMeasurementsCount(void);
 void WriteMeasurementsCount(uint16_t count);
 measurement_struct ReadMeasurement(uint16_t index);

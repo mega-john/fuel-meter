@@ -37,11 +37,10 @@ typedef struct
 
 //Functions for each menu item
 void MeasurePage(uint8_t cmd);
-void HistoryPageMenu(uint8_t cmd);
-void ViewHistory(uint8_t cmd);
+void MainMenuPage(uint8_t cmd);
 void HistoryPage(uint8_t cmd);
-void AverageHistory(uint8_t cmd);
 void AveragePage(uint8_t cmd);
+void ResetPage(uint8_t cmd);
 void ResetHistory(uint8_t cmd);
 
 void menu_init(void);
