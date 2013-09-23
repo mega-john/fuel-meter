@@ -30,7 +30,7 @@ inline uint8_t eeConnect(uint16_t address)
         отражают состояние шины. TWS2-0 "отсекаем" с помощью операции "И 	0xF8". Если TWS7-3 = 0x08, то СТАРТ был успешным.*/
         if(TW_STATUS != TW_START)
 		{
-            return FALSE;
+            return false;
 		}
 
 		/*К шине I2C может быть подключено множество подчиненных устройств 
@@ -92,7 +92,7 @@ inline uint8_t eeConnect(uint16_t address)
 	В противном случае 0x30= TW_MT_DATA_NACK */
     if(TW_STATUS != TW_MT_DATA_ACK)
 	{
-        return FALSE;
+        return false;
 	}
 
     //Далее тоже самое для младшего разряда адреса
@@ -103,9 +103,9 @@ inline uint8_t eeConnect(uint16_t address)
 
     if(TW_STATUS != TW_MT_DATA_ACK)
 	{
-        return FALSE;
+        return false;
 	}
-	return TRUE;
+	return true;
 }
 
 inline void eeStop(void)
@@ -143,8 +143,8 @@ bool eeWriteByte(uint16_t address, uint8_t data)
 {
 	if(!eeConnect(address))
 	{
-		eeStop();
-		return FALSE;
+		//eeStop();
+		return false;
 	}
 	
     TWDR = data;
@@ -154,20 +154,20 @@ bool eeWriteByte(uint16_t address, uint8_t data)
 
     if(TW_STATUS != TW_MT_DATA_ACK)
 	{
-		eeStop();
-		return FALSE;
+		//eeStop();
+		return false;
 	}
 
 	eeStop();
 
-    return TRUE;
+    return true;
 }
 
 bool eeWriteBytes( uint16_t address, uint8_t* data, uint8_t length )
 {
 	if(!eeConnect(address))
 	{
-		return FALSE;
+		return false;
 	}
 	
 	for (uint8_t i = 0; i < length; i++)
@@ -179,22 +179,22 @@ bool eeWriteBytes( uint16_t address, uint8_t* data, uint8_t length )
 
 		if(TW_STATUS != TW_MT_DATA_ACK)
 		{
-			eeStop();
-			return FALSE;
+			//eeStop();
+			return false;
 		}
 	}
 
 	eeStop();
 
-	return TRUE;
+	return true;
 }
 
 bool eeReadByte(uint16_t address, uint8_t* data)
 {
 	if(!eeConnect(address))
 	{
-		eeStop();
-		return FALSE;
+		//eeStop();
+		return false;
 	}
 
 	/*****ПЕРЕХОД В РЕЖИМ ЧТЕНИЯ********/
@@ -213,8 +213,8 @@ bool eeReadByte(uint16_t address, uint8_t* data)
 	/*Проверяем статус. Условие повтора начала передачи (0x10=TW_REP_START) должно подтвердиться*/
     if(TW_STATUS != TW_REP_START)
 	{
-		eeStop();
-        return FALSE;
+		//eeStop();
+        return false;
 	}
 
     /*Записываем адрес ведомого (7 битов) и в конце бит чтения (1)*/
@@ -229,8 +229,8 @@ bool eeReadByte(uint16_t address, uint8_t* data)
 	/*Проверяем, нашелся ли ведомый с адресом 1010'000 и готов ли он работать на чтение*/
     if(TW_STATUS != TW_MR_SLA_ACK)
 	{
-		eeStop();
-        return FALSE;
+		//eeStop();
+        return false;
 	}
 
 	/*****СЧИТЫВАЕМ БАЙТ ДАННЫХ********/
@@ -247,23 +247,23 @@ bool eeReadByte(uint16_t address, uint8_t* data)
 	подтверждения со стороны ведущего (TW_MR_DATA_NACK = 0x58)*/
     if(TW_STATUS != TW_MR_DATA_NACK)
 	{
-		eeStop();
-        return FALSE;
+		//eeStop();
+        return false;
 	}
 
 	eeStop();
 
     //Возвращаем считанный байт
 	*data = TWDR;
-    return TRUE;
+    return true;
 }
 
 bool eeReadBytes( uint16_t address, uint8_t* data, uint8_t length )
 {
 	if(!eeConnect(address))
 	{
-		eeStop();
-		return FALSE;
+		//eeStop();
+		return false;
 	}
 
 	/*****ПЕРЕХОД В РЕЖИМ ЧТЕНИЯ********/
@@ -282,8 +282,8 @@ bool eeReadBytes( uint16_t address, uint8_t* data, uint8_t length )
 	/*Проверяем статус. Условие повтора начала передачи (0x10=TW_REP_START) должно подтвердиться*/
     if(TW_STATUS != TW_REP_START)
 	{
-		eeStop();
-        return FALSE;
+		//eeStop();
+        return false;
 	}
 
     /*Записываем адрес ведомого (7 битов) и в конце бит чтения (1)*/
@@ -298,8 +298,8 @@ bool eeReadBytes( uint16_t address, uint8_t* data, uint8_t length )
 	/*Проверяем, нашелся ли ведомый с адресом 1010'000 и готов ли он работать на чтение*/
     if(TW_STATUS != TW_MR_SLA_ACK)
 	{
-		eeStop();
-        return FALSE;
+		//eeStop();
+        return false;
 	}
 	
 	for (uint8_t i = 0; i < length; i++)
@@ -321,8 +321,8 @@ bool eeReadBytes( uint16_t address, uint8_t* data, uint8_t length )
 
 		if(TW_STATUS != ((i == length - 1) ? TW_MR_DATA_NACK : TW_MR_DATA_ACK))
 		{
-			eeStop();
-			return FALSE;
+			//eeStop();
+			return false;
 		}
 
 		//сохраняем считанный байт
@@ -331,5 +331,5 @@ bool eeReadBytes( uint16_t address, uint8_t* data, uint8_t length )
 
 	eeStop();
 
-    return TRUE;
+    return true;
 }

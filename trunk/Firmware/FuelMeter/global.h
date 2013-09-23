@@ -33,6 +33,7 @@ typedef struct
 typedef struct 
 {
 	float consumption;
+	double total;
 	time_struct time;
 }measurement_struct;
 #define MEASUREMENT_STRUCT_SIZE	sizeof(measurement_struct)
@@ -50,18 +51,18 @@ typedef struct
 #define BTN_LEFT	6
 #define BTN_DOWN	7
 #define BTN_PIN		PIND
-#define DEBOUNCE	10//ms
-#define LONG_PRESS	50
+#define DEBOUNCE	10//x*16ms
+#define LONG_PRESS	100//x*16ms
 
 //количество импульсов в секунду при максимальном потоке 
 //через датчик - литр в минуту
 static const double IMPULSES_PER_GRAM_SECOND = (10000.0 / (60.0 * 60.0));
 //static const float IMPULSES_PER_GRAM_SECOND = 160;//(1.0/6.0);
 
-typedef uint8_t bool;
-#define FALSE 0
-#define TRUE 1
+//typedef uint8_t bool;
+//#define FALSE 0
+//#define TRUE 1
 
-#define RECORDS_COUNT_ADDRESS	0x0100
+#define RECORDS_COUNT_ADDRESS	0x0000
 
 #endif /* GLOBAL_H_ */

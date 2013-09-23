@@ -7,6 +7,8 @@
 #include <util/delay.h>
 #include <stdlib.h>
 #include <util/twi.h>
+#include <stdbool.h>
+
 #include "global.h"
 
 #define _TWINT	(1 << TWINT)
@@ -66,11 +68,11 @@
 //#define TW_NO_INFO                  0xF8
 //#define TW_BUS_ERROR                0x00
 //
-void eeInit(void); //Начальная настройка TWI
-bool eeWriteByte(uint16_t address,uint8_t data); //Запись байта в модуль памяти EEPROM
-bool eeWriteBytes(uint16_t address,uint8_t* data, uint8_t length); //Запись массива байт в модуль памяти EEPROM
-bool eeReadByte(uint16_t address, uint8_t* data); //Чтение байта из модуля памяти EEPROM
-bool eeReadBytes(uint16_t address, uint8_t* data, uint8_t length); //Чтение массива байт из модуля памяти EEPROM
+extern void eeInit(void); //Начальная настройка TWI
+extern bool eeWriteByte(uint16_t address,uint8_t data); //Запись байта в модуль памяти EEPROM
+extern bool eeWriteBytes(uint16_t address,uint8_t* data, uint8_t length); //Запись массива байт в модуль памяти EEPROM
+extern bool eeReadByte(uint16_t address, uint8_t* data); //Чтение байта из модуля памяти EEPROM
+extern bool eeReadBytes(uint16_t address, uint8_t* data, uint8_t length); //Чтение массива байт из модуля памяти EEPROM
 
 void eeStop(void);
 uint8_t eeConnect(uint16_t address);

@@ -13,12 +13,14 @@
 
 uint16_t ReadMeasurementsCount( void )
 {
-	return eeprom_read_word((uint16_t*)MEASUREMENTS_COUNT_CELL);
+	uint16_t tmp = 0;
+	eeReadBytes(RECORDS_COUNT_ADDRESS, (uint8_t*)&tmp, 2);
+	return tmp;
 }
 
 void WriteMeasurementsCount( uint16_t count )
 {
-	eeprom_write_word((uint16_t*)MEASUREMENTS_COUNT_CELL, count);
+	eeWriteBytes(RECORDS_COUNT_ADDRESS, (uint8_t*)&count, 2);
 }
 
 measurement_struct ReadMeasurement( uint16_t index )

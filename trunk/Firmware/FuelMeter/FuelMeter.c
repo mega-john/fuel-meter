@@ -20,6 +20,7 @@ Temperature range 		-20 - +60 °C
 #include "FuelMeter.h"
 #include "timer.h"
 
+volatile uint8_t old_menu_index = 0;
 volatile uint8_t in_fuel = 0;
 volatile uint8_t out_fuel = 0;
 volatile double total_fuel = 0;
@@ -29,6 +30,7 @@ extern button_struct bs[4];
 //volatile float f = 0.1666;
 volatile double consumption = 0.0;
 volatile Menu_State MN;
+volatile uint16_t total_records = 0;;
 
 void init_ports(void)
 {
@@ -59,20 +61,18 @@ inline uint32_t ToSeconds(time_struct* ts)
 
 int main(void)
 {
-	//init_ports();
-	//init_int0();
-	//init_int1();
+	init_ports();
+	init_int0();
+	init_int1();
 	
 	ts.hours = 0;
 	ts.minutes = 0;
 	ts.seconds = 0;
 	
 	// Wait a little while the display starts up
-	//for(volatile uint16_t i = 0; i < 15000; i++);
-	
-	//menu_init();
-	
-	//init_timers();
+	for(volatile uint16_t i = 0; i < 15000; i++);
+		
+	init_timers();
 	
 	eeInit();
 	
@@ -82,22 +82,35 @@ int main(void)
 
 	ks0108SelectFont(Arial_Bold_14, ks0108ReadFontData, BLACK);
 	
-	static uint16_t items_count = 0xcccc;
-	static uint16_t read_count = 0x1234;
-	char tmp[20] = "123456dfg dfgd\0";
-	char tmp1[20];
-	if(eeWriteByte(RECORDS_COUNT_ADDRESS, &tmp/*, 20*/))
-	{
-		if(eeReadBytes(RECORDS_COUNT_ADDRESS, &tmp1, 20))
-		{
-			ks0108GotoXY(0, 16);
-			sprintf(tmp, "total  %s L", (tmp1));
-			ks0108Puts(tmp);
-		};
-	}
+	//static uint8_t items_count = 132;
+	//static uint8_t read_count = 0;
+	//char tmp[20] = "123456dfg dfgd\0";
+	//char tmp1[20];
+	//if(eeWriteByte(RECORDS_COUNT_ADDRESS, &items_count/*, 20*/))
+	//{
+		//if(eeReadByte(RECORDS_COUNT_ADDRESS, &read_count/*, 19*/))
+		//{
+			//ks0108GotoXY(0, 16);
+			//sprintf(tmp, "total  %u L", (read_count));
+			//ks0108Puts(tmp);
+		//};
+	//}
 
-    while(1){};
+	menu_init();
+	//WriteMeasurementsCount(12);
+
+	total_records = ReadMeasurementsCount();
+	//eeReadBytes(RECORDS_COUNT_ADDRESS, (uint8_t*)&total_records, 2);
+	//WriteMeasurementsCount(24);
+	
+    while(1)
     {
+		if(old_menu_index != MN.menuNo)
+		{
+			ks0108ClearScreen();
+			old_menu_index = MN.menuNo;
+		}
+		
 		//_delay_ms(2000);
 		//tb(PORTB, PINC5);
 		////
@@ -125,7 +138,7 @@ int main(void)
 			//ks0108GotoXY(0, 32);
 			//sprintf(tmp, "work time %02u:%02u:%02u", ts.hours, ts.minutes, ts.seconds);
 			//ks0108Puts(tmp);
-			MFPtr(MN.menuNo);
+			MFPtr(0);
 
 			//flags.update_fuel_values = 0;
 		//}
