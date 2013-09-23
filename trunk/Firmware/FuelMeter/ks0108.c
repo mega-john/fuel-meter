@@ -11,7 +11,7 @@
 #include <inttypes.h>
 #include <avr/io.h>
 #include <avr/pgmspace.h>
-#include <avr/delay.h>
+#include <util/delay.h>
 #include "ks0108.h"
 
 lcdCoord			ks0108Coord;

@@ -29,22 +29,19 @@ typedef void (*MenuFunctionPtr)(uint8_t cmd);
 MenuFunctionPtr MFPtr;
 
 //Structure describes current menu and submenu state
-struct Menu_State
+typedef struct 
 {
 	uint8_t menuNo;//1,2,3,4
 	uint8_t subMenuNo;//1,2,3
-} MN;
+} Menu_State;
 
 //Functions for each menu item
 void MeasurePage(uint8_t cmd);
 void HistoryPageMenu(uint8_t cmd);
 void ViewHistory(uint8_t cmd);
-void MainSub2(uint8_t cmd);
-void MainSub3(uint8_t cmd);
+void HistoryPage(uint8_t cmd);
 void AverageHistory(uint8_t cmd);
-void func202(uint8_t cmd);
-void func203(uint8_t cmd);
-void func301(uint8_t cmd);
+void AveragePage(uint8_t cmd);
 void ResetHistory(uint8_t cmd);
 
 void menu_init(void);
