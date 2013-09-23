@@ -11,6 +11,8 @@
 
 #define MAX_MENU_LENGTH 32
 
+#define SCREEN_ITEMS_COUNT 5;//(SCREEN_HEIGHT / SC_HEIGHT)
+
 const char history_menu[][MAX_MENU_LENGTH] PROGMEM =
 {
 	{"VIEW\0"},
@@ -37,7 +39,9 @@ const MenuFunctionPtr FuncPtrTable[] PROGMEM=
 	MeasurePage,
 	HistoryPageMenu,
 		ViewHistory,
+			HistoryPage,
 		AverageHistory, 
+			AveragePage,
 		ResetHistory
 };
 
@@ -51,6 +55,7 @@ extern time_struct ts;
 static uint8_t offset;
 
 volatile uint8_t current_menu_items_count;
+extern volatile Menu_State MN;
 
 uint8_t place_header(const char* header)
 {
@@ -64,10 +69,9 @@ uint8_t place_header(const char* header)
 
 void set_menu(uint8_t menu_index)
 {
-	ks0108FillRect(0, 0, 127, 63, WHITE);
 	current_menu_items_count = pgm_read_byte(&menu_structure[menu_index]);
 	MFPtr = (MenuFunctionPtr)pgm_read_word(&FuncPtrTable[menu_index]);	
-	ks0108FillRect(0, 0, 127, 63, WHITE);
+	ks0108ClearScreen();
 	flags.update_menu = 1;
 }
 
@@ -81,9 +85,9 @@ void menu_init(void)
 
 void LongButtonPress()
 {
-	ks0108FillRect(0, 0, 127, 63, WHITE);
 	if(MN.menuNo == 0)
 	{
+		flags.update_menu = 0;
 		MN.menuNo = 1;
 		set_menu(MN.menuNo);
 	}
@@ -95,7 +99,6 @@ void ShortButtonPress(uint8_t button_index)
 	{
 		return;
 	}
-	ks0108FillRect(0, 0, 127, 63, WHITE);
 	
 	switch(button_index)
 	{
@@ -143,6 +146,7 @@ void ShortButtonPress(uint8_t button_index)
 		}
 		break;
 	}
+	flags.update_menu = 1;
 }
 
 void MeasurePage( uint8_t cmd )
@@ -152,9 +156,9 @@ void MeasurePage( uint8_t cmd )
 	static double consumption;
 	static uint16_t addr = RECORDS_COUNT_ADDRESS;
 	static uint8_t val;
-	offset = place_header("MEASURE");
 	if(flags.update_fuel_values == 1)
 	{
+		offset = place_header("MEASURE");
 		//ks0108ClearScreen();
 		//ks0108DrawRoundRect(0, 12, 127, 51, 4, BLACK);
 		total = in_fuel - out_fuel;
@@ -164,8 +168,7 @@ void MeasurePage( uint8_t cmd )
 		ks0108GotoXY(3, offset);
 		sprintf(tmp, "current: %.2f L/h", consumption);
 		ks0108Puts(tmp);
-	
-		
+			
 		total_fuel += (consumption / 3600);
 		offset += ARIAL_BOLD_14_HEIGHT - 2;
 		ks0108GotoXY(3, offset);
@@ -187,7 +190,7 @@ void MeasurePage( uint8_t cmd )
 		ks0108FillRect(ks0108StringWidth("ext eeprom: "), offset, 60, 10, WHITE);
 		ks0108GotoXY(3, offset);
 		eeReadByte(addr, &val);
-		sprintf(tmp, "ext eeprom: %02u:%c", addr++, val++);
+		sprintf(tmp, "ext eeprom: %02u:%i", addr++, val++);
 		ks0108Puts(tmp);
 		ks0108SelectFont(Arial_Bold_14, ks0108ReadFontData, BLACK);
 		
@@ -199,8 +202,8 @@ void HistoryPageMenu( uint8_t cmd )
 {
 	if(flags.update_menu == 1)
 	{
-		//ks0108ClearScreen();
-		offset = place_header("HISTORY");
+		ks0108ClearScreen();
+		offset = place_header("MENU");
 		//ks0108DrawRoundRect(0, 12, 127, 51, 4, BLACK);
 		uint8_t y;
 		for (uint8_t i = 0; i < current_menu_items_count; i++)
@@ -212,10 +215,12 @@ void HistoryPageMenu( uint8_t cmd )
 			{
 				ks0108GotoXY(ks0108StringWidth_P(history_menu[i]) + 10, y);
 				ks0108Puts(">");
+				//ks0108SelectFont(Arial_Bold_14, ks0108ReadFontData, WHITE);
 			}
 			else
 			{
 				ks0108FillRect(ks0108StringWidth_P(history_menu[i]) + 10, y, 6, ARIAL_BOLD_14_HEIGHT, WHITE);				
+				//ks0108SelectFont(Arial_Bold_14, ks0108ReadFontData, BLACK);
 			}
 		}
 		flags.update_menu = 0;
@@ -243,6 +248,15 @@ void ViewHistory(uint8_t cmd)
 	}
 }
 
+void HistoryPage( uint8_t cmd )
+{
+	uint16_t items_count = 0; 
+	if(eeReadByte(RECORDS_COUNT_ADDRESS, &items_count, 2))
+	{
+		
+	}
+}
+
 void AverageHistory(uint8_t cmd)
 {
 	if(flags.update_menu == 1)
@@ -264,15 +278,7 @@ void AverageHistory(uint8_t cmd)
 	}
 }
 
-void func202(uint8_t cmd)
-{
-}
-
-void func203(uint8_t cmd)
-{
-}
-
-void func301(uint8_t cmd)
+void AveragePage( uint8_t cmd )
 {
 }
 

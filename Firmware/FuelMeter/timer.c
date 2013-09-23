@@ -40,7 +40,7 @@ void ProcessButton(uint8_t button_index)
 				LongButtonPress();
 				//tb(PORTD, PINC5);
 				bs[button_index].state = BS_LONGPRESSED;
-				flags.update_menu = 1;
+				//flags.update_menu = 1;
 			}
 		}
 	}
@@ -52,7 +52,7 @@ void ProcessButton(uint8_t button_index)
 			{
 				//tb(PORTD, PINC4);
 				ShortButtonPress(button_index);
-				flags.update_menu = 1;
+				//flags.update_menu = 1;
 			}
 		}
 		bs[button_index].state = BS_UNPRESSED;

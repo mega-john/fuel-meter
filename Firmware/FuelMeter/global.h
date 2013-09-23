@@ -62,6 +62,6 @@ typedef uint8_t bool;
 #define FALSE 0
 #define TRUE 1
 
-#define RECORDS_COUNT_ADDRESS	0
+#define RECORDS_COUNT_ADDRESS	0x0100
 
 #endif /* GLOBAL_H_ */

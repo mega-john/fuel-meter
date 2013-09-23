@@ -28,6 +28,7 @@ volatile time_struct ts;
 extern button_struct bs[4];
 //volatile float f = 0.1666;
 volatile double consumption = 0.0;
+volatile Menu_State MN;
 
 void init_ports(void)
 {
@@ -58,9 +59,9 @@ inline uint32_t ToSeconds(time_struct* ts)
 
 int main(void)
 {
-	init_ports();
-	init_int0();
-	init_int1();
+	//init_ports();
+	//init_int0();
+	//init_int1();
 	
 	ts.hours = 0;
 	ts.minutes = 0;
@@ -69,9 +70,9 @@ int main(void)
 	// Wait a little while the display starts up
 	//for(volatile uint16_t i = 0; i < 15000; i++);
 	
-	menu_init();
+	//menu_init();
 	
-	init_timers();
+	//init_timers();
 	
 	eeInit();
 	
@@ -80,17 +81,22 @@ int main(void)
 	sei();
 
 	ks0108SelectFont(Arial_Bold_14, ks0108ReadFontData, BLACK);
-	//ks0108GotoXY(0, 0);
-	//ks0108Puts("mega_john@mail.ru");
-	//ks0108SelectFont(SC, ks0108ReadFontData, BLACK);	
-	//ks0108DrawRoundRect(0, 0, 127, 63, 4, BLACK);
-	//uint8_t mem = 0;
-	//uint8_t addr = 0;
-	//MFPtr(0);
+	
+	static uint16_t items_count = 0xcccc;
+	static uint16_t read_count = 0x1234;
+	char tmp[20] = "123456dfg dfgd\0";
+	char tmp1[20];
+	if(eeWriteByte(RECORDS_COUNT_ADDRESS, &tmp/*, 20*/))
+	{
+		if(eeReadBytes(RECORDS_COUNT_ADDRESS, &tmp1, 20))
+		{
+			ks0108GotoXY(0, 16);
+			sprintf(tmp, "total  %s L", (tmp1));
+			ks0108Puts(tmp);
+		};
+	}
 
-	//eeWriteBytes(addr, (uint8_t*)&tmp, 20);
-
-    while(1)
+    while(1){};
     {
 		//_delay_ms(2000);
 		//tb(PORTB, PINC5);

@@ -120,7 +120,7 @@ inline void eeStop(void)
 void eeInit(void)
 {
     /*Ќастраиваем √енератор скорости св€зи*/
-    TWBR = ((F_CPU / slaveF_SCL - 16) >> 1) / 2;//(2 * /* TWI_Prescaler= 4^TWPS */1);
+    TWBR = ((F_CPU / slaveF_SCL - 16) >> 1) / 4;//(2 * /* TWI_Prescaler= 4^TWPS */1);
     
 	/*
 	≈сли TWI работает в ведущем режиме, то значение TWBR должно быть не менее 10. 
@@ -143,6 +143,7 @@ bool eeWriteByte(uint16_t address, uint8_t data)
 {
 	if(!eeConnect(address))
 	{
+		eeStop();
 		return FALSE;
 	}
 	
@@ -153,7 +154,8 @@ bool eeWriteByte(uint16_t address, uint8_t data)
 
     if(TW_STATUS != TW_MT_DATA_ACK)
 	{
-        return FALSE;
+		eeStop();
+		return FALSE;
 	}
 
 	eeStop();
@@ -177,6 +179,7 @@ bool eeWriteBytes( uint16_t address, uint8_t* data, uint8_t length )
 
 		if(TW_STATUS != TW_MT_DATA_ACK)
 		{
+			eeStop();
 			return FALSE;
 		}
 	}
@@ -190,6 +193,7 @@ bool eeReadByte(uint16_t address, uint8_t* data)
 {
 	if(!eeConnect(address))
 	{
+		eeStop();
 		return FALSE;
 	}
 
@@ -209,6 +213,7 @@ bool eeReadByte(uint16_t address, uint8_t* data)
 	/*ѕровер€ем статус. ”словие повтора начала передачи (0x10=TW_REP_START) должно подтвердитьс€*/
     if(TW_STATUS != TW_REP_START)
 	{
+		eeStop();
         return FALSE;
 	}
 
@@ -224,6 +229,7 @@ bool eeReadByte(uint16_t address, uint8_t* data)
 	/*ѕровер€ем, нашелс€ ли ведомый с адресом 1010'000 и готов ли он работать на чтение*/
     if(TW_STATUS != TW_MR_SLA_ACK)
 	{
+		eeStop();
         return FALSE;
 	}
 
@@ -241,6 +247,7 @@ bool eeReadByte(uint16_t address, uint8_t* data)
 	подтверждени€ со стороны ведущего (TW_MR_DATA_NACK = 0x58)*/
     if(TW_STATUS != TW_MR_DATA_NACK)
 	{
+		eeStop();
         return FALSE;
 	}
 
@@ -255,6 +262,7 @@ bool eeReadBytes( uint16_t address, uint8_t* data, uint8_t length )
 {
 	if(!eeConnect(address))
 	{
+		eeStop();
 		return FALSE;
 	}
 
@@ -274,6 +282,7 @@ bool eeReadBytes( uint16_t address, uint8_t* data, uint8_t length )
 	/*ѕровер€ем статус. ”словие повтора начала передачи (0x10=TW_REP_START) должно подтвердитьс€*/
     if(TW_STATUS != TW_REP_START)
 	{
+		eeStop();
         return FALSE;
 	}
 
@@ -289,6 +298,7 @@ bool eeReadBytes( uint16_t address, uint8_t* data, uint8_t length )
 	/*ѕровер€ем, нашелс€ ли ведомый с адресом 1010'000 и готов ли он работать на чтение*/
     if(TW_STATUS != TW_MR_SLA_ACK)
 	{
+		eeStop();
         return FALSE;
 	}
 	
@@ -311,6 +321,7 @@ bool eeReadBytes( uint16_t address, uint8_t* data, uint8_t length )
 
 		if(TW_STATUS != ((i == length - 1) ? TW_MR_DATA_NACK : TW_MR_DATA_ACK))
 		{
+			eeStop();
 			return FALSE;
 		}
 
