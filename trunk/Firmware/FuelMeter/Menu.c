@@ -308,7 +308,7 @@ void AveragePage( uint8_t cmd )
 		float width = 0;
 		for (uint16_t i = 0; i < total_records; i++)
 		{
-			_delay_ms(100);
+			_delay_ms(500);
 			//ms = &ReadMeasurement(i);
 			//average_fuel += ms->total;
 			width += p;
