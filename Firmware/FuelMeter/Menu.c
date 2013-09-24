@@ -321,6 +321,18 @@ void AveragePage( uint8_t cmd )
 			ks0108Puts(tmp);
 
 		}
+		
+		ks0108FillRect(0, offset, 127, 48 - offset, WHITE);
+		ks0108GotoXY(3, offset);
+		//sprintf(tmp, "consumption 10.13 L/h");
+		sprintf(tmp, "fuel rate 10.13 L/h");
+		ks0108Puts(tmp);
+		ks0108GotoXY(3, offset + ARIAL_BOLD_14_HEIGHT);
+		sprintf(tmp, "total 100 L");
+		ks0108Puts(tmp);
+		ks0108GotoXY(3, offset + ARIAL_BOLD_14_HEIGHT + ARIAL_BOLD_14_HEIGHT);
+		sprintf(tmp, "time 10:13:03");
+		ks0108Puts(tmp);
 	}
 }
 
