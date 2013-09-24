@@ -4,15 +4,15 @@
  * Created: 11.09.2013 1:00:09
  *  Author: john
  */ 
-
 #ifndef MEASUREMENT_H_
 #define MEASUREMENT_H_
 
 #include "global.h"
 #include "i2c_eeprom.h"
 
-uint16_t ReadMeasurementsCount(void);
-void WriteMeasurementsCount(uint16_t count);
-measurement_struct ReadMeasurement(uint16_t index);
+void ReadMeasurementsCount(void);
+void WriteMeasurementsCount(void);
+/*measurement_struct*/void ReadMeasurement(uint16_t index, measurement_struct* ms);
+void WriteMeasurement(measurement_struct* ms);
 
 #endif /* MEASUREMENT_H_ */

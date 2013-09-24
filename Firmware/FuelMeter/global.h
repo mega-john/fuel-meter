@@ -27,13 +27,18 @@ typedef struct
 	uint8_t hours;
 	uint8_t minutes;
 	uint8_t seconds;	
+	
+	uint8_t day;
+	uint8_t month;
+	uint8_t year;
 }time_struct;
 #define TIME_STRUCT_SIZE	sizeof(time_struct)
 
 typedef struct 
 {
-	float consumption;
-	double total;
+	uint16_t magic;
+	/*uint32_t*/ float consumption;
+	/*uint32_t*/ double total;
 	time_struct time;
 }measurement_struct;
 #define MEASUREMENT_STRUCT_SIZE	sizeof(measurement_struct)
@@ -63,6 +68,7 @@ static const double IMPULSES_PER_GRAM_SECOND = (10000.0 / (60.0 * 60.0));
 //#define FALSE 0
 //#define TRUE 1
 
-#define RECORDS_COUNT_ADDRESS	0x0000
+#define RECORDS_COUNT_ADDRESS	0x0000UL
+#define FIRST_RECORD_ADDRESS	0x0010UL
 
 #endif /* GLOBAL_H_ */

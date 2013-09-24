@@ -30,7 +30,9 @@ extern button_struct bs[4];
 //volatile float f = 0.1666;
 volatile double consumption = 0.0;
 volatile Menu_State MN;
-volatile uint16_t total_records = 0;;
+volatile uint16_t total_measurements = 0;;
+volatile 	measurement_struct ms1;
+
 
 void init_ports(void)
 {
@@ -63,7 +65,10 @@ int main(void)
 {
 	init_ports();
 	init_ext_interrupts();
-	
+	init_timers();
+	eeInit();
+	ks0108Init(0);
+		
 	ts.hours = 0;
 	ts.minutes = 0;
 	ts.seconds = 0;
@@ -71,21 +76,44 @@ int main(void)
 	// Wait a little while the display starts up
 	//for(volatile uint16_t i = 0; i < 15000; i++);
 		
-	init_timers();
-	
-	eeInit();
-	
-	ks0108Init(0);
-
 	sei();
 
-	ks0108SelectFont(Arial_Bold_14, ks0108ReadFontData, BLACK);
-	
 	menu_init();
-
-	WriteMeasurementsCount(24);
+	
+	//uint16_t addr = 0;
+	//for (uint8_t i = 0; i < 50; i++)
+	//{
+		//eeWriteByte(addr++, 0xff);
+		//_delay_ms(5);
+	//}
+		
+	total_measurements = 0x10;
+//
+	WriteMeasurementsCount();
 	_delay_ms(5);
-	total_records = ReadMeasurementsCount();
+	ReadMeasurementsCount();
+	_delay_ms(5);
+	//ReadMeasurement(0, &ms1) ;
+	//ms1.magic++;
+	//_delay_ms(5);
+	//ReadMeasurement(1, &ms1) ;
+	//ms1.magic++;
+	
+	
+	//for (uint8_t i = 0; i < 0x10; i++)
+	//{
+		//ms1.magic = 0xAEBb;
+		//ms1.consumption = 0.1 * i;
+		//ms1.total = 0.1 * i;
+		//ms1.time.hours = 1;
+		//ms1.time.minutes = 0;
+		//ms1.time.seconds = 0;
+		//ms1.time.day = 0;
+		//ms1.time.month =0;
+		//ms1.time.year = 0;
+		//WriteMeasurement(&ms1);
+		//_delay_ms(5);
+	//}
 	
     while(1)
     {
