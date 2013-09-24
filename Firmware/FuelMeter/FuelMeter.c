@@ -97,7 +97,7 @@ int main(void)
 	//}
 
 	menu_init();
-	//WriteMeasurementsCount(12);
+	//WriteMeasurementsCount(24);
 
 	total_records = ReadMeasurementsCount();
 	//eeReadBytes(RECORDS_COUNT_ADDRESS, (uint8_t*)&total_records, 2);
