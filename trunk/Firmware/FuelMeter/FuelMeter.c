@@ -93,11 +93,11 @@ int main(void)
 	_delay_ms(5);
 	ReadMeasurementsCount();
 	_delay_ms(5);
-	//ReadMeasurement(0, &ms1) ;
-	//ms1.magic++;
-	//_delay_ms(5);
-	//ReadMeasurement(1, &ms1) ;
-	//ms1.magic++;
+	ReadMeasurement(0, &ms1) ;
+	ms1.magic++;
+	_delay_ms(5);
+	ReadMeasurement(1, &ms1) ;
+	ms1.magic++;
 	
 	
 	//for (uint8_t i = 0; i < 0x10; i++)
