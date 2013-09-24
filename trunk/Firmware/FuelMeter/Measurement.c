@@ -11,20 +11,26 @@
 
 #include "Measurement.h"
 
-uint16_t ReadMeasurementsCount( void )
+extern uint16_t total_measurements;
+
+void ReadMeasurementsCount(void)
 {
-	uint16_t tmp = 0;
-	eeReadBytes(RECORDS_COUNT_ADDRESS, (uint8_t*)&tmp, 2);
-	return tmp;
+	eeReadBytes(RECORDS_COUNT_ADDRESS, (uint8_t*)&total_measurements, 2);
 }
 
-void WriteMeasurementsCount( uint16_t count )
+void WriteMeasurementsCount(void)
 {
-	eeWriteBytes(RECORDS_COUNT_ADDRESS, (uint8_t*)&count, 2);
+	eeWriteBytes(RECORDS_COUNT_ADDRESS, (uint8_t*)&total_measurements, 2);
 }
 
-measurement_struct ReadMeasurement( uint16_t index )
+/*measurement_struct*/void ReadMeasurement(uint16_t index, measurement_struct* ms)
 {
-	measurement_struct ms;
-	return ms;
+	//static measurement_struct ms;
+	eeReadBytes(FIRST_RECORD_ADDRESS + (index * MEASUREMENT_STRUCT_SIZE), (uint8_t*)ms, MEASUREMENT_STRUCT_SIZE);
+	//return ms;
+}
+
+void WriteMeasurement(measurement_struct* ms)
+{
+	eeWriteBytes(FIRST_RECORD_ADDRESS + ((total_measurements++) * MEASUREMENT_STRUCT_SIZE), (uint8_t*)ms, MEASUREMENT_STRUCT_SIZE);
 }
