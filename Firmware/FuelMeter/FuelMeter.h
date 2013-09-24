@@ -18,8 +18,7 @@
 #include <util/delay.h>
 #include <stdlib.h>
 
-#include "int0.h"
-#include "int1.h"
+#include "ext_interrupt.h"
 #include "timer.h"
 #include "ks0108.h"
 #include "arial_bold_14.h"

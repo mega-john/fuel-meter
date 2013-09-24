@@ -62,15 +62,14 @@ inline uint32_t ToSeconds(time_struct* ts)
 int main(void)
 {
 	init_ports();
-	init_int0();
-	init_int1();
+	init_ext_interrupts();
 	
 	ts.hours = 0;
 	ts.minutes = 0;
 	ts.seconds = 0;
 	
 	// Wait a little while the display starts up
-	for(volatile uint16_t i = 0; i < 15000; i++);
+	//for(volatile uint16_t i = 0; i < 15000; i++);
 		
 	init_timers();
 	
@@ -82,26 +81,11 @@ int main(void)
 
 	ks0108SelectFont(Arial_Bold_14, ks0108ReadFontData, BLACK);
 	
-	//static uint8_t items_count = 132;
-	//static uint8_t read_count = 0;
-	//char tmp[20] = "123456dfg dfgd\0";
-	//char tmp1[20];
-	//if(eeWriteByte(RECORDS_COUNT_ADDRESS, &items_count/*, 20*/))
-	//{
-		//if(eeReadByte(RECORDS_COUNT_ADDRESS, &read_count/*, 19*/))
-		//{
-			//ks0108GotoXY(0, 16);
-			//sprintf(tmp, "total  %u L", (read_count));
-			//ks0108Puts(tmp);
-		//};
-	//}
-
 	menu_init();
-	//WriteMeasurementsCount(24);
 
+	WriteMeasurementsCount(24);
+	_delay_ms(5);
 	total_records = ReadMeasurementsCount();
-	//eeReadBytes(RECORDS_COUNT_ADDRESS, (uint8_t*)&total_records, 2);
-	//WriteMeasurementsCount(24);
 	
     while(1)
     {
@@ -110,37 +94,6 @@ int main(void)
 			ks0108ClearScreen();
 			old_menu_index = MN.menuNo;
 		}
-		
-		//_delay_ms(2000);
-		//tb(PORTB, PINC5);
-		////
-		//set flag to 1
-		//when button menu changes flag sets to 0
-		//Flag = 1;
-		//execute function that is pointed by FPtr
-		
-		//if(flags.update_fuel_values == 1)
-		//{
-			//ks0108ClearScreen();
-			//uint8_t total = in_fuel - out_fuel;
-			//consumption = total / IMPULSES_PER_GRAM_SECOND;
-			//ks0108GotoXY(0, 0);
-			//sprintf(tmp, "consumption  %.2f L/h", consumption);
-			//ks0108Puts(tmp);
-//
-			//total_fuel += (consumption / 3600);
-			//ks0108GotoXY(0, 16);
-			//ks0108FillRect(ks0108StringWidth("total  "), 16, 70, 9, WHITE);
-			//ks0108GotoXY(0, 16);
-			//sprintf(tmp, "total  %.2f L", (total_fuel));
-			//ks0108Puts(tmp);
-//
-			//ks0108GotoXY(0, 32);
-			//sprintf(tmp, "work time %02u:%02u:%02u", ts.hours, ts.minutes, ts.seconds);
-			//ks0108Puts(tmp);
-			MFPtr(0);
-
-			//flags.update_fuel_values = 0;
-		//}
+		MFPtr(0);		
    }
 }

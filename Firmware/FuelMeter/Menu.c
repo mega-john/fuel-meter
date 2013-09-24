@@ -80,7 +80,7 @@ void set_menu(uint8_t menu_index)
 	current_menu_items_count = pgm_read_byte(&menu_structure[menu_index]);
 	MFPtr = (MenuFunctionPtr)pgm_read_word(&FuncPtrTable[menu_index]);	
 	//ks0108ClearScreen();
-	update_menu = true;
+	//update_menu = true;
 }
 
 void menu_init(void)
@@ -175,6 +175,8 @@ void ShortButtonPress(uint8_t button_index)
 				MN.menuNo = 1;
 				MN.subMenuNo = 2;
 				set_menu(MN.menuNo);
+				update_menu = false;
+				return;
 			}
 			else if(MN.menuNo == 3)
 			{
@@ -216,7 +218,7 @@ void MeasurePage( uint8_t cmd )
 		total = in_fuel - out_fuel;
 		consumption = total / IMPULSES_PER_GRAM_SECOND;
 		ks0108GotoXY(3, offset);
-		ks0108FillRect(ks0108StringWidth("current: "), offset, 60, 10, WHITE);
+		ks0108FillRect(ks0108StringWidth("current: "), offset, 65, 10, WHITE);
 		ks0108GotoXY(3, offset);
 		sprintf(tmp, "current: %.2f L/h", consumption);
 		ks0108Puts(tmp);
