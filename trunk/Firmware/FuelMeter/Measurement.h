@@ -8,7 +8,8 @@
 #define MEASUREMENT_H_
 
 #include "global.h"
-#include "i2c_eeprom.h"
+//#include "i2c_eeprom.h"
+#include "twitest.h"
 
 void ReadMeasurementsCount(void);
 void WriteMeasurementsCount(void);

@@ -17,6 +17,8 @@ Material 				POM, O-Ring: FKM
 Pressure 				Max 4 bar
 Temperature range 		-20 - +60 °C
  */ 
+#include <string.h>
+
 #include "FuelMeter.h"
 #include "timer.h"
 
@@ -31,7 +33,7 @@ extern button_struct bs[4];
 volatile double consumption = 0.0;
 volatile Menu_State MN;
 volatile uint16_t total_measurements = 0;;
-volatile 	measurement_struct ms1;
+measurement_struct ms1;
 
 
 void init_ports(void)
@@ -80,39 +82,36 @@ int main(void)
 
 	menu_init();
 	
-	//uint16_t addr = 0;
-	//for (uint8_t i = 0; i < 50; i++)
-	//{
-		//eeWriteByte(addr++, 0xff);
-		//_delay_ms(5);
-	//}
+	//uint8_t tmp[100];
+	//memset(&tmp, 0xff, 100);
+	//
+	//uint16_t addr = 100;
+	//eeWriteBytes(0, (void*)&tmp, 100);
+	//eeWriteBytes(100, (void*)&tmp, 100);
+	//eeWriteBytes(200, (void*)&tmp, 100);
+	//eeWriteBytes(300, (void*)&tmp, 100);
+
 		
-	total_measurements = 0x10;
-//
-	WriteMeasurementsCount();
-	_delay_ms(5);
+	total_measurements = 0x0;
+	//WriteMeasurementsCount();
+//////	_delay_ms(5);
 	ReadMeasurementsCount();
-	_delay_ms(5);
-	ReadMeasurement(0, &ms1) ;
-	ms1.magic++;
-	_delay_ms(5);
-	ReadMeasurement(1, &ms1) ;
-	ms1.magic++;
-	
-	
-	//for (uint8_t i = 0; i < 0x10; i++)
+	//_delay_ms(5);
+	//ReadMeasurement(0, &ms1) ;
+	//ms1.magic++;
+	//_delay_ms(5);
+	//ReadMeasurement(1, &ms1) ;
+	//ms1.magic++;
+	//
+	//
+	//for (uint8_t i = 0; i < 20; i++)
 	//{
-		//ms1.magic = 0xAEBb;
-		//ms1.consumption = 0.1 * i;
-		//ms1.total = 0.1 * i;
+		//ms1.total = 7.5 + i;
 		//ms1.time.hours = 1;
-		//ms1.time.minutes = 0;
+		//ms1.time.minutes = 15;
 		//ms1.time.seconds = 0;
 		//ms1.time.day = 0;
-		//ms1.time.month =0;
-		//ms1.time.year = 0;
 		//WriteMeasurement(&ms1);
-		//_delay_ms(5);
 	//}
 	
     while(1)
