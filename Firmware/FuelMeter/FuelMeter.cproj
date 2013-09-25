@@ -137,12 +137,6 @@
     <Compile Include="global.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="i2c_eeprom.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="i2c_eeprom.h">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="ks0108.c">
       <SubType>compile</SubType>
     </Compile>
@@ -168,6 +162,12 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="timer.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="twitest.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="twitest.h">
       <SubType>compile</SubType>
     </Compile>
   </ItemGroup>

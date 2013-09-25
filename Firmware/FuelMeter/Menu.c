@@ -10,7 +10,6 @@
 
 #include "global.h"
 #include "Menu.h"
-#include "i2c_eeprom.h"
 #include "Measurement.h"
 
 #define MAX_MENU_LENGTH 32
@@ -26,8 +25,8 @@ const char main_menu[][MAX_MENU_LENGTH] PROGMEM =
 
 const char reset_menu[][MAX_MENU_LENGTH] PROGMEM =
 {
-	{"YES\0"},
-	{"NO\0"},
+	{" YES \0"},
+	{" NO \0"},
 };
 
 //static volatile uint8_t menu_index = 0;
@@ -63,8 +62,7 @@ volatile uint8_t current_menu_items_count;
 extern volatile Menu_State MN;
 static volatile bool update_menu = true;
 extern volatile uint16_t total_measurements;
-volatile float total_history_fuel;
-volatile measurement_struct ms;
+measurement_struct ms;
 
 uint8_t place_header(char* header)
 {
@@ -177,15 +175,15 @@ void ShortButtonPress(uint8_t button_index)
 			{
 				MN.menuNo = 1;
 				MN.subMenuNo = 2;
-				update_menu = false;
 				set_menu(MN.menuNo);
-				return;
 			}
 			else if(MN.menuNo == 3)
 			{
 				MN.menuNo = 1;
 				MN.subMenuNo = 1;
+				update_menu = false;
 				set_menu(MN.menuNo);
+				return;
 			}
 			else if(MN.menuNo == 2)
 			{
@@ -202,7 +200,6 @@ void ShortButtonPress(uint8_t button_index)
 		}
 		break;
 	}
-	//flags.update_menu = 1;
 	update_menu = true;
 }
 
@@ -262,7 +259,7 @@ void MainMenuPage( uint8_t cmd )
 {
 	//if(update_menu)
 	{
-		//ks0108ClearScreen();
+		//update_menu = false;
 		offset = place_header("MENU");
 		//ks0108DrawRoundRect(0, 12, 127, 51, 4, BLACK);
 		uint8_t y;
@@ -276,110 +273,125 @@ void MainMenuPage( uint8_t cmd )
 				ks0108GotoXY(ks0108StringWidth_P(main_menu[i]) + 10, y);
 				ks0108Puts(">");
 				//ks0108SelectFont(Arial_Bold_14, ks0108ReadFontData, WHITE);
+				//ks0108Puts_P(main_menu[i]);
 			}
 			else
 			{
 				ks0108FillRect(ks0108StringWidth_P(main_menu[i]) + 10, y, 6, ARIAL_BOLD_14_HEIGHT, WHITE);				
 				//ks0108SelectFont(Arial_Bold_14, ks0108ReadFontData, BLACK);
+				//ks0108Puts_P(main_menu[i]);
 			}
 		}
-		//update_menu = false;
 	}
 }
 
 void HistoryPage(uint8_t cmd)
 {
-	//if(update_menu)
+	if(update_menu)
 	{
-		//ks0108ClearScreen();
+		update_menu = false;
 		offset = place_header("ViewHistory");
-		//update_menu = false;
+		if(total_measurements <= 0)
+		{
+			ks0108GotoXY(3, offset);
+			ks0108Puts("no history!");
+			return;
+		}
 	}
 }
 
 void AveragePage( uint8_t cmd )
 {
-	char tmp[20];
 	if(update_menu)
 	{
-		//ks0108ClearScreen();
+		update_menu = false;
+
 		offset = place_header("AveragePage");
+		if(total_measurements <= 0)
+		{
+			ks0108GotoXY(3, offset);
+			ks0108Puts("no history!");
+			return;
+		}
+		
+		char tmp[20];
 		ks0108FillRect(0, offset + 15, 127, 8, WHITE);
 		ks0108DrawRect(0, offset + 5, 127, 8, BLACK);
-		update_menu = false;
-		double avearge_history_fuel = 0;
-		total_history_fuel = 0;
+		double avearge_history_fuel = 0.0;
+		double history_fuel = 0.0;
 		uint32_t seconds_history = 0;
 		uint32_t minutes_history = 0;
 		uint32_t hours_history = 0;
 		uint32_t days_history = 0;
 		float p = 127.0 / total_measurements;
-		float width = 0;
+		float width = 0.0;
 		for (uint16_t i = 0; i < total_measurements; i++)
 		{
-			_delay_ms(5);
 			ReadMeasurement(i, &ms) ;
-			total_history_fuel += ms.total;
-			avearge_history_fuel += ms.consumption;
+			history_fuel += ms.total;
 			seconds_history += ms.time.seconds;
 			minutes_history += ms.time.minutes;
 			hours_history += ms.time.hours;
+			
 			width += p;
 			ks0108FillRect(0, offset + 5, (int)width, 8, BLACK);
-
 			ks0108FillRect(3, offset + 15, 127, ARIAL_BOLD_14_HEIGHT, WHITE);
 			ks0108GotoXY(3, offset + 15);		
 			sprintf(tmp, "complete %"PRIu16" of %"PRIu16"", i + 1, total_measurements);
 			ks0108Puts(tmp);
 		}
 		
-		//minutes_history += seconds_history / 60;
-		//seconds_history = seconds_history % 60;
-		//
-		//hours_history += minutes_history / 60;
-		//minutes_history = minutes_history % 60;
+		minutes_history += seconds_history / 60;
+		seconds_history = seconds_history % 60;
 		
-		avearge_history_fuel /= total_measurements;
-		//total_history_fuel = avearge_history_fuel * hours_history;
-		//
-		//days_history += hours_history / 24;
-		//hours_history = hours_history % 24;
+		hours_history += minutes_history / 60;
+		minutes_history = minutes_history % 60;
 		
+		days_history += hours_history / 24;
+		hours_history = hours_history % 24;
+		
+		avearge_history_fuel = (double)(history_fuel / ((days_history * 24 + hours_history) + ((minutes_history * 60 + seconds_history) / 3600.0)));
+
 		ks0108FillRect(0, offset, 127, 48 - offset, WHITE);
+		
 		ks0108GotoXY(3, offset);
-		//sprintf(tmp, "consumption 10.13 L/h");
 		sprintf(tmp, "fuel rate: %.2f L/h", avearge_history_fuel);
 		ks0108Puts(tmp);
+		
 		ks0108GotoXY(3, offset + ARIAL_BOLD_14_HEIGHT);
-		sprintf(tmp, "total: %.2f L", total_history_fuel);
+		sprintf(tmp, "total: %.2f L", history_fuel);
 		ks0108Puts(tmp);
+		
 		ks0108GotoXY(3, offset + ARIAL_BOLD_14_HEIGHT + ARIAL_BOLD_14_HEIGHT);
-		sprintf(tmp, "time %i - %02u:%02u:%02u", days_history, hours_history, minutes_history, seconds_history);
+		sprintf(tmp, "time %lu - %02lu:%02lu:%02lu", days_history, hours_history, minutes_history, seconds_history);
 		ks0108Puts(tmp);
 	}
 }
 
 void ResetPage(uint8_t cmd)
 {
-	//uint16_t data = 0;
-	//eeWriteBytes(RECORDS_COUNT_ADDRESS, (uint8_t*)&data, 2);
-	char tmp[20];
-	//if(update_menu)
+	if(update_menu)
 	{
-		//ks0108ClearScreen();
+		update_menu = false;
+
 		offset = place_header("ResetPage");
+		if(total_measurements <= 0)
+		{
+			ks0108GotoXY(3, offset);
+			ks0108Puts("no history!");
+			return;
+		}
 		
+		char tmp[20];
 		ks0108SelectFont(SC, ks0108ReadFontData, BLACK);
 		ks0108GotoXY(3, offset + 5);
 		
 		sprintf(tmp, "Delete %"PRIu16" records?", total_measurements);
 		ks0108Puts(tmp);
 		
-		//uint8_t y;
 		for (uint8_t i = 0; i < current_menu_items_count; i++)
 		{
-			//y = i * ARIAL_BOLD_14_HEIGHT + offset;
-			ks0108GotoXY(30 * i + 35, 40);
+			ks0108GotoXY(35 * i + 25, 40);
 			if(MN.subMenuNo == i)
 			{
 				ks0108SelectFont(Arial_Bold_14, ks0108ReadFontData, WHITE);
@@ -391,9 +403,6 @@ void ResetPage(uint8_t cmd)
 				ks0108Puts_P(reset_menu[i]);
 			}
 		}
-
-
-		//update_menu = false;
 	}
 }
 
