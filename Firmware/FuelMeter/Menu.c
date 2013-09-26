@@ -17,6 +17,7 @@
 #define SCREEN_ITEMS_COUNT 5;//(SCREEN_HEIGHT / SC_HEIGHT)
 
 volatile uint8_t fuel_impulses;
+volatile uint8_t distance_impulses;
 
 extern time_struct ts;
 static uint8_t offset;
@@ -75,7 +76,7 @@ uint8_t place_header(char* header)
 	ks0108GotoXY((SCREEN_WIDTH >> 1) - (ks0108StringWidth(header) >> 1), 1);
 	ks0108Puts(header);	
 	//ks0108SelectFont(Arial_Bold_14, ks0108ReadFontData, BLACK);
-	return SC_HEIGHT + 1;
+	return SC_HEIGHT;
 }
 
 void set_menu(uint8_t menu_index)
@@ -215,7 +216,7 @@ void MeasurePage( uint8_t cmd )
 		double consumption = 0.0;
 		static double total_fuel = 0.0;
 		
-		offset = place_header("MEASURE");
+		offset = 0;//place_header("measure");
 		consumption = fuel_impulses * 0.36;/// IMPULSES_PER_GRAM_SECOND;
 
 		ks0108GotoXY(3, offset);
@@ -240,6 +241,12 @@ void MeasurePage( uint8_t cmd )
 		sprintf(tmp, "time: %02u:%02u:%02u", ts.hours, ts.minutes, ts.seconds);
 		ks0108Puts(tmp);
 		
+		offset += ARIAL_BOLD_14_HEIGHT - 2;
+		ks0108GotoXY(3, offset);
+		ks0108FillRect(ks0108StringWidth("distance: "), offset, 60, 10, WHITE);
+		ks0108GotoXY(3, offset);
+		sprintf(tmp, "distance: %i", distance_impulses);
+		ks0108Puts(tmp);
 		//addr++;
 		//eeWriteBytes(RECORDS_COUNT_ADDRESS, &addr, 4);
 		//
@@ -262,7 +269,7 @@ void MainMenuPage( uint8_t cmd )
 	//if(update_menu)
 	{
 		//update_menu = false;
-		offset = place_header("MENU");
+		offset = place_header("menu");
 		//ks0108DrawRoundRect(0, 12, 127, 51, 4, BLACK);
 		uint8_t y;
 		for (uint8_t i = 0; i < current_menu_items_count; i++)
@@ -292,7 +299,7 @@ void HistoryPage(uint8_t cmd)
 	if(update_menu)
 	{
 		update_menu = false;
-		offset = place_header("ViewHistory");
+		offset = place_header("view history");
 		if(total_measurements <= 0)
 		{
 			ks0108GotoXY(3, offset);
@@ -308,7 +315,7 @@ void AveragePage( uint8_t cmd )
 	{
 		update_menu = false;
 
-		offset = place_header("AveragePage");
+		offset = place_header("average page");
 		if(total_measurements <= 0)
 		{
 			ks0108GotoXY(3, offset);
@@ -376,7 +383,7 @@ void ResetPage(uint8_t cmd)
 	{
 		update_menu = false;
 
-		offset = place_header("ResetPage");
+		offset = place_header("reset page");
 		if(total_measurements <= 0)
 		{
 			ks0108GotoXY(3, offset);

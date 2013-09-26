@@ -7,8 +7,10 @@
 
 extern uint8_t in_fuel;
 extern uint8_t out_fuel;
+extern uint8_t in_distance;
+
 extern uint8_t fuel_impulses;
-extern uint8_t distance_value;
+extern uint8_t distance_impulses;
 
 extern status_flags flags;
 extern struct Menu_State MN;
@@ -73,9 +75,10 @@ ISR(TIMER1_OVF_vect/*, ISR_BLOCK*/)
 {
 	TCNT1 = TIMER_1_INITIAL_VALUE;
 	fuel_impulses = in_fuel - out_fuel;
+	distance_impulses = in_distance;
 	in_fuel = 0;
 	out_fuel = 0;
-
+	in_distance = 0;
 	flags.update_time = 1;
 	flags.update_fuel_values = 1;
 	if (++ts.seconds > 59)
