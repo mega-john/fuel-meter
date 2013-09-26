@@ -16,6 +16,17 @@
 
 #define SCREEN_ITEMS_COUNT 5;//(SCREEN_HEIGHT / SC_HEIGHT)
 
+volatile uint8_t fuel_impulses;
+
+extern time_struct ts;
+static uint8_t offset;
+
+volatile uint8_t current_menu_items_count;
+extern volatile Menu_State MN;
+static volatile bool update_menu = true;
+extern volatile uint16_t total_measurements;
+measurement_struct ms;
+
 const char main_menu[][MAX_MENU_LENGTH] PROGMEM =
 {
 	{"VIEW HISTORY\0"},
@@ -52,17 +63,10 @@ const MenuFunctionPtr FuncPtrTable[] PROGMEM=
 	ResetPage,
 };
 
-extern uint8_t in_fuel;
-extern uint8_t out_fuel;
-extern double total_fuel;
-extern time_struct ts;
-static uint8_t offset;
-
-volatile uint8_t current_menu_items_count;
-extern volatile Menu_State MN;
-static volatile bool update_menu = true;
-extern volatile uint16_t total_measurements;
-measurement_struct ms;
+inline uint32_t ToSeconds(time_struct* ts)
+{
+	return ts->seconds + ts->minutes*60 + ts->hours*3600;
+}
 
 uint8_t place_header(char* header)
 {
@@ -70,7 +74,7 @@ uint8_t place_header(char* header)
 	ks0108DrawRoundRect(0, 0, 127, SC_HEIGHT, 4, BLACK);
 	ks0108GotoXY((SCREEN_WIDTH >> 1) - (ks0108StringWidth(header) >> 1), 1);
 	ks0108Puts(header);	
-	ks0108SelectFont(Arial_Bold_14, ks0108ReadFontData, BLACK);
+	//ks0108SelectFont(Arial_Bold_14, ks0108ReadFontData, BLACK);
 	return SC_HEIGHT + 1;
 }
 
@@ -205,30 +209,28 @@ void ShortButtonPress(uint8_t button_index)
 
 void MeasurePage( uint8_t cmd )
 {
-	char tmp[20];
-	static uint8_t total;
-	static double consumption;
-//	static uint32_t addr = 0xABCDEF00;
-//	static uint_fast32_t val = 0;
 	if(flags.update_fuel_values == 1)
 	{
-		//ks0108ClearScreen();
+		char tmp[20];
+		double consumption = 0.0;
+		static double total_fuel = 0.0;
+		
 		offset = place_header("MEASURE");
-		//ks0108DrawRoundRect(0, 12, 127, 51, 4, BLACK);
-		total = in_fuel - out_fuel;
-		consumption = total / IMPULSES_PER_GRAM_SECOND;
+		consumption = fuel_impulses * 0.36;/// IMPULSES_PER_GRAM_SECOND;
+
 		ks0108GotoXY(3, offset);
 		ks0108FillRect(ks0108StringWidth("current: "), offset, 65, 10, WHITE);
 		ks0108GotoXY(3, offset);
-		sprintf(tmp, "current: %.2f L/h", consumption);
+		sprintf(tmp, "current: %.3f L/h", consumption);
 		ks0108Puts(tmp);
 		
-		total_fuel += (consumption / 3600);
+		//total_fuel += (consumption / 3600);
+		total_fuel += (fuel_impulses * 0.0001);
 		offset += ARIAL_BOLD_14_HEIGHT - 2;
 		ks0108GotoXY(3, offset);
 		ks0108FillRect(ks0108StringWidth("total: "), offset, 60, 10, WHITE);
 		ks0108GotoXY(3, offset);
-		sprintf(tmp, "total: %.2f L", (total_fuel));
+		sprintf(tmp, "total: %.3f L", total_fuel);
 		ks0108Puts(tmp);
 
 		offset += ARIAL_BOLD_14_HEIGHT - 2;

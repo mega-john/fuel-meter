@@ -7,8 +7,9 @@
 
 extern uint8_t in_fuel;
 extern uint8_t out_fuel;
-extern uint8_t in_fuel_value;
-extern uint8_t out_fuel_value;
+extern uint8_t fuel_impulses;
+extern uint8_t distance_value;
+
 extern status_flags flags;
 extern struct Menu_State MN;
 extern time_struct ts;
@@ -71,10 +72,10 @@ ISR(TIMER0_OVF_vect)
 ISR(TIMER1_OVF_vect/*, ISR_BLOCK*/)
 {
 	TCNT1 = TIMER_1_INITIAL_VALUE;
-	in_fuel = in_fuel_value;
-	in_fuel_value = 0;
-	out_fuel = out_fuel_value;
-	out_fuel_value = 0;
+	fuel_impulses = in_fuel - out_fuel;
+	in_fuel = 0;
+	out_fuel = 0;
+
 	flags.update_time = 1;
 	flags.update_fuel_values = 1;
 	if (++ts.seconds > 59)
@@ -86,6 +87,7 @@ ISR(TIMER1_OVF_vect/*, ISR_BLOCK*/)
 			if (++ts.hours > 23)
 			{
 				ts.hours = 0;
+				ts.day++;
 			}
 		}
 	}	

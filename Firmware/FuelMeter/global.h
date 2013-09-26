@@ -56,8 +56,8 @@ typedef struct
 
 //количество импульсов в секунду при максимальном потоке 
 //через датчик - литр в минуту
-static const double IMPULSES_PER_GRAM_SECOND = (10000.0 / (60.0 * 60.0));
-//static const float IMPULSES_PER_GRAM_SECOND = 160;//(1.0/6.0);
+//static const double IMPULSES_PER_GRAM_SECOND = (10000.0 / (60.0 * 60.0));
+#define IMPULSES_PER_GRAM_SECOND  (10000.0 / (60.0 * 60.0))
 
 //typedef uint8_t bool;
 //#define FALSE 0
