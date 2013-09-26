@@ -26,7 +26,7 @@
 // Command Port Bits
 #define D_I					0x00		// D/I Bit Number
 #define R_W					0x01		// R/W Bit Number
-#define EN					0x02		// EN Bit Number
+#define EN					0x05		// EN Bit Number
 #define CSEL1				0x03		// CS1 Bit Number
 #define CSEL2				0x04		// CS2 Bit Number
 
