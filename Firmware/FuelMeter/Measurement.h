@@ -9,7 +9,7 @@
 
 #include "global.h"
 //#include "i2c_eeprom.h"
-#include "twitest.h"
+#include "24Cxx.h"
 
 void ReadMeasurementsCount(void);
 void WriteMeasurementsCount(void);
