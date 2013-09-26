@@ -6,17 +6,16 @@
  */ 
 #include <avr/io.h>
 #include <avr/interrupt.h>
-//#include <util/delay.h>
 
 #include "ext_interrupt.h"
 
-
-volatile uint8_t in_fuel_value;
-volatile uint8_t out_fuel_value;
+volatile uint8_t in_fuel;
+volatile uint8_t out_fuel;
+volatile uint8_t distance_value;
 
 ISR(INT0_vect/*, ISR_NAKED*/)
 {
-	in_fuel_value++;
+	++in_fuel;
 	//reti();
 	//
 	//asm volatile
@@ -32,8 +31,12 @@ ISR(INT0_vect/*, ISR_NAKED*/)
 
 ISR(INT1_vect/*, ISR_NAKED*/)
 {
-	out_fuel_value++;
-	//reti();
+	++out_fuel;
+}
+
+ISR(INT2_vect/*, ISR_NAKED*/)
+{
+	//out_fuel_value++;
 }
 
 void init_ext_interrupts( void )
@@ -45,4 +48,8 @@ void init_ext_interrupts( void )
 	sb(GIFR, INTF1);//clear(write one) int1 interrupt flags
 	sb(MCUCR, ISC11);//The falling edge of INT1 generates an interrupt request
 	sb(GICR, INT1);//int1 enable
+
+	sb(GIFR, INTF2);//clear(write one) int1 interrupt flags
+	cb(MCUCSR, ISC2);//The falling edge of INT2 generates an interrupt request
+	sb(GICR, INT2);//int1 enable
 }

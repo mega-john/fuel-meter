@@ -23,9 +23,9 @@ Temperature range 		-20 - +60 °C
 #include "timer.h"
 
 volatile uint8_t old_menu_index = 0;
-volatile uint8_t in_fuel = 0;
-volatile uint8_t out_fuel = 0;
-volatile double total_fuel = 0;
+//volatile uint8_t in_fuel = 0;
+//volatile uint8_t out_fuel = 0;
+//volatile double total_fuel_value = 0;
 volatile status_flags flags;
 volatile time_struct ts; 
 extern button_struct bs[4];
@@ -56,11 +56,6 @@ void init_ports(void)
 	// Port D initialization
 	DDRD=0x00;
 	PORTD=0xff;
-}
-
-inline uint32_t ToSeconds(time_struct* ts)
-{
-	return ts->seconds + ts->minutes*60 + ts->hours*3600;
 }
 
 int main(void)
