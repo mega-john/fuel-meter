@@ -241,16 +241,21 @@ void MeasurePage( uint8_t cmd )
 		sprintf(tmp, "time: %02u:%02u:%02u", ts.hours, ts.minutes, ts.seconds);
 		ks0108Puts(tmp);
 		
+		
+		char d[7];
+		//ds1703_read(&d);
+		//d[4] = 30;
+		//ds1703_write(&d);
 		offset += ARIAL_BOLD_14_HEIGHT - 2;
+		//ks0108GotoXY(3, offset);
+		ks0108FillRect(ks0108StringWidth("time        : "), offset, 60, 10, WHITE);
 		ks0108GotoXY(3, offset);
-		ks0108FillRect(ks0108StringWidth("distance: "), offset, 60, 10, WHITE);
-		ks0108GotoXY(3, offset);
-		sprintf(tmp, "distance: %i", distance_impulses);
+		sprintf(tmp, "%i/%i/%i-%i:%i:%i", d[4],d[5],d[6],d[2],d[1],d[0]);
 		ks0108Puts(tmp);
 		//addr++;
 		//eeWriteBytes(RECORDS_COUNT_ADDRESS, &addr, 4);
 		//
-		//ks0108SelectFont(SC, ks0108ReadFontData, BLACK);
+	//ks0108SelectFont(SC, ks0108ReadFontData, BLACK);
 		//offset += ARIAL_BOLD_14_HEIGHT - 4;
 		//ks0108GotoXY(3, offset);
 		//ks0108FillRect(ks0108StringWidth("size: "), offset, 60, 10, WHITE);
@@ -418,5 +423,5 @@ void ResetPage(uint8_t cmd)
 void ResetHistory( uint8_t cmd )
 {
 	total_measurements = 0;
-	eeWriteBytes(RECORDS_COUNT_ADDRESS, (uint8_t*)&total_measurements, 2);	
+//	eeWriteBytes(RECORDS_COUNT_ADDRESS, (uint8_t*)&total_measurements, 2);	
 }

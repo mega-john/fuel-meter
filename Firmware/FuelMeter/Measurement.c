@@ -15,21 +15,21 @@ extern uint16_t total_measurements;
 
 void ReadMeasurementsCount(void)
 {
-	eeReadBytes(RECORDS_COUNT_ADDRESS, (uint8_t*)&total_measurements, 2);
+//	eeReadBytes(RECORDS_COUNT_ADDRESS, (uint8_t*)&total_measurements, 2);
 }
 
 void WriteMeasurementsCount(void)
 {
-	eeWriteBytes(RECORDS_COUNT_ADDRESS, (uint8_t*)&total_measurements, 2);
+//	eeWriteBytes(RECORDS_COUNT_ADDRESS, (uint8_t*)&total_measurements, 2);
 }
 
 void ReadMeasurement(uint16_t index, measurement_struct* ms)
 {
-	eeReadBytes(FIRST_RECORD_ADDRESS + (index * MEASUREMENT_STRUCT_SIZE), (uint8_t*)ms, MEASUREMENT_STRUCT_SIZE);
+//	eeReadBytes(FIRST_RECORD_ADDRESS + (index * MEASUREMENT_STRUCT_SIZE), (uint8_t*)ms, MEASUREMENT_STRUCT_SIZE);
 }
 
 void WriteMeasurement(measurement_struct* ms)
 {
-	eeWriteBytes(FIRST_RECORD_ADDRESS + ((total_measurements++) * MEASUREMENT_STRUCT_SIZE), (uint8_t*)ms, MEASUREMENT_STRUCT_SIZE);
+//	eeWriteBytes(FIRST_RECORD_ADDRESS + ((total_measurements++) * MEASUREMENT_STRUCT_SIZE), (uint8_t*)ms, MEASUREMENT_STRUCT_SIZE);
 	WriteMeasurementsCount();
 }
