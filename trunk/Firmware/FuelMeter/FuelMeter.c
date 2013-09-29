@@ -54,7 +54,7 @@ void init_ports(void)
 	PORTC=0xff;
 
 	// Port D initialization
-	DDRD=0x00;
+	DDRD=0x01;
 	PORTD=0xff;
 }
 
@@ -63,16 +63,12 @@ int main(void)
 	init_ports();
 	init_ext_interrupts();
 	init_timers();
-	eeInit();
-	ks0108Init(0);
-		
-	ts.hours = 0;
-	ts.minutes = 0;
-	ts.seconds = 0;
+	//eeInit();
 	
 	// Wait a little while the display starts up
-	//for(volatile uint16_t i = 0; i < 15000; i++);
-		
+	for(volatile uint16_t i = 0; i < 15000; i++);
+	ks0108Init(0);
+	_delay_ms(500);	
 	sei();
 
 	menu_init();
@@ -86,11 +82,15 @@ int main(void)
 	//eeWriteBytes(200, (void*)&tmp, 100);
 	//eeWriteBytes(300, (void*)&tmp, 100);
 
+	ks0108SelectFont(SC, ks0108ReadFontData, BLACK);
+	ks0108DrawRoundRect(0, 0, 127, SC_HEIGHT, 4, BLACK);
+	ks0108GotoXY(1, 1);
+	ks0108Puts("header");
 		
 	total_measurements = 0x0;
 	//WriteMeasurementsCount();
 //////	_delay_ms(5);
-	ReadMeasurementsCount();
+	//ReadMeasurementsCount();
 	//_delay_ms(5);
 	//ReadMeasurement(0, &ms1) ;
 	//ms1.magic++;

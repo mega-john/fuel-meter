@@ -563,7 +563,7 @@ void ks0108Init(uint8_t invert)
 inline void ks0108Enable(void) 
 {
 	sb(LCD_CMD_PORT, EN);// EN high level width: min. 450ns
-	_delay_us(1);
+	_delay_us(10);
 
 	//asm volatile("nop\n\t"
 	//"nop\n\t"
@@ -608,7 +608,7 @@ uint8_t ks0108DoReadData(uint8_t first)
 	sb(LCD_CMD_PORT, R_W);// R/W = 1	
 	sb(LCD_CMD_PORT, EN); // EN high level width: min. 450ns
 		
-	_delay_us(1);
+	_delay_us(10);
 	//asm volatile("nop\n\t"
 				 //"nop\n\t"
 				 //"nop\n\t"

@@ -59,10 +59,6 @@ typedef struct
 //static const double IMPULSES_PER_GRAM_SECOND = (10000.0 / (60.0 * 60.0));
 #define IMPULSES_PER_GRAM_SECOND  (10000.0 / (60.0 * 60.0))
 
-//typedef uint8_t bool;
-//#define FALSE 0
-//#define TRUE 1
-
 #define RECORDS_COUNT_ADDRESS	0x0000UL
 #define FIRST_RECORD_ADDRESS	0x0010UL
 

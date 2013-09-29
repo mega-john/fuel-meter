@@ -74,6 +74,7 @@ ISR(TIMER0_OVF_vect)
 ISR(TIMER1_OVF_vect/*, ISR_BLOCK*/)
 {
 	TCNT1 = TIMER_1_INITIAL_VALUE;
+	tb(PORTD, PIND0);
 	fuel_impulses = in_fuel - out_fuel;
 	distance_impulses = in_distance;
 	in_fuel = 0;

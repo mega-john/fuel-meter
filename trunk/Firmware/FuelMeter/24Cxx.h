@@ -38,12 +38,19 @@
  */
 #define TWI_SLA_24CXX	0xa0	/* E2 E1 E0 = 0 0 0 */
 
+#define TWI_SLA_DS1703	0xD0
+
 #define WORD_ADDRESS_16BIT
 #define MAX_ITER	200
 #define PAGE_SIZE 8
 
+#define SEND_START_CONDITION (_BV(TWINT) | _BV(TWSTA) | _BV(TWEN))
+#define SEND_STOP_CONDITION (_BV(TWINT) | _BV(TWSTO) | _BV(TWEN))
+#define SEND_DATA_WITH_ACK (_BV(TWEA) | _BV(TWINT) | _BV(TWEN))
+#define SEND_DATA_WITH_NACK (_BV(TWINT) | _BV(TWEN))
+#define WAIT_FOR_TRANSMIT while((TWCR & _BV(TWINT)) == 0)
+
 void ioinit(void);
-int uart_putchar(char c, FILE *unused);
 int ee24xx_read_bytes(uint16_t eeaddr, int len, uint8_t *buf);
 int ee24xx_write_page(uint16_t eeaddr, int len, uint8_t *buf);
 int ee24xx_write_bytes(uint16_t eeaddr, int len, uint8_t *buf);
@@ -51,5 +58,12 @@ int ee24xx_write_bytes(uint16_t eeaddr, int len, uint8_t *buf);
 void eeInit(void);
 bool eeReadBytes(uint16_t address, uint8_t* data, uint8_t len);
 bool eeWriteBytes(uint16_t address, uint8_t* data, uint8_t len);
+
+//// Convert Decimal to Binary Coded Decimal (BCD)
+//char dec2bcd(char num);
+//// Convert Binary Coded Decimal (BCD) to Decimal
+//char bcd2dec(char num);
+//void ds1703_read(uint8_t* pData);
+//void ds1703_write(uint8_t* pData);
 
 #endif /* _24CXX_H_ */
