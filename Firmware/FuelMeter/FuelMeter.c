@@ -22,20 +22,19 @@ Temperature range 		-20 - +60 °C
 #include "FuelMeter.h"
 #include "timer.h"
 
+#include "onewire.h"
+#include "ds18x20.h"
+
+
 volatile uint8_t old_menu_index = 0;
-//volatile uint8_t in_fuel = 0;
-//volatile uint8_t out_fuel = 0;
-//volatile double total_fuel_value = 0;
 volatile status_flags flags;
 volatile time_struct ts; 
 extern button_struct bs[4];
-//volatile float f = 0.1666;
 volatile double consumption = 0.0;
 volatile Menu_State MN;
 volatile uint16_t total_measurements = 0;;
 measurement_struct ms1;
-
-
+	
 void init_ports(void)
 {
 	// Input/Output Ports initialization
@@ -58,22 +57,51 @@ void init_ports(void)
 	PORTD=0xff;
 }
 
+unsigned char	nDevices;	// количество сенсоров
+unsigned char	owDevicesIDs[MAXDEVICES][8];	// Их ID
+
+unsigned char search_ow_devices(void) // поиск всех устройств на шине
+{
+	unsigned char	i;
+	unsigned char	id[OW_ROMCODE_SIZE];
+	unsigned char	diff, sensors_count;
+
+	sensors_count = 0;
+
+	for( diff = OW_SEARCH_FIRST; diff != OW_LAST_DEVICE && sensors_count < MAXDEVICES ; )
+	{
+		OW_FindROM( &diff, &id[0] );
+
+		if( diff == OW_PRESENCE_ERR ) break;
+
+		if( diff == OW_DATA_ERR )	break;
+
+		for (i=0;i<OW_ROMCODE_SIZE;i++)
+		owDevicesIDs[sensors_count][i] = id[i];
+		
+		sensors_count++;
+	}
+	return sensors_count;
+
+}
+
 int main(void)
 {
 	init_ports();
 	init_ext_interrupts();
 	init_timers();
-	//eeInit();
-	
+	eeInit();
+	ks0108Init(0);
 	// Wait a little while the display starts up
 	for(volatile uint16_t i = 0; i < 15000; i++);
-	ks0108Init(0);
-	_delay_ms(500);	
+	//_delay_ms(500);	
+	
+		
 	sei();
 
-	menu_init();
-	
-	//uint8_t tmp[100];
+	//menu_init();		
+
+	char tmp[20];
 	//memset(&tmp, 0xff, 100);
 	//
 	//uint16_t addr = 100;
@@ -84,13 +112,45 @@ int main(void)
 
 	ks0108SelectFont(SC, ks0108ReadFontData, BLACK);
 	ks0108DrawRoundRect(0, 0, 127, SC_HEIGHT, 4, BLACK);
-	ks0108GotoXY(1, 1);
-	ks0108Puts("header");
-		
+	ks0108GotoXY(0, 0);
+	//ks0108Puts("header");
+	nDevices = search_ow_devices(); // ищем все устройства
+	
+	ks0108Puts((char*)&tmp);
+	while(1)
+	{
+		ks0108ClearScreen();
+		ks0108GotoXY(0, 0);
+		sprintf(tmp, "%i sensors found", nDevices);
+		ks0108Puts((char*)&tmp);
+		for (unsigned char i=0; i<nDevices; i++) // теперь сотируем устройства и запрашиваем данные
+		{
+			// узнать устройство можно по его груповому коду, который расположен в первом байте адресса
+			switch (owDevicesIDs[i][0])
+			{
+				case OW_DS18B20_FAMILY_CODE: 
+				{ // если найден термодатчик DS18B20
+					//printf("\r"); print_address(owDevicesIDs[i]); // печатаем знак переноса строки, затем - адрес
+					//printf(" - Thermometer DS18B20"); // печатаем тип устройства
+					DS18x20_StartMeasureAddressed(owDevicesIDs[i]); // запускаем измерение
+					//timerDelayMs(800); // ждем минимум 750 мс, пока конвентируется температура
+					_delay_us(800); // ждем минимум 750 мс, пока конвентируется температура
+					unsigned char	data[2]; // переменная для хранения старшего и младшего байта данных
+					DS18x20_ReadData(owDevicesIDs[i], data); // считываем данные
+					unsigned char	themperature[3]; // в этот массив будет записана температура
+					DS18x20_ConvertToThemperature(data, themperature); // преобразовываем температуру в человекопонятный вид
+					sprintf(tmp, "sensor value: %d.%d C", themperature[1],themperature[2]);
+					ks0108GotoXY(0, 15 + 15 * i);
+					ks0108Puts((char*)&tmp);
+				} break;				
+			}
+		}
+	};
+	
 	total_measurements = 0x0;
 	//WriteMeasurementsCount();
 //////	_delay_ms(5);
-	//ReadMeasurementsCount();
+	ReadMeasurementsCount();
 	//_delay_ms(5);
 	//ReadMeasurement(0, &ms1) ;
 	//ms1.magic++;
