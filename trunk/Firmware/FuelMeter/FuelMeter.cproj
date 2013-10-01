@@ -90,12 +90,16 @@
   <avrgcc.common.outputfiles.srec>True</avrgcc.common.outputfiles.srec>
   <avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>True</avrgcc.compiler.general.ChangeDefaultCharTypeUnsigned>
   <avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>True</avrgcc.compiler.general.ChangeDefaultBitFieldUnsigned>
+  <avrgcc.compiler.symbols.DefSymbols>
+    <ListValues>
+      <Value>F_CPU=16000000UL</Value>
+    </ListValues>
+  </avrgcc.compiler.symbols.DefSymbols>
   <avrgcc.compiler.optimization.level>Optimize for size (-Os)</avrgcc.compiler.optimization.level>
   <avrgcc.compiler.optimization.PrepareFunctionsForGarbageCollection>False</avrgcc.compiler.optimization.PrepareFunctionsForGarbageCollection>
   <avrgcc.compiler.optimization.PrepareDataForGarbageCollection>False</avrgcc.compiler.optimization.PrepareDataForGarbageCollection>
   <avrgcc.compiler.optimization.DebugLevel>Maximum (-g3)</avrgcc.compiler.optimization.DebugLevel>
   <avrgcc.compiler.warnings.AllWarnings>True</avrgcc.compiler.warnings.AllWarnings>
-  <avrgcc.compiler.miscellaneous.OtherFlags>-std=gnu99 -DF_CPU=16000000</avrgcc.compiler.miscellaneous.OtherFlags>
   <avrgcc.linker.general.UseVprintfLibrary>True</avrgcc.linker.general.UseVprintfLibrary>
   <avrgcc.linker.libraries.Libraries>
     <ListValues>
@@ -109,7 +113,6 @@
     </ListValues>
   </avrgcc.linker.libraries.LibrarySearchPaths>
   <avrgcc.linker.optimization.GarbageCollectUnusedSections>False</avrgcc.linker.optimization.GarbageCollectUnusedSections>
-  <avrgcc.linker.miscellaneous.LinkerFlags>-DF_CPU=16000000</avrgcc.linker.miscellaneous.LinkerFlags>
   <avrgcc.assembler.debugging.DebugLevel>Default (-Wa,-g)</avrgcc.assembler.debugging.DebugLevel>
 </AvrGcc>
     </ToolchainSettings>
@@ -128,6 +131,12 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="arial_bold_14.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="ds18x20.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="ds18x20.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="ext_interrupt.c">
@@ -161,6 +170,12 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Menu.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="onewire.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="onewire.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="SC.h">

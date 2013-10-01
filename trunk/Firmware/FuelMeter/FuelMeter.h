@@ -8,8 +8,6 @@
 #ifndef FUELMETER_H_
 #define FUELMETER_H_
 
-#define F_CPU 16000000//UL
-
 #include "global.h"
 
 #include <avr/io.h>
@@ -25,10 +23,8 @@
 #include "SC.h"
 #include "Menu.h"
 #include "Measurement.h"
-//#include "i2c_eeprom.h"
+
 #include "24Cxx.h"
 
-//extern int sprintf(char *__s, const char *__fmt, ...);
-//extern void *memset(void *, int, size_t);
 
 #endif /* FUELMETER_H_ */
