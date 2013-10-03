@@ -384,21 +384,48 @@ int ks0108PutChar(char c)
 	uint8_t charCount = ks0108FontRead(ks0108Font + FONT_CHAR_COUNT);
 	
 	uint16_t index = 0;
-	uint8_t x = ks0108Coord.x, y = ks0108Coord.y;
+	uint8_t x = ks0108Coord.x;
+	uint8_t y = ks0108Coord.y;
+	uint8_t thielefont;
+
 	
 	if(c < firstChar || c >= (firstChar + charCount)) 
 	{
 		return 1;
 	}
-	c -= firstChar;
+	else if(c > 127)
+	{
+		c -= 0x40;
+	}
+	//else
+	{
+		c -= firstChar;
+	}
+	
+	if(isFixedWidthFont(ks0108Font) 
+	{
+		thielefont = 0;
+		width = ks0108FontRead(ks0108Font + FONT_FIXED_WIDTH);
+		index = c * bytes * width + FONT_WIDTH_TABLE;
+	}
+	else
+	{
+		thielefont = 1;
+		for(uint8_t i = 0; i < c; i++) 
+		{  
+			index += ks0108FontRead(ks0108Font + FONT_WIDTH_TABLE + i);
+		}
+	   index = index * bytes + charCount + FONT_WIDTH_TABLE;
+	   width = ks0108FontRead(ks0108Font + FONT_WIDTH_TABLE + c);	
+	}
 	
 	// read width data, to get the index
-	for(uint8_t i = 0; i < c; i++) 
-	{
-		index += ks0108FontRead(ks0108Font + FONT_WIDTH_TABLE + i);
-	}
-	index = index * bytes + charCount + FONT_WIDTH_TABLE;
-	width = ks0108FontRead(ks0108Font + FONT_WIDTH_TABLE + c);
+	//for(uint8_t i = 0; i < c; i++) 
+	//{
+		//index += ks0108FontRead(ks0108Font + FONT_WIDTH_TABLE + i);
+	//}
+	//index = index * bytes + charCount + FONT_WIDTH_TABLE;
+	//width = ks0108FontRead(ks0108Font + FONT_WIDTH_TABLE + c);
 	
 	// last but not least, draw the character
 	for(uint8_t i = 0; i < bytes; i++) 
@@ -408,7 +435,7 @@ int ks0108PutChar(char c)
 		{
 			uint8_t data = ks0108FontRead(ks0108Font + index + page + j);
 			
-			if(height < (i + 1) << 3) 
+			if((height > 8) && (height < (i + 1) << 3)) 
 			{
 				data >>= (((i + 1) << 3) - height);
 			}

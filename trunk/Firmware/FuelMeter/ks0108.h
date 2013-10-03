@@ -85,6 +85,8 @@ void ks0108SetDot(uint8_t x, uint8_t y, uint8_t color);
 #define ks0108DrawHoriLine(x, y, length, color) {ks0108FillRect(x, y, length, 0, color);}
 #define ks0108DrawCircle(xCenter, yCenter, radius, color) {ks0108DrawRoundRect(xCenter-radius, yCenter-radius, 2*radius, 2*radius, radius, color);}
 #define ks0108ClearScreen() {ks0108FillRect(0, 0, 127, 63, WHITE);}
+#define isFixedWidthFont(font)  ((ks0108FontRead(font + FONT_LENGTH) == 0) && (ks0108FontRead(font + FONT_LENGTH + 1) == 0)))
+
 
 // Font Functions
 uint8_t ks0108ReadFontData(const uint8_t* ptr);		//Standard Read Callback
