@@ -9,6 +9,8 @@
 #define MENU_H_
 #pragma once
 
+#include "global.h"
+
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <avr/eeprom.h>
@@ -16,9 +18,13 @@
 #include <stdlib.h>                                                                                                                                     
 #include <avr/pgmspace.h>
 #include "ks0108.h"
-#include "arial_bold_14.h"
-#include "corsiva_12.h"
-#include "sc.h"
+#include "ds1703.h"
+#include "ds18x20.h"
+#include "Measurement.h"
+
+#define MAX_MENU_LENGTH 32
+
+#define SCREEN_ITEMS_COUNT 5;//(SCREEN_HEIGHT / SC_HEIGHT)
 
 //flag required for exiting from functions loops
 static volatile uint8_t Flag = 0;

@@ -33,10 +33,10 @@
 #include <avr/pgmspace.h>
 
 #ifndef SYSTEMRUS5x7_H
-#define SYSTEMRUS_H
+#define SYSTEMRUS5x7_H
 
 #define SYSTEMRUS5x7_WIDTH 5
-#define SYSTEMRUS5x7_HEIGHT 7
+#define SYSTEMRUS5x7_HEIGHT 10
 
 /*
  * added to allow fontname to match header file name. 
@@ -151,7 +151,6 @@ static const uint8_t SystemRus[] PROGMEM = {
 	0x00, 0x41, 0x36, 0x08, 0x00,// }	0x7D
 	0x08, 0x08, 0x2A, 0x1C, 0x08,// ->	0x7E
 	0x08, 0x1C, 0x2A, 0x08, 0x08, // <-	0x7F
-
 // -------------------------------------------------	
 	0x7e, 0x11, 0x11, 0x11, 0x7e,//A	0x80
 	0x7f, 0x49, 0x49, 0x49, 0x33,//Б	0x81
@@ -219,4 +218,4 @@ static const uint8_t SystemRus[] PROGMEM = {
 	0x08, 0x54, 0x34, 0x14, 0x7c,//я	0xBF
 };
 
-#endif
+#endif //SYSTEMRUS5x7_H

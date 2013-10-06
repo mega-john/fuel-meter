@@ -4,17 +4,7 @@
  * Created: 31.08.2013 21:30:19
  *  Author: john
  */ 
-#include <stdio.h>
-#include <inttypes.h>
-#include <stdbool.h>
-
-#include "global.h"
-#include "Menu.h"
-#include "Measurement.h"
-
-#define MAX_MENU_LENGTH 32
-
-#define SCREEN_ITEMS_COUNT 5;//(SCREEN_HEIGHT / SC_HEIGHT)
+#include "menu.h"
 
 volatile uint8_t fuel_impulses;
 volatile uint8_t distance_impulses;
@@ -27,6 +17,7 @@ extern volatile Menu_State MN;
 static volatile bool update_menu = true;
 extern volatile uint16_t total_measurements;
 measurement_struct ms;
+uint8_t DateTime[7];
 
 const char main_menu[][MAX_MENU_LENGTH] PROGMEM =
 {
@@ -71,12 +62,12 @@ inline uint32_t ToSeconds(time_struct* ts)
 
 uint8_t place_header(char* header)
 {
-	ks0108SelectFont(SC, ks0108ReadFontData, BLACK);
-	ks0108DrawRoundRect(0, 0, 127, SC_HEIGHT, 4, BLACK);
+	ks0108SelectFont(SystemRus5x7, ks0108ReadFontData, BLACK);
+	ks0108DrawRoundRect(0, 0, 127, SYSTEMRUS5x7_HEIGHT, 4, BLACK);
 	ks0108GotoXY((SCREEN_WIDTH >> 1) - (ks0108StringWidth(header) >> 1), 1);
 	ks0108Puts(header);	
 	//ks0108SelectFont(Arial_Bold_14, ks0108ReadFontData, BLACK);
-	return SC_HEIGHT;
+	return SYSTEMRUS5x7_HEIGHT;
 }
 
 void set_menu(uint8_t menu_index)
@@ -90,7 +81,7 @@ void set_menu(uint8_t menu_index)
 
 void menu_init(void)
 {
-	ks0108SelectFont(Arial_Bold_14, ks0108ReadFontData, BLACK);	
+	ks0108SelectFont(SystemRus5x7, ks0108ReadFontData, BLACK);	
 	MN.menuNo = 0;
 	MN.subMenuNo = 0;
 	set_menu(MN.menuNo);
@@ -208,51 +199,72 @@ void ShortButtonPress(uint8_t button_index)
 	update_menu = true;
 }
 
+void DrawGrid() 
+{
+	ks0108DrawRect(0, 0, 127, SYSTEMRUS5x7_HEIGHT, BLACK);
+	ks0108DrawRect(0, SYSTEMRUS5x7_HEIGHT, 69, 63 - SYSTEMRUS5x7_HEIGHT, BLACK);
+	ks0108DrawRect(69, SYSTEMRUS5x7_HEIGHT, 58, SYSTEMRUS5x7_HEIGHT, BLACK);
+	ks0108DrawRect(69, SYSTEMRUS5x7_HEIGHT * 2, 29, SYSTEMRUS5x7_HEIGHT, BLACK);
+	ks0108DrawRect(98, SYSTEMRUS5x7_HEIGHT * 2, 29, SYSTEMRUS5x7_HEIGHT, BLACK);
+	ks0108DrawRect(69, SYSTEMRUS5x7_HEIGHT * 3, 58, 63 - SYSTEMRUS5x7_HEIGHT * 3, BLACK);
+}
+
 void MeasurePage( uint8_t cmd )
 {
 	if(flags.update_fuel_values == 1)
-	{
+	{		
 		char tmp[20];
+	
+		DrawGrid();
+
+		//draw date/time
+		ds1703_read((uint8_t*)&DateTime);
+		ks0108FillRect(1, 1, 125, SYSTEMRUS5x7_HEIGHT - 2, WHITE);
+		sprintf(tmp, "%02i/%02i/%02i-%02i:%02i:%02i", DateTime[4], DateTime[5], DateTime[6], DateTime[2], DateTime[1], DateTime[0]);
+		ks0108GotoXY(12, 2);
+		ks0108Puts(tmp);
+		
+		//draw fuel consumption
 		double consumption = 0.0;
 		static double total_fuel = 0.0;
-		
-		offset = 0;//place_header("measure");
 		consumption = fuel_impulses * 0.36;/// IMPULSES_PER_GRAM_SECOND;
-
-		ks0108GotoXY(3, offset);
-		ks0108FillRect(ks0108StringWidth("current: "), offset, 65, 10, WHITE);
-		ks0108GotoXY(3, offset);
-		sprintf(tmp, "current: %.3f L/h", consumption);
-		ks0108Puts(tmp);
-		
-		//total_fuel += (consumption / 3600);
 		total_fuel += (fuel_impulses * 0.0001);
-		offset += ARIAL_BOLD_14_HEIGHT - 2;
-		ks0108GotoXY(3, offset);
-		ks0108FillRect(ks0108StringWidth("total: "), offset, 60, 10, WHITE);
-		ks0108GotoXY(3, offset);
-		sprintf(tmp, "total: %.3f L", total_fuel);
+		ks0108FillRect(70, SYSTEMRUS5x7_HEIGHT + 1, 56, SYSTEMRUS5x7_HEIGHT - 2, WHITE);
+		sprintf(tmp, "%.3f", consumption);
+		ks0108GotoXY(71, SYSTEMRUS5x7_HEIGHT + 2);
 		ks0108Puts(tmp);
-
-		offset += ARIAL_BOLD_14_HEIGHT - 2;
-		ks0108GotoXY(3, offset);
-		ks0108FillRect(ks0108StringWidth("time:"), offset, 60, 10, WHITE);
-		ks0108GotoXY(3, offset);
-		sprintf(tmp, "time: %02u:%02u:%02u", ts.hours, ts.minutes, ts.seconds);
+		
+		//draw temperature
+		ks0108FillRect(70, SYSTEMRUS5x7_HEIGHT * 2 + 1, 27, SYSTEMRUS5x7_HEIGHT - 3, WHITE);
+		sprintf(tmp, "36.6", consumption);
+		ks0108GotoXY(71, SYSTEMRUS5x7_HEIGHT * 2 + 2);
+		ks0108Puts(tmp);
+		
+		ks0108FillRect(99, SYSTEMRUS5x7_HEIGHT * 2 + 1, 27, SYSTEMRUS5x7_HEIGHT - 3, WHITE);
+		sprintf(tmp, "36.6", consumption);
+		ks0108GotoXY(100, SYSTEMRUS5x7_HEIGHT * 2 + 2);
 		ks0108Puts(tmp);
 		
 		
-		char d[7];
-		//ds1703_read(&d);
-		//d[4] = 30;
-		//ds1703_write(&d);
-		offset += ARIAL_BOLD_14_HEIGHT - 2;
+		
+		//
+		////total_fuel += (consumption / 3600);
+		//offset += SYSTEMRUS5x7_HEIGHT - 2;
 		//ks0108GotoXY(3, offset);
-		ks0108FillRect(ks0108StringWidth("time        : "), offset, 60, 10, WHITE);
-		ks0108GotoXY(3, offset);
-		sprintf(tmp, "%i/%i/%i-%i:%i:%i", d[4],d[5],d[6],d[2],d[1],d[0]);
-		ks0108Puts(tmp);
-		//addr++;
+		//ks0108FillRect(ks0108StringWidth("total: "), offset, 60, 10, WHITE);
+		//ks0108GotoXY(3, offset);
+		//sprintf(tmp, "total: %.3f L", total_fuel);
+		//ks0108Puts(tmp);
+//
+		//offset += SYSTEMRUS5x7_HEIGHT - 2;
+		//ks0108GotoXY(3, offset);
+		//ks0108FillRect(ks0108StringWidth("time:"), offset, 60, 10, WHITE);
+		//ks0108GotoXY(3, offset);
+		//sprintf(tmp, "time: %02u:%02u:%02u", ts.hours, ts.minutes, ts.seconds);
+		//ks0108Puts(tmp);
+		//
+		//
+		////addr++;
 		//eeWriteBytes(RECORDS_COUNT_ADDRESS, &addr, 4);
 		//
 	//ks0108SelectFont(SC, ks0108ReadFontData, BLACK);
@@ -279,7 +291,7 @@ void MainMenuPage( uint8_t cmd )
 		uint8_t y;
 		for (uint8_t i = 0; i < current_menu_items_count; i++)
 		{
-			y = i * ARIAL_BOLD_14_HEIGHT + offset;
+			y = i * SYSTEMRUS5x7_HEIGHT + offset;
 			ks0108GotoXY(5, y);
 			ks0108Puts_P(main_menu[i]);
 			if(MN.subMenuNo == i)
@@ -291,7 +303,7 @@ void MainMenuPage( uint8_t cmd )
 			}
 			else
 			{
-				ks0108FillRect(ks0108StringWidth_P(main_menu[i]) + 10, y, 6, ARIAL_BOLD_14_HEIGHT, WHITE);				
+				ks0108FillRect(ks0108StringWidth_P(main_menu[i]) + 10, y, 6, SYSTEMRUS5x7_HEIGHT, WHITE);				
 				//ks0108SelectFont(Arial_Bold_14, ks0108ReadFontData, BLACK);
 				//ks0108Puts_P(main_menu[i]);
 			}
@@ -349,7 +361,7 @@ void AveragePage( uint8_t cmd )
 			
 			width += p;
 			ks0108FillRect(0, offset + 5, (int)width, 8, BLACK);
-			ks0108FillRect(3, offset + 15, 127, ARIAL_BOLD_14_HEIGHT, WHITE);
+			ks0108FillRect(3, offset + 15, 127, SYSTEMRUS5x7_HEIGHT, WHITE);
 			ks0108GotoXY(3, offset + 15);		
 			sprintf(tmp, "complete %"PRIu16" of %"PRIu16"", i + 1, total_measurements);
 			ks0108Puts(tmp);
@@ -372,11 +384,11 @@ void AveragePage( uint8_t cmd )
 		sprintf(tmp, "fuel rate: %.2f L/h", avearge_history_fuel);
 		ks0108Puts(tmp);
 		
-		ks0108GotoXY(3, offset + ARIAL_BOLD_14_HEIGHT);
+		ks0108GotoXY(3, offset + SYSTEMRUS5x7_HEIGHT);
 		sprintf(tmp, "total: %.2f L", history_fuel);
 		ks0108Puts(tmp);
 		
-		ks0108GotoXY(3, offset + ARIAL_BOLD_14_HEIGHT + ARIAL_BOLD_14_HEIGHT);
+		ks0108GotoXY(3, offset + SYSTEMRUS5x7_HEIGHT + SYSTEMRUS5x7_HEIGHT);
 		sprintf(tmp, "time %lu - %02lu:%02lu:%02lu", days_history, hours_history, minutes_history, seconds_history);
 		ks0108Puts(tmp);
 	}
@@ -397,7 +409,7 @@ void ResetPage(uint8_t cmd)
 		}
 		
 		char tmp[20];
-		ks0108SelectFont(SC, ks0108ReadFontData, BLACK);
+		ks0108SelectFont(SystemRus5x7, ks0108ReadFontData, BLACK);
 		ks0108GotoXY(3, offset + 5);
 		
 		sprintf(tmp, "Delete %"PRIu16" records?", total_measurements);
@@ -408,12 +420,12 @@ void ResetPage(uint8_t cmd)
 			ks0108GotoXY(35 * i + 25, 40);
 			if(MN.subMenuNo == i)
 			{
-				ks0108SelectFont(Arial_Bold_14, ks0108ReadFontData, WHITE);
+				ks0108SelectFont(SystemRus5x7, ks0108ReadFontData, WHITE);
 				ks0108Puts_P(reset_menu[i]);
 			}
 			else
 			{
-				ks0108SelectFont(Arial_Bold_14, ks0108ReadFontData, BLACK);
+				ks0108SelectFont(SystemRus5x7, ks0108ReadFontData, BLACK);
 				ks0108Puts_P(reset_menu[i]);
 			}
 		}

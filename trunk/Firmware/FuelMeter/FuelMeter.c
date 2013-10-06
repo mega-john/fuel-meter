@@ -41,21 +41,21 @@ void init_ports(void)
   // Input/Output Ports initialization
   
   // Port A initialization
-  DDRA=0xff;
-  PORTA=0x00;
+  DDRA = 0xff;
+  PORTA = 0x00;
   
   // Port B initialization
-  DDRB=0xff;
-  PORTB=0xFF;
+  DDRB = 0xff;
+  PORTB = 0xFF;
 
   // Port C initialization
   //если DDRx pin установлен в единицу, то вывод назначен как выход, если 0 то вход
-  DDRC=0x02;
-  PORTC=0xff;
+  DDRC = 0b11111000;
+  PORTC = 0x00;
 
   // Port D initialization
-  DDRD=0x01;
-  PORTD=0xff;
+  DDRD = 0xf0;
+  PORTD = 0xf0;
 }
 
 unsigned char nDevices; // количество сенсоров
@@ -77,7 +77,7 @@ unsigned char search_ow_devices(void) // поиск всех устройств на шине
 
     if( diff == OW_DATA_ERR ) break;
 
-    for (i=0;i<OW_ROMCODE_SIZE;i++)
+    for (i = 0; i < OW_ROMCODE_SIZE; i++)
     owDevicesIDs[sensors_count][i] = id[i];
     
     sensors_count++;
@@ -88,76 +88,84 @@ unsigned char search_ow_devices(void) // поиск всех устройств на шине
 
 int main(void)
 {
-  init_ports();
-  init_ext_interrupts();
-  init_timers();
-  eeInit();
-  ks0108Init(0);
-  // Wait a little while the display starts up
-  for(volatile uint16_t i = 0; i < 15000; i++);
-  //_delay_ms(500); 
+	init_ports();
+	init_ext_interrupts();
+	init_timers();
+	eeInit();
+	ks0108Init(0);
+	// Wait a little while the display starts up
+	for(volatile uint16_t i = 0; i < 15000; i++);
+	//_delay_ms(500); 
   
-    
-  sei();
+	sei();
 
-  //menu_init();    
+	menu_init();    
 
-  char tmp[50];
-  //memset(&tmp, 0xff, 100);
-  //
-  //uint16_t addr = 100;
-  //eeWriteBytes(0, (void*)&tmp, 100);
-  //eeWriteBytes(100, (void*)&tmp, 100);
-  //eeWriteBytes(200, (void*)&tmp, 100);
-  //eeWriteBytes(300, (void*)&tmp, 100);
+	char tmp[50];
+	//memset(&tmp, 0xff, 100);
+	//
+	//uint16_t addr = 100;
+	//eeWriteBytes(0, (void*)&tmp, 100);
+	//eeWriteBytes(100, (void*)&tmp, 100);
+	//eeWriteBytes(200, (void*)&tmp, 100);
+	//eeWriteBytes(300, (void*)&tmp, 100);
 
-  ks0108SelectFont(SystemRus5x7, ks0108ReadFontData, BLACK);
-  ks0108DrawRoundRect(0, 0, 127, SC_HEIGHT, 4, BLACK);
-  ks0108GotoXY(0, 0);
-  //ks0108Puts("header");
-  nDevices = search_ow_devices(); // ищем все устройства
+	ks0108SelectFont(SystemRus5x7, ks0108ReadFontData, BLACK);
+	//ks0108DrawRoundRect(0, 0, 127, SC_HEIGHT, 4, BLACK);
+	//ks0108GotoXY(0, 0);
+	//ks0108Puts("header");
+	_delay_ms(1000);
+	//uint8_t data[7] = {0, 23, 23, 6, 6, 10 , 13};
+	//ds1703_write((uint8_t*)&data);
+//
+	nDevices = search_ow_devices(); // ищем все устройства
   
-  ks0108Puts((char*)&tmp);
+  //ks0108Puts((char*)&tmp);
   /*while(1)*/
-  {
-    ks0108ClearScreen();
-    ks0108GotoXY(0, 0);
-    sprintf(tmp, "јЅ¬√ƒ≈∆«»… ЋћЌќѕ–—“”‘", nDevices);
-    ks0108Puts((char*)&tmp);
-    ks0108GotoXY(0, 10);
-    sprintf(tmp, "’÷„ЎўЏџ№Ёёяабвгдежзий", nDevices);
-    ks0108Puts((char*)&tmp);
-    ks0108GotoXY(0, 20);
-    sprintf(tmp, "клмнопрстуфхцчшщъыьэ#", nDevices);
-    ks0108Puts((char*)&tmp);
-    ks0108GotoXY(0, 30);
-    sprintf(tmp, "ю€123567890!\"є;%:?*()_+", nDevices);
-    ks0108Puts((char*)&tmp);
-	while(1);
-
-    for (unsigned char i=0; i<nDevices; i++) // теперь сотируем устройства и запрашиваем данные
-    {
-      // узнать устройство можно по его груповому коду, который расположен в первом байте адресса
-      switch (owDevicesIDs[i][0])
-      {
-        case OW_DS18B20_FAMILY_CODE: 
-        { // если найден термодатчик DS18B20
-          //printf("\r"); print_address(owDevicesIDs[i]); // печатаем знак переноса строки, затем - адрес
-          //printf(" - Thermometer DS18B20"); // печатаем тип устройства
-          DS18x20_StartMeasureAddressed(owDevicesIDs[i]); // запускаем измерение
-          //timerDelayMs(800); // ждем минимум 750 мс, пока конвентируетс€ температура
-          _delay_us(800); // ждем минимум 750 мс, пока конвентируетс€ температура
-          unsigned char data[2]; // переменна€ дл€ хранени€ старшего и младшего байта данных
-          DS18x20_ReadData(owDevicesIDs[i], data); // считываем данные
-          unsigned char themperature[3]; // в этот массив будет записана температура
-          DS18x20_ConvertToThemperature(data, themperature); // преобразовываем температуру в человекопон€тный вид
-          sprintf(tmp, "sensor value: %d.%d C", themperature[1],themperature[2]);
-          ks0108GotoXY(0, 15 + 15 * i);
-          ks0108Puts((char*)&tmp);
-        } break;        
-      }
-    }
-  };
+	ks0108GotoXY(0, 0);
+	sprintf(tmp, "found: %i", nDevices);
+	ks0108Puts((char*)&tmp);
+	_delay_ms(1000);
+	ks0108ClearScreen();
+    //ks0108GotoXY(0, 10);
+    //sprintf(tmp, "’÷„ЎўЏџ№Ёёяабвгдежзий", nDevices);
+    //ks0108Puts((char*)&tmp);
+    //ks0108GotoXY(0, 20);
+    //sprintf(tmp, "клмнопрстуфхцчшщъыьэ#", nDevices);
+    //ks0108Puts((char*)&tmp);
+    //ks0108GotoXY(0, 30);
+    //sprintf(tmp, "%i ю€123567890!\"є;%:?*()_+", nDevices);
+    //ks0108Puts((char*)&tmp);
+	//while(1);
+	//ks0108ClearScreen();
+	//while(1)   
+	//{
+		//for (unsigned char i = 0; i < nDevices; i++) // теперь сотируем устройства и запрашиваем данные
+		//{
+		//// узнать устройство можно по его груповому коду, который расположен в первом байте адресса
+			//switch (owDevicesIDs[i][0])
+			//{
+				//case OW_DS18B20_FAMILY_CODE: 
+				//{ // если найден термодатчик DS18B20
+					////printf("\r"); print_address(owDevicesIDs[i]); // печатаем знак переноса строки, затем - адрес
+					////printf(" - Thermometer DS18B20"); // печатаем тип устройства
+					//DS18x20_StartMeasureAddressed(owDevicesIDs[i]); // запускаем измерение
+					////timerDelayMs(800); // ждем минимум 750 мс, пока конвентируетс€ температура
+					//_delay_us(800); // ждем минимум 750 мс, пока конвентируетс€ температура
+					//unsigned char data[2]; // переменна€ дл€ хранени€ старшего и младшего байта данных
+					//DS18x20_ReadData(owDevicesIDs[i], data); // считываем данные
+					//unsigned char themperature[3]; // в этот массив будет записана температура
+					//DS18x20_ConvertToThemperature(data, themperature); // преобразовываем температуру в человекопон€тный вид
+					//ks0108GotoXY(0, 10 * i);
+					//ks0108FillRect(ks0108StringWidth("value: "), 10 * i, 10, 12, WHITE);
+					//sprintf(tmp, "value: %c%d.%1d C", themperature[0], themperature[1], themperature[2]);
+					//ks0108Puts((char*)&tmp);
+				//} break;        
+			//}
+		//};
+	//}
+//
+  
   total_measurements = 0x0;
   //WriteMeasurementsCount();
 //////  _delay_ms(5);
@@ -182,11 +190,11 @@ int main(void)
   
     while(1)
     {
-    if(old_menu_index != MN.menuNo)
-    {
-      ks0108ClearScreen();
-      old_menu_index = MN.menuNo;
-    }
-    MFPtr(0);   
+		if(old_menu_index != MN.menuNo)
+		{
+		  ks0108ClearScreen();
+		  old_menu_index = MN.menuNo;
+		}
+		MFPtr(0);   
    }
 }

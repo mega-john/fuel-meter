@@ -11,9 +11,9 @@
 //#include "i2c_eeprom.h"
 //#include "24Cxx.h"
 
-void ReadMeasurementsCount(void);
-void WriteMeasurementsCount(void);
+extern void ReadMeasurementsCount(void);
+extern void WriteMeasurementsCount(void);
 /*measurement_struct*/void ReadMeasurement(uint16_t index, measurement_struct* ms);
-void WriteMeasurement(measurement_struct* ms);
+extern void WriteMeasurement(measurement_struct* ms);
 
 #endif /* MEASUREMENT_H_ */

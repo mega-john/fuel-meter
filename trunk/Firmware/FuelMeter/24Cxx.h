@@ -6,10 +6,10 @@
 #include <inttypes.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
 
 #include <avr/io.h>
-#include <util/twi.h>		
+#include <util/twi.h>	
+#include <stdbool.h>
 
 #define DEBUG 0
 

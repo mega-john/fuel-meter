@@ -135,7 +135,7 @@ unsigned char OW_ReadBit(void)
 	OW_Set(0);
 	_delay_us(14);
 	//Read line value
-	if(OW_CheckIn()) bit=1;
+	if(OW_CheckIn()) bit = 1;
 	//Wait for 45uS to end and return read value
 	_delay_us(45);
 	return bit;
@@ -154,31 +154,31 @@ unsigned char OW_WriteByte(unsigned char byte)
 	do
 	{
 		unsigned char	d = 0x00;
-		if (byte&1) d = 0xFF;
+		if (byte & 1) d = 0xFF;
 		cli();
 		UDR = d;
-		UCSRA=(1<<TXC);
+		UCSRA=(1 << TXC);
 		sei();
 		OthersTasks();
 		while(!CheckBit(UCSRA,RXC)) OthersTasks();
 		byte>>=1;
-		if (UDR>0xFE) byte|=128;
+		if (UDR>0xFE) byte |= 128;
 	}
 	while(--i);
 	
-	return byte&255;
+	return byte & 255;
 }
 #else
 void OW_WriteByte(unsigned char byte)
 {
-	for (unsigned char i=0; i<8; i++) OW_WriteBit(CheckBit(byte, i));
+	for (unsigned char i = 0; i < 8; i++) OW_WriteBit(CheckBit(byte, i));
 }
 
 unsigned char OW_ReadByte(void)
 {
 	unsigned char n=0;
 
-	for (unsigned char i=0; i<8; i++) if (OW_ReadBit()) sbi(n, i);
+	for (unsigned char i = 0; i < 8; i++) if (OW_ReadBit()) sbi(n, i);
 	
 	return n;
 }
@@ -190,7 +190,9 @@ unsigned char OW_SearchROM( unsigned char diff, unsigned char *id )
 	unsigned char b;
 
 	if(!OW_Reset()) 
+	{
 		return OW_PRESENCE_ERR;       // error, no device found
+	}
 
 	OW_WriteByte(OW_CMD_SEARCHROM);     // ROM search command
 	next_diff = OW_LAST_DEVICE;      // unchanged on last device
@@ -209,10 +211,12 @@ unsigned char OW_SearchROM( unsigned char diff, unsigned char *id )
 			}
 			else 
 			{ 
-				if( !b ) { // 00 = 2 devices
-				if( diff > i || ((*id & 1) && diff != i) ) { 
-						b = 1;               // now 1
-						next_diff = i;       // next pass 0
+				if( !b ) 
+				{ // 00 = 2 devices
+					if( diff > i || ((*id & 1) && diff != i) ) 
+					{ 
+							b = 1;               // now 1
+							next_diff = i;       // next pass 0
 					}
 				}
 			}
@@ -233,7 +237,7 @@ void OW_FindROM(unsigned char *diff, unsigned char id[])
 	while(1)
     {
 		*diff = OW_SearchROM( *diff, &id[0] );
-    	if ( *diff==OW_PRESENCE_ERR || *diff==OW_DATA_ERR ||
+    	if ( *diff == OW_PRESENCE_ERR || *diff == OW_DATA_ERR ||
     		*diff == OW_LAST_DEVICE ) return;
     	//if ( id[0] == DS18B20_ID || id[0] == DS18S20_ID ) 
 		return;
@@ -244,7 +248,7 @@ unsigned char OW_ReadROM(unsigned char *buffer)
 {
 	if (!OW_Reset()) return 0;
 	OW_WriteByte(OW_CMD_READROM);
-	for (unsigned char i=0; i<8; i++)
+	for (unsigned char i = 0; i < 8; i++)
 	{
 		buffer[i] = OW_ReadByte();
 	}
@@ -255,7 +259,7 @@ unsigned char OW_MatchROM(unsigned char *rom)
 {
  	if (!OW_Reset()) return 0;
 	OW_WriteByte(OW_CMD_MATCHROM);	
-	for(unsigned char i=0; i<8; i++)
+	for(unsigned char i = 0; i < 8; i++)
 	{
 		OW_WriteByte(rom[i]);
 	}

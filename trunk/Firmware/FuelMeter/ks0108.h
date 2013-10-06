@@ -11,6 +11,7 @@
 #include <inttypes.h>
 #include <avr/pgmspace.h>
 #include "global.h"
+#include "SystemRus5x7.h"
 
 #ifndef	KS0108_H
 #define KS0108_H
@@ -19,16 +20,20 @@
 #define LCD_CMD_PORT		PORTB		// Command Output Register
 #define LCD_CMD_DIR			DDRB		// Data Direction Register for Command Port
 
+#define LCD_CSEL_PORT		PORTB
+#define LCD_CSEL_DIR		DDRB
+
 #define LCD_DATA_IN			PINA		// Data Input Register
 #define LCD_DATA_OUT		PORTA		// Data Output Register
 #define LCD_DATA_DIR		DDRA		// Data Direction Register for Data Port
 
 // Command Port Bits
-#define D_I					0x00		// D/I Bit Number
+#define D_I					0x03		// D/I Bit Number
 #define R_W					0x01		// R/W Bit Number
-#define EN					0x05		// EN Bit Number
-#define CSEL1				0x03		// CS1 Bit Number
-#define CSEL2				0x04		// CS2 Bit Number
+#define EN					0x00		// EN Bit Number
+
+#define CSEL1				0x06		// CS1 Bit Number
+#define CSEL2				0x07		// CS2 Bit Number
 
 // Chips
 #define CHIP1				0x00
