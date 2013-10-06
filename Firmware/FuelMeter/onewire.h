@@ -3,10 +3,7 @@
 
 
 #include <avr/io.h>
-
-
-#define true 1
-#define false 0
+#include <stdbool.h>
 
 // ћаксимальное количество устройств на шине
 #define MAXDEVICES 10

@@ -1,4 +1,3 @@
-
 #ifndef DS18x20_H
 #define DS18x20_H
 

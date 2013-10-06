@@ -386,7 +386,7 @@ int ks0108PutChar(char c)
 	uint16_t index = 0;
 	uint8_t x = ks0108Coord.x;
 	uint8_t y = ks0108Coord.y;
-	uint8_t thielefont;
+	//uint8_t thielefont;
 
 	
 	if(c < firstChar || c >= (firstChar + charCount)) 
@@ -404,13 +404,13 @@ int ks0108PutChar(char c)
 	
 	if(isFixedWidthFont(ks0108Font) 
 	{
-		thielefont = 0;
+		//thielefont = 0;
 		width = ks0108FontRead(ks0108Font + FONT_FIXED_WIDTH);
 		index = c * bytes * width + FONT_WIDTH_TABLE;
 	}
 	else
 	{
-		thielefont = 1;
+		//thielefont = 1;
 		for(uint8_t i = 0; i < c; i++) 
 		{  
 			index += ks0108FontRead(ks0108Font + FONT_WIDTH_TABLE + i);
@@ -578,6 +578,7 @@ void ks0108Init(uint8_t invert)
 	ks0108Inverted = invert;
 	
 	LCD_CMD_DIR = 0xFF;								// command port is output
+	LCD_CSEL_DIR = 0xFF;
 	ks0108WriteCommand(LCD_ON, CHIP1);				// power on
 	ks0108WriteCommand(LCD_ON, CHIP2);
 	
@@ -618,13 +619,13 @@ uint8_t ks0108DoReadData(uint8_t first)
 	
 	if(ks0108Coord.x < 64) 
 	{
-		cb(LCD_CMD_PORT, CSEL2);// deselect chip 2
-		sb(LCD_CMD_PORT, CSEL1);// select chip 1
+		cb(LCD_CSEL_PORT, CSEL2);// deselect chip 2
+		sb(LCD_CSEL_PORT, CSEL1);// select chip 1
 	} 
 	else if(ks0108Coord.x >= 64) 
 	{
-		cb(LCD_CMD_PORT, CSEL1);// deselect chip 2
-		sb(LCD_CMD_PORT, CSEL2);// select chip 1
+		cb(LCD_CSEL_PORT, CSEL1);// deselect chip 2
+		sb(LCD_CSEL_PORT, CSEL2);// select chip 1
 	}
 	if(ks0108Coord.x == 64 && first) 
 	{	// chip2 X-address = 0
@@ -674,13 +675,13 @@ void ks0108WriteCommand(uint8_t cmd, uint8_t chip)
 {
 	if(chip == CHIP1) 
 	{
-		cb(LCD_CMD_PORT, CSEL2);// deselect chip 2
-		sb(LCD_CMD_PORT, CSEL1);// select chip 1
+		cb(LCD_CSEL_PORT, CSEL2);// deselect chip 2
+		sb(LCD_CSEL_PORT, CSEL1);// select chip 1
 	} 
 	else if(chip == CHIP2) 
 	{
-		cb(LCD_CMD_PORT, CSEL1);// deselect chip 1
-		sb(LCD_CMD_PORT, CSEL2);// select chip 2
+		cb(LCD_CSEL_PORT, CSEL1);// deselect chip 1
+		sb(LCD_CSEL_PORT, CSEL2);// select chip 2
 	}
 	
 	cb(LCD_CMD_PORT, D_I);// D/I = 0
@@ -707,13 +708,13 @@ void ks0108WriteData(uint8_t data)
 
 	if(ks0108Coord.x < 64) 
 	{
-		cb(LCD_CMD_PORT, CSEL2);// deselect chip 2
-		sb(LCD_CMD_PORT, CSEL1);// select chip 1
+		cb(LCD_CSEL_PORT, CSEL2);// deselect chip 2
+		sb(LCD_CSEL_PORT, CSEL1);// select chip 1
 	} 
 	else if(ks0108Coord.x >= 64) 
 	{
-		cb(LCD_CMD_PORT, CSEL1);// deselect chip 1
-		sb(LCD_CMD_PORT, CSEL2);// select chip 2
+		cb(LCD_CSEL_PORT, CSEL1);// deselect chip 1
+		sb(LCD_CSEL_PORT, CSEL2);// select chip 2
 	}
 	if(ks0108Coord.x == 64)// chip2 X-address = 0
 	{

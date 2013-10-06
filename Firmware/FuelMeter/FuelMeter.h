@@ -19,12 +19,10 @@
 #include "ext_interrupt.h"
 #include "timer.h"
 #include "ks0108.h"
-#include "arial_bold_14.h"
-#include "SC.h"
 #include "Menu.h"
 #include "Measurement.h"
-
 #include "24Cxx.h"
-
+#include "ds1703.h"
+#include "ds18x20.h"
 
 #endif /* FUELMETER_H_ */
