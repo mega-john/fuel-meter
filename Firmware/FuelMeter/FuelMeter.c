@@ -51,7 +51,8 @@ void init_ports(void)
   // Port C initialization
   //если DDRx pin установлен в единицу, то вывод назначен как выход, если 0 то вход
   DDRC = 0b11111000;
-  PORTC = 0x00;
+  //If PORTxn is written logic one when the pin is configured as an input pin, the pull-up resistor is activated
+  PORTC = 0b00000111;
 
   // Port D initialization
   DDRD = 0xf0;
@@ -101,7 +102,8 @@ int main(void)
 
 	menu_init();    
 
-	char tmp[50];
+	//char tmp[100] = "’÷„ЎўЏџ№Ёёяабвгдежзий\0";
+	char tmp[100] = "qwertyuiop\0";
 	//memset(&tmp, 0xff, 100);
 	//
 	//uint16_t addr = 100;
@@ -124,13 +126,8 @@ int main(void)
   /*while(1)*/
 	ks0108GotoXY(0, 0);
 	sprintf(tmp, "found: %i", nDevices);
-	ks0108Puts((char*)&tmp);
+	ks0108Puts((char*)&tmp[0]);
 	_delay_ms(1000);
-	ks0108ClearScreen();
-    //ks0108GotoXY(0, 10);
-    //sprintf(tmp, "’÷„ЎўЏџ№Ёёяабвгдежзий", nDevices);
-    //ks0108Puts((char*)&tmp);
-    //ks0108GotoXY(0, 20);
     //sprintf(tmp, "клмнопрстуфхцчшщъыьэ#", nDevices);
     //ks0108Puts((char*)&tmp);
     //ks0108GotoXY(0, 30);
@@ -151,7 +148,7 @@ int main(void)
 					////printf(" - Thermometer DS18B20"); // печатаем тип устройства
 					//DS18x20_StartMeasureAddressed(owDevicesIDs[i]); // запускаем измерение
 					////timerDelayMs(800); // ждем минимум 750 мс, пока конвентируетс€ температура
-					//_delay_us(800); // ждем минимум 750 мс, пока конвентируетс€ температура
+					//_delay_ms(800); // ждем минимум 750 мс, пока конвентируетс€ температура
 					//unsigned char data[2]; // переменна€ дл€ хранени€ старшего и младшего байта данных
 					//DS18x20_ReadData(owDevicesIDs[i], data); // считываем данные
 					//unsigned char themperature[3]; // в этот массив будет записана температура

@@ -569,8 +569,19 @@ void ks0108GotoXY(uint8_t x, uint8_t y)
 	ks0108WriteCommand(cmd, CHIP2);
 }
 
-void ks0108Init(uint8_t invert) 
+inline void ks0108InitPorts()
 {
+	LCD_DATA_DIR	 = 0xFF;
+	LCD_DATA_OUT 	 = 0;
+	LCD_CMD_DIR 	|= (1<<D_I)|(1<<R_W)|(1<<EN);
+	LCD_CMD_PORT 	|= (0<<EN);
+	LCD_CSEL_PORT   |= (1<<CSEL1)|(1<<CSEL2);
+	LCD_CSEL_DIR	|= (1<<CSEL1)|(1<<CSEL2);
+}
+
+void ks0108Init(uint8_t invert)
+{
+	ks0108InitPorts();
 	ks0108Coord.x = 0;
 	ks0108Coord.y = 0;
 	ks0108Coord.page = 0;
@@ -582,10 +593,16 @@ void ks0108Init(uint8_t invert)
 	ks0108WriteCommand(LCD_ON, CHIP1);				// power on
 	ks0108WriteCommand(LCD_ON, CHIP2);
 	
+	ks0108WriteCommand(LCD_SET_ADD, CHIP1);				// power on
+	ks0108WriteCommand(LCD_SET_ADD, CHIP2);
+	
+	ks0108WriteCommand(LCD_SET_PAGE, CHIP1);				// power on
+	ks0108WriteCommand(LCD_SET_PAGE, CHIP2);
+	
 	ks0108WriteCommand(LCD_DISP_START, CHIP1);		// display start line = 0
 	ks0108WriteCommand(LCD_DISP_START, CHIP2);
 	ks0108ClearScreen();							// display clear
-	ks0108GotoXY(0, 0);
+	//ks0108GotoXY(0, 0);
 }
 
 inline void ks0108Enable(void) 
@@ -694,7 +711,10 @@ void ks0108WriteCommand(uint8_t cmd, uint8_t chip)
 
 void ks0108WriteData(uint8_t data) 
 {
-	uint8_t displayData, yOffset, cmdPort;
+	uint8_t displayData;
+	uint8_t yOffset;
+	uint8_t cmdPort;
+	uint8_t cselPort;
 
 //#ifdef DEBUG
 	//volatile uint16_t i;
@@ -731,9 +751,11 @@ void ks0108WriteData(uint8_t data)
 	{
 		// first page
 		cmdPort = LCD_CMD_PORT;						// save command port
+		cselPort = LCD_CSEL_PORT;
 		displayData = ks0108ReadData();
 		
 		LCD_CMD_PORT = cmdPort;						// restore command port
+		LCD_CSEL_PORT = cselPort;
 		LCD_DATA_DIR = 0xFF;						// data port is output
 		
 		displayData |= data << yOffset;
@@ -750,6 +772,7 @@ void ks0108WriteData(uint8_t data)
 		displayData = ks0108ReadData();
 		
 		LCD_CMD_PORT = cmdPort;						// restore command port
+		LCD_CSEL_PORT = cselPort;
 		LCD_DATA_DIR = 0xFF;						// data port is output
 		
 		displayData |= data >> (8 - yOffset);

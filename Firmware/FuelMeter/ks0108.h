@@ -20,8 +20,8 @@
 #define LCD_CMD_PORT		PORTB		// Command Output Register
 #define LCD_CMD_DIR			DDRB		// Data Direction Register for Command Port
 
-#define LCD_CSEL_PORT		PORTB
-#define LCD_CSEL_DIR		DDRB
+#define LCD_CSEL_PORT		PORTC
+#define LCD_CSEL_DIR		DDRC
 
 #define LCD_DATA_IN			PINA		// Data Input Register
 #define LCD_DATA_OUT		PORTA		// Data Output Register
@@ -60,7 +60,6 @@
 
 #define SCREEN_WIDTH		128
 #define SCREEN_HEIGHT		64
-
 
 // Uncomment for slow drawing
 // #define DEBUG

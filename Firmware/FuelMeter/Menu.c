@@ -215,6 +215,7 @@ void MeasurePage( uint8_t cmd )
 	{		
 		char tmp[20];
 	
+		//ks0108ClearScreen();
 		DrawGrid();
 
 		//draw date/time
