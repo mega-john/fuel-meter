@@ -32,8 +32,8 @@
 #define R_W					0x01		// R/W Bit Number
 #define EN					0x00		// EN Bit Number
 
-#define CSEL1				0x06		// CS1 Bit Number
-#define CSEL2				0x07		// CS2 Bit Number
+#define CSEL1				0x07		// CS1 Bit Number
+#define CSEL2				0x06		// CS2 Bit Number
 
 // Chips
 #define CHIP1				0x00
