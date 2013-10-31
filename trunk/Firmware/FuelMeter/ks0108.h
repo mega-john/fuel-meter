@@ -7,50 +7,11 @@
  * Description:    Graphic Library for KS0108- (and compatible) based LCDs
  * 
  */
-
-
-
-/*
-MCU: ATMEGA8515L8PI
-Serial -> параллельной IC: SN74HC595N * 2 ?
-LCM: SSC12A64DLYY (KS0108)
-
-WINAVR20060421
-
-Данные PINB2 ---------- SN74HC595 14 #
-PINB1 защелку часы ------ SN74HC595 12 #
-PINB0 сдвиг часы ------ SN74HC595 11 #
-
-На первом этапе 595 соединен с контактами ЖК управление
-lcd12864_rs 0x01 / / QA
-lcd12864_rw 0x02 / / QB
-lcd12864_e 0x04 / / КК
-lcd12864_cs1 0x08 / / КТ
-lcd12864_cs2 0x10 / / QE
-lcd12864_rst 0x20 / / QF
-
-На втором этапе 595 подключен к ЖК данные штифт
-
-D0 ------ QA
-| |
-D7 QG
-
-Шрифты процедура PCtoLCD2002
-
-
-Этот процесс выглядит грязным, но она может гарантировать, в настоящее время только 128 * 64 фотографий дисплей, очистки экрана и отображение три полных дня сегодня функциональность слишком поздно, завтра плюс другие функции.
-Makefile добавлять свои собственные.
-
-Также эта программа во время компиляции, есть предупреждение:
-Предупреждение: передача Arg 1 `disp_image" Выбросы от отборочных тип указателя целевой
-
-Но не влияет на результаты, я не знаю, как, чтобы не иметь это предупреждение, пожалуйста руководством специалиста.
-*/
-
 #include <inttypes.h>
 #include <avr/pgmspace.h>
 #include "global.h"
 #include "SystemRus5x7.h"
+#include "74HC595.h"
 
 #ifndef	KS0108_H
 #define KS0108_H
@@ -62,9 +23,9 @@ Makefile добавлять свои собственные.
 #define LCD_CSEL_PORT		PORTC
 #define LCD_CSEL_DIR		DDRC
 
-#define LCD_DATA_IN			PINA		// Data Input Register
-#define LCD_DATA_OUT		PORTA		// Data Output Register
-#define LCD_DATA_DIR		DDRA		// Data Direction Register for Data Port
+//#define LCD_DATA_IN		PINA		// Data Input Register
+//#define LCD_DATA_OUT		PORTA		// Data Output Register
+//#define LCD_DATA_DIR		DDRA		// Data Direction Register for Data Port
 
 // Command Port Bits
 #define D_I					0x03		// D/I Bit Number
@@ -129,7 +90,6 @@ void ks0108SetDot(uint8_t x, uint8_t y, uint8_t color);
 #define ks0108DrawCircle(xCenter, yCenter, radius, color) {ks0108DrawRoundRect(xCenter-radius, yCenter-radius, 2*radius, 2*radius, radius, color);}
 #define ks0108ClearScreen() {ks0108FillRect(0, 0, 127, 63, WHITE);}
 #define isFixedWidthFont(font)  ((ks0108FontRead(font + FONT_LENGTH) == 0) && (ks0108FontRead(font + FONT_LENGTH + 1) == 0)))
-
 
 // Font Functions
 uint8_t ks0108ReadFontData(const uint8_t* ptr);		//Standard Read Callback
