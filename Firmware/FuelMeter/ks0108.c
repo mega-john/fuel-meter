@@ -15,10 +15,11 @@
 #include "ks0108.h"
 
 lcdCoord			ks0108Coord;
-uint8_t				ks0108Inverted = 0;
-ks0108FontCallback	ks0108FontRead;
-uint8_t				ks0108FontColor;
-const uint8_t*		ks0108Font;
+uint8_t				ks0108Inverted = 0x00;
+ks0108FontCallback	ks0108FontRead = 0x00;
+uint8_t				ks0108FontColor = 0x00;
+const uint8_t*		ks0108Font = 0x00;
+uint8_t				displayBuffer[1024];
 
 //inline uint8_t ks0108ReadData(void);
 
@@ -209,7 +210,11 @@ void ks0108DrawRoundRect(uint8_t x, uint8_t y, uint8_t width, uint8_t height, ui
  */
 void ks0108FillRect(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t color) 
 {
-	uint8_t mask, pageOffset, h, i, data;
+	uint8_t mask = 0x00;
+	uint8_t pageOffset = 0x00;
+	uint8_t h = 0x00;
+	uint8_t i = 0x00;
+	uint8_t data = 0x00;
 	height++;
 	
 	pageOffset = y % 8;
@@ -229,7 +234,7 @@ void ks0108FillRect(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t
 	ks0108GotoXY(x, y);
 	for(i = 0; i <= width; i++) 
 	{
-		data = ks0108ReadData();
+		//data = ks0108ReadData();
 		
 		if(color == BLACK) 
 		{
@@ -262,7 +267,7 @@ void ks0108FillRect(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t
 		
 		for(i = 0; i <= width; i++) 
 		{
-			data = ks0108ReadData();
+			//data = ks0108ReadData();
 		
 			if(color == BLACK) 
 			{
@@ -280,7 +285,12 @@ void ks0108FillRect(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t
 
 void ks0108InvertRect(uint8_t x, uint8_t y, uint8_t width, uint8_t height) 
 {
-	uint8_t mask, pageOffset, h, i, data, tmpData;
+	uint8_t mask = 0x00;
+	uint8_t pageOffset = 0x00;
+	uint8_t h = 0x00;
+	uint8_t i = 0x00;
+	uint8_t data = 0x00;
+	//uint8_t tmpData = 0x00;
 	height++;
 	
 	pageOffset = y % 8;
@@ -300,9 +310,9 @@ void ks0108InvertRect(uint8_t x, uint8_t y, uint8_t width, uint8_t height)
 	ks0108GotoXY(x, y);
 	for(i = 0; i <= width; i++) 
 	{
-		data = ks0108ReadData();
-		tmpData = ~data;
-		data = (tmpData & mask) | (data & ~mask);
+		//data = ks0108ReadData();
+		//tmpData = ~data;
+		//data = (tmpData & mask) | (data & ~mask);
 		ks0108WriteData(data);
 	}
 	
@@ -314,7 +324,7 @@ void ks0108InvertRect(uint8_t x, uint8_t y, uint8_t width, uint8_t height)
 		
 		for(i = 0; i <= width; i++) 
 		{
-			data = ks0108ReadData();
+			//data = ks0108ReadData();
 			ks0108WriteData(~data);
 		}
 	}
@@ -326,9 +336,9 @@ void ks0108InvertRect(uint8_t x, uint8_t y, uint8_t width, uint8_t height)
 		
 		for(i = 0; i <= width; i++) 
 		{
-			data = ks0108ReadData();
-			tmpData = ~data;
-			data = (tmpData & mask) | (data & ~mask);
+			//data = ks0108ReadData();
+			//tmpData = ~data;
+			//data = (tmpData & mask) | (data & ~mask);
 			ks0108WriteData(data);
 		}
 	}
@@ -345,10 +355,10 @@ void ks0108SetInverted(uint8_t invert)
 
 void ks0108SetDot(uint8_t x, uint8_t y, uint8_t color) 
 {
-	uint8_t data;
+	uint8_t data = 0x00;
 	
 	ks0108GotoXY(x, y - y % 8);					// read data from display memory
-	data = ks0108ReadData();
+	//data = ks0108ReadData();
 	
 	if(color == BLACK) 
 	{
@@ -571,8 +581,8 @@ void ks0108GotoXY(uint8_t x, uint8_t y)
 
 inline void ks0108InitPorts()
 {
-	LCD_DATA_DIR	 = 0xFF;
-	LCD_DATA_OUT 	 = 0;
+	//LCD_DATA_DIR	 = 0xFF;
+	//LCD_DATA_OUT 	 = 0;
 	LCD_CMD_DIR 	|= (1<<D_I)|(1<<R_W)|(1<<EN);
 	LCD_CMD_PORT 	|= (0<<EN);
 	LCD_CSEL_PORT   |= (1<<CSEL1)|(1<<CSEL2);
@@ -626,68 +636,68 @@ inline void ks0108Enable(void)
 	for(volatile uint8_t i = 0; i < 8; i++);// a little delay loop (faster than reading the busy flag)
 }
 
-uint8_t ks0108DoReadData(uint8_t first) 
-{
-	uint8_t data;
-	volatile uint8_t i;
-	
-	LCD_DATA_OUT = 0x00;
-	LCD_DATA_DIR = 0x00;// data port is input
-	
-	if(ks0108Coord.x < 64) 
-	{
-		cb(LCD_CSEL_PORT, CSEL2);// deselect chip 2
-		sb(LCD_CSEL_PORT, CSEL1);// select chip 1
-	} 
-	else if(ks0108Coord.x >= 64) 
-	{
-		cb(LCD_CSEL_PORT, CSEL1);// deselect chip 2
-		sb(LCD_CSEL_PORT, CSEL2);// select chip 1
-	}
-	if(ks0108Coord.x == 64 && first) 
-	{	// chip2 X-address = 0
-		ks0108WriteCommand(LCD_SET_ADD, CHIP2);// wuff wuff
-	}
-	
-	sb(LCD_CMD_PORT, D_I);// D/I = 1
-	sb(LCD_CMD_PORT, R_W);// R/W = 1	
-	sb(LCD_CMD_PORT, EN); // EN high level width: min. 450ns
-		
-	_delay_us(10);
-	//asm volatile("nop\n\t"
-				 //"nop\n\t"
-				 //"nop\n\t"
-				 //"nop\n\t"
-				 //"nop\n\t"
-				 //"nop\n\t"
-				 //"nop\n\t"
-				 //"nop\n\t"
-				 //"nop\n\t"
-				 //"nop\n\t"
-				 //::);
-	
-	data = LCD_DATA_IN;// read Data			 
-	
-	cb(LCD_CMD_PORT, EN);
-	for(i = 0; i < 8; i++);// a little delay loop (faster than reading the busy flag)
-	
-	LCD_DATA_DIR = 0xFF;
-	
-	ks0108GotoXY(ks0108Coord.x, ks0108Coord.y);
-	
-	if(ks0108Inverted)
-	{
-		data = ~data;
-	}
-	return data;
-}
-
-inline uint8_t ks0108ReadData(void)
-{
-	ks0108DoReadData(1);// dummy read
-	return ks0108DoReadData(0);// "real" read
-}
-
+//uint8_t ks0108DoReadData(uint8_t first) 
+//{
+	//uint8_t data;
+	//volatile uint8_t i;
+	//
+	////LCD_DATA_OUT = 0x00;
+	////LCD_DATA_DIR = 0x00;// data port is input
+	//
+	//if(ks0108Coord.x < 64) 
+	//{
+		//cb(LCD_CSEL_PORT, CSEL2);// deselect chip 2
+		//sb(LCD_CSEL_PORT, CSEL1);// select chip 1
+	//} 
+	//else if(ks0108Coord.x >= 64) 
+	//{
+		//cb(LCD_CSEL_PORT, CSEL1);// deselect chip 2
+		//sb(LCD_CSEL_PORT, CSEL2);// select chip 1
+	//}
+	//if(ks0108Coord.x == 64 && first) 
+	//{	// chip2 X-address = 0
+		//ks0108WriteCommand(LCD_SET_ADD, CHIP2);// wuff wuff
+	//}
+	//
+	//sb(LCD_CMD_PORT, D_I);// D/I = 1
+	//sb(LCD_CMD_PORT, R_W);// R/W = 1	
+	//sb(LCD_CMD_PORT, EN); // EN high level width: min. 450ns
+		//
+	//_delay_us(10);
+	////asm volatile("nop\n\t"
+				 ////"nop\n\t"
+				 ////"nop\n\t"
+				 ////"nop\n\t"
+				 ////"nop\n\t"
+				 ////"nop\n\t"
+				 ////"nop\n\t"
+				 ////"nop\n\t"
+				 ////"nop\n\t"
+				 ////"nop\n\t"
+				 ////::);
+	//
+	//data = 0x00;//LCD_DATA_IN;// read Data			 
+	//
+	//cb(LCD_CMD_PORT, EN);
+	//for(i = 0; i < 8; i++);// a little delay loop (faster than reading the busy flag)
+	//
+	////LCD_DATA_DIR = 0xFF;
+	//
+	//ks0108GotoXY(ks0108Coord.x, ks0108Coord.y);
+	//
+	//if(ks0108Inverted)
+	//{
+		//data = ~data;
+	//}
+	//return data;
+//}
+//
+//inline uint8_t ks0108ReadData(void)
+//{
+	//ks0108DoReadData(1);// dummy read
+	//return ks0108DoReadData(0);// "real" read
+//}
+//
 void ks0108WriteCommand(uint8_t cmd, uint8_t chip) 
 {
 	if(chip == CHIP1) 
@@ -703,18 +713,19 @@ void ks0108WriteCommand(uint8_t cmd, uint8_t chip)
 	
 	cb(LCD_CMD_PORT, D_I);// D/I = 0
 	cb(LCD_CMD_PORT, R_W);// R/W = 0
-	LCD_DATA_DIR = 0xFF;							// data port is output
-	LCD_DATA_OUT = cmd;								// write command
+	//LCD_DATA_DIR = 0xFF;							// data port is output
+	Shift74HC595_Write8(cmd);
+	//LCD_DATA_OUT = cmd;								// write command
 	ks0108Enable();									// enable
-	LCD_DATA_OUT = 0x00;
+	//LCD_DATA_OUT = 0x00;
 }
 
 void ks0108WriteData(uint8_t data) 
 {
-	uint8_t displayData;
-	uint8_t yOffset;
-	uint8_t cmdPort;
-	uint8_t cselPort;
+	uint8_t displayData = 0x00;
+	uint8_t yOffset = 0x00;
+	uint8_t cmdPort = 0x00;
+	uint8_t cselPort = 0x00;
 
 //#ifdef DEBUG
 	//volatile uint16_t i;
@@ -744,43 +755,45 @@ void ks0108WriteData(uint8_t data)
 	sb(LCD_CMD_PORT, D_I);// D/I = 1
 	cb(LCD_CMD_PORT, R_W);// R/W = 0
 
-	LCD_DATA_DIR = 0xFF;// data port is output
+	//LCD_DATA_DIR = 0xFF;// data port is output
 		
 	yOffset = ks0108Coord.y % 8;
 	if(yOffset != 0) 
 	{
 		// first page
-		cmdPort = LCD_CMD_PORT;						// save command port
-		cselPort = LCD_CSEL_PORT;
-		displayData = ks0108ReadData();
+		//cmdPort = LCD_CMD_PORT;						// save command port
+		//cselPort = LCD_CSEL_PORT;
+		//displayData = ks0108ReadData();
 		
-		LCD_CMD_PORT = cmdPort;						// restore command port
-		LCD_CSEL_PORT = cselPort;
-		LCD_DATA_DIR = 0xFF;						// data port is output
+		//LCD_CMD_PORT = cmdPort;						// restore command port
+		//LCD_CSEL_PORT = cselPort;
+		//LCD_DATA_DIR = 0xFF;						// data port is output
 		
 		displayData |= data << yOffset;
 		if(ks0108Inverted)
 		{
 			displayData = ~displayData;
 		}
-		LCD_DATA_OUT = displayData;					// write data
+		Shift74HC595_Write8(displayData);
+		//LCD_DATA_OUT = displayData;					// write data
 		ks0108Enable();								// enable
 		
 		// second page
 		ks0108GotoXY(ks0108Coord.x, ks0108Coord.y + 8);
 		
-		displayData = ks0108ReadData();
+		//displayData = ks0108ReadData();
 		
-		LCD_CMD_PORT = cmdPort;						// restore command port
-		LCD_CSEL_PORT = cselPort;
-		LCD_DATA_DIR = 0xFF;						// data port is output
+		//LCD_CMD_PORT = cmdPort;						// restore command port
+		//LCD_CSEL_PORT = cselPort;
+		//LCD_DATA_DIR = 0xFF;						// data port is output
 		
 		displayData |= data >> (8 - yOffset);
 		if(ks0108Inverted)
 		{
 			displayData = ~displayData;
 		}
-		LCD_DATA_OUT = displayData;					// write data
+		Shift74HC595_Write8(displayData);
+		//LCD_DATA_OUT = displayData;					// write data
 		ks0108Enable();								// enable
 		
 		ks0108GotoXY(ks0108Coord.x + 1, ks0108Coord.y - 8);
@@ -791,9 +804,10 @@ void ks0108WriteData(uint8_t data)
 		{
 			data = ~data;
 		}
-		LCD_DATA_OUT = data;						// write data
+		Shift74HC595_Write8(data);
+		//LCD_DATA_OUT = data;						// write data
 		ks0108Enable();								// enable
 		ks0108Coord.x++;
 	}
-	LCD_DATA_OUT = 0x00;
+	//LCD_DATA_OUT = 0x00;
 }

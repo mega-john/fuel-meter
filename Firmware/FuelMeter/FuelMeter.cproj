@@ -129,6 +129,12 @@
     <Compile Include="24Cxx.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="74HC595.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="74HC595.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="ds1703.c">
       <SubType>compile</SubType>
     </Compile>
