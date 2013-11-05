@@ -17,9 +17,9 @@
 #include <util/delay.h>
 #include <stdlib.h>                                                                                                                                     
 #include <avr/pgmspace.h>
-#include "ks0108.h"
-#include "ds1703.h"
-#include "ds18x20.h"
+#include "hardware/display/ks0108.h"
+#include "hardware/clock/ds1703.h"
+#include "hardware/temperature/ds18x20.h"
 #include "Measurement.h"
 
 #define MAX_MENU_LENGTH 32

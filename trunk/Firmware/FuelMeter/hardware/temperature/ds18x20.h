@@ -1,7 +1,7 @@
 #ifndef DS18x20_H
 #define DS18x20_H
 
-#include "onewire.h"
+#include "..\wire\onewire.h"
 
 /* list of these commands translated into C defines:*/
 #define THERM_CMD_CONVERTTEMP 0x44
