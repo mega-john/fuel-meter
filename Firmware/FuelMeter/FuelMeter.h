@@ -18,11 +18,12 @@
 
 #include "ext_interrupt.h"
 #include "timer.h"
-#include "ks0108.h"
+#include "hardware/display/ks0108.h"
 #include "Menu.h"
 #include "Measurement.h"
-#include "24Cxx.h"
-#include "ds1703.h"
-#include "ds18x20.h"
+#include "hardware/memory/24Cxx.h"
+#include "hardware/clock/ds1703.h"
+#include "hardware/temperature/ds18x20.h"
+#include "hardware/display/ili9341.h"
 
 #endif /* FUELMETER_H_ */

@@ -22,10 +22,9 @@ Temperature range     -20 - +60 АC
 #include "FuelMeter.h"
 #include "timer.h"
 
-#include "onewire.h"
-#include "ds18x20.h"
+#include "hardware\wire\onewire.h"
+#include "hardware\temperature\ds18x20.h"
 #include "SystemRus5x7.h"
-
 
 volatile uint8_t old_menu_index = 0;
 volatile status_flags flags;
@@ -100,6 +99,7 @@ int main(void)
   
 	sei();
 
+	TFT_init();
 	menu_init();    
 
 	//char tmp[100] = "ежзийклмнопрстуфхцчшщ\0";
@@ -116,7 +116,7 @@ int main(void)
 	//ks0108DrawRoundRect(0, 0, 127, SC_HEIGHT, 4, BLACK);
 	//ks0108GotoXY(0, 0);
 	//ks0108Puts("header");
-	_delay_ms(1000);
+	_delay_ms(2000);
 	//uint8_t data[7] = {0, 23, 23, 6, 6, 10 , 13};
 	//ds1703_write((uint8_t*)&data);
 //

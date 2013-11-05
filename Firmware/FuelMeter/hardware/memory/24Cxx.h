@@ -1,7 +1,7 @@
 #ifndef _24CXX_H_
 #define _24CXX_H_
 
-#include "global.h"
+#include "..\..\global.h"
 
 #include <inttypes.h>
 #include <stdio.h>
