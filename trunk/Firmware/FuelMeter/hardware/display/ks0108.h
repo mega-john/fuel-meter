@@ -10,8 +10,8 @@
 #include <inttypes.h>
 #include <avr/pgmspace.h>
 #include "..\..\global.h"
-#include "..\..\SystemRus5x7.h"
-#include "..\..\74HC595.h"
+#include "SystemRus5x7.h"
+#include "..\74HC595.h"
 
 #ifndef	KS0108_H
 #define KS0108_H
