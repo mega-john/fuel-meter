@@ -24,7 +24,7 @@ Temperature range     -20 - +60 °C
 
 #include "hardware\wire\onewire.h"
 #include "hardware\temperature\ds18x20.h"
-#include "SystemRus5x7.h"
+#include "hardware\display\SystemRus5x7.h"
 
 volatile uint8_t old_menu_index = 0;
 volatile status_flags flags;
