@@ -354,7 +354,8 @@ void TFT_drawLine( uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t 
     int dx = abs(x), sx = x0 < x1 ? 1 : -1;
     int dy = -abs(y), sy = y0 < y1 ? 1 : -1;
     int err = dx + dy, e2; /* error value e_xy */
-    for (;;){ /* loop */
+    for (;;)
+	{ /* loop */
 	    TFT_setPixel(x0, y0, color);
 	    e2 = 2 * err;
 	    if (e2 >= dy) 
@@ -378,7 +379,9 @@ void TFT_drawVerticalLine( uint16_t poX, uint16_t poY,uint16_t length, uint16_t 
     TFT_setPage(poY, poY + length);
     TFT_sendCMD(0x2c);
     for(int i = 0; i < length; i++)
-    TFT_sendData(color);	
+    {
+		TFT_sendData(color);	
+	}
 }
 
 void TFT_drawHorizontalLine( uint16_t poX, uint16_t poY, uint16_t length, uint16_t color )
@@ -387,7 +390,9 @@ void TFT_drawHorizontalLine( uint16_t poX, uint16_t poY, uint16_t length, uint16
     TFT_setPage(poY, poY);
     TFT_sendCMD(0x2c);
     for(int i = 0; i < length; i++)
-    TFT_sendData(color);	
+    {
+		TFT_sendData(color);	
+	}
 }
 
 void TFT_drawRectangle( uint16_t poX, uint16_t poY, uint16_t length, uint16_t width, uint16_t color )
@@ -412,7 +417,10 @@ void TFT_drawCircle( int poX, int poY, int r, uint16_t color )
 		    err += ++y * 2 + 1;
 		    if (-x == y && e2 <= x) e2 = 0;
 	    }
-	    if (e2 > x) err += ++x * 2 + 1;
+	    if (e2 > x)
+		{
+			err += ++x * 2 + 1;
+		}
     } while (x <= 0);	
 }
 
@@ -430,7 +438,10 @@ void TFT_fillCircle( int poX, int poY, int r, uint16_t color )
 		    err += ++y * 2 + 1;
 		    if (-x == y && e2 <= x) e2 = 0;
 	    }
-	    if (e2 > x) err += ++x * 2 + 1;
+	    if (e2 > x)
+		{
+			err += ++x * 2 + 1;
+		}
     } while (x <= 0);	
 }
 
@@ -467,7 +478,6 @@ uint8_t TFT_drawNumber( long long_num, uint16_t poX, uint16_t poY, uint16_t size
 		    poX += FONT_SPACE * size; /* Move cursor right */
 	    }
     }
-
 
     while (long_num > 0)
     {
