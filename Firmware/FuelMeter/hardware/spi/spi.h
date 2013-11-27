@@ -34,7 +34,7 @@
 
 #define DigitalRead(P) ((SPI_PIN & (1 << P)) != 0)
 
-#define DigitalWrite(P,ST)		\
+#define DigitalWrite(P, ST)		\
 {								\ 
 	if(ST == HIGH)				\
 	{							\
@@ -46,7 +46,7 @@
 	}							\
 }								\
 
-#define PinMode(P,ST)			\
+#define PinMode(P, ST)			\
 {								\
 	if(ST == OUTPUT)			\
 	{							\
