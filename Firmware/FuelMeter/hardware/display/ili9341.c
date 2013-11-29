@@ -12,20 +12,25 @@
 
 void TFT_init( void )
 {
+	TFT_DDR |= TFT_RST;
+	TFT_DDR |= TFT_CS;
+	TFT_DDR |= TFT_DC;
+	
     SPI_begin();
     TFT_CS_HIGH;
     TFT_DC_HIGH;
-    uint8_t i = 0;
-	uint8_t TFTDriver = 0;
+    //uint8_t i = 0;
+	//uint8_t TFTDriver = 0;
 
     TFT_RST_ON;
     _delay_ms(10);
     TFT_RST_OFF;
+    _delay_ms(10);
 
-    for(i = 0; i < 3; i++)
-    {
-	    TFTDriver = TFT_readID();
-    }
+    //for(i = 0; i < 3; i++)
+    //{
+	    //TFTDriver = TFT_readID();
+    //}
 
     TFT_sendCMD(0xCB);
     TFT_WRITE_DATA(0x39);
@@ -84,7 +89,7 @@ void TFT_init( void )
     TFT_WRITE_DATA(0x08);
     TFT_WRITE_DATA(0x82);
     TFT_WRITE_DATA(0x27);
-    
+
     TFT_sendCMD(0xF2);         // 3Gamma Function Disable
     TFT_WRITE_DATA(0x00);
 
@@ -279,31 +284,31 @@ void TFT_fillScreen1(void)
     TFT_CS_HIGH;	
 }
 
-uint8_t TFT_readID( void )
-{
-    uint8_t i = 0;
-    uint8_t data[3];
-    uint8_t ID[3] = {0x00, 0x93, 0x41};
-    uint8_t ToF = 1;
-    for(i = 0;i < 3; i++)
-    {
-	    data[i] = TFT_Read_Register(0xd3, i + 1);
-	    if(data[i] != ID[i])
-	    {
-		    ToF = 0;
-	    }
-    }
-    //if(!ToF) /* data!=ID */
+//uint8_t TFT_readID( void )
+//{
+    //uint8_t i = 0;
+    //uint8_t data[3];
+    //uint8_t ID[3] = {0x00, 0x93, 0x41};
+    //uint8_t ToF = 1;
+    //for(i = 0;i < 3; i++)
     //{
-	    //Serial.print("Read TFT ID failed, ID should be 0x09341, but read ID = 0x");
-	    //for(i=0;i<3;i++)
+	    //data[i] = TFT_Read_Register(0xd3, i + 1);
+	    //if(data[i] != ID[i])
 	    //{
-		    //Serial.print(data[i],HEX);
+		    //ToF = 0;
 	    //}
-	    //Serial.println();
     //}
-    return ToF;	
-}
+    ////if(!ToF) /* data!=ID */
+    ////{
+	    ////Serial.print("Read TFT ID failed, ID should be 0x09341, but read ID = 0x");
+	    ////for(i=0;i<3;i++)
+	    ////{
+		    ////Serial.print(data[i],HEX);
+	    ////}
+	    ////Serial.println();
+    ////}
+    //return ToF;	
+//}
 
 void TFT_drawChar( uint8_t ascii, uint16_t poX, uint16_t poY, uint16_t size, uint16_t fgcolor )
 {

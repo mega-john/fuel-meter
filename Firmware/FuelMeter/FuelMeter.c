@@ -86,20 +86,43 @@ unsigned char search_ow_devices(void) // поиск всех устройств на шине
 
 }
 
+void tft_demo()
+{
+    
+    TFT_drawCircle(100, 100, 30,YELLOW); //center: (100, 100), r = 30 ,color : YELLOW
+    
+    TFT_drawCircle(100, 200, 40,CYAN); // center: (100, 200), r = 10 ,color : CYAN
+    
+    TFT_fillCircle(200, 100, 30,RED); //center: (200, 100), r = 30 ,color : RED
+    
+    TFT_fillCircle(200, 200, 30,BLUE); //center: (200, 200), r = 30 ,color : BLUE
+	
+	TFT_fillScreen(80, 160, 50, 150,RED);
+	TFT_fillRectangle(30, 120, 100,65,YELLOW);
+	TFT_drawRectangle(100, 170, 120,60,BLUE);
+}
+
 int main(void)
 {
-	init_ports();
-	init_ext_interrupts();
-	init_timers();
-	eeInit();
-	ks0108Init(0);
+	//init_ports();
+	//init_ext_interrupts();
+	//init_timers();
+	//eeInit();
+	//ks0108Init(0);
 	// Wait a little while the display starts up
-	for(volatile uint16_t i = 0; i < 15000; i++);
+	//for(volatile uint16_t i = 0; i < 15000; i++);
 	//_delay_ms(500); 
   
 	sei();
-
 	TFT_init();
+
+	
+	while(1)
+	{
+		TFT_fillScreen(0, 239, 0, 319, random());
+	};
+
+
 	menu_init();    
 
 	//char tmp[100] = "ХЦЧШЩЪЫЬЭЮЯабвгдежзий\0";
