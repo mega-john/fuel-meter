@@ -4,8 +4,6 @@
  * Created: 05.11.2013 11:01:46
  *  Author: estarcev
  */ 
-
-
 #ifndef ILI9341_H_
 #define ILI9341_H_
 
@@ -40,28 +38,39 @@
 #define MAX_X			239
 #define MAX_Y			319
 
-#define TFT_CS_LOW		{DDRD |= 0x20; PORTD &=~ 0x20;}
-#define TFT_CS_HIGH		{DDRD |= 0x20; PORTD |= 0x20;}
-#define TFT_DC_LOW		{DDRD |= 0x40; PORTD &=~ 0x40;}
-#define TFT_DC_HIGH		{DDRD |= 0x40; PORTD |= 0x40;}
-#define TFT_BL_OFF		{DDRD |= 0x80; PORTD &=~ 0x80;}
-#define TFT_BL_ON		{DDRD |= 0x80; PORTD |= 0x80;}
-#define TFT_RST_OFF		{DDRD |= 0x10; PORTD |= 0x10;}
-#define TFT_RST_ON		{DDRD |= 0x10; PORTD &=~ 0x10;}
+#define TFT_DDR			DDRC
+#define TFT_PORT		PORTC
 
-#define YP				A2 // must be an analog pin, use "An" notation!
-#define XM				A1 // must be an analog pin, use "An" notation!
-#define YM				14 // can be a digital pin, this is A0
-#define XP				17 // can be a digital pin, this is A3
+#define TFT_RST			(1 << PINC0)
+#define TFT_RST_OFF		{/*TFT_DDR |= TFT_RST;*/ TFT_PORT |= TFT_RST;}		
+#define TFT_RST_ON		{/*TFT_DDR |= TFT_RST;*/ TFT_PORT &=~ TFT_RST;}	
+	
+#define TFT_CS			(1 << PINC1)
+#define TFT_CS_LOW		{/*TFT_DDR |= TFT_CS;*/ TFT_PORT &=~ TFT_CS;}		
+#define TFT_CS_HIGH		{/*TFT_DDR |= TFT_CS;*/ TFT_PORT |= TFT_CS;}	
+		
+#define TFT_DC			(1 << PINC2)
+#define TFT_DC_LOW		{/*TFT_DDR |= TFT_DC;*/ TFT_PORT &=~ TFT_DC;}		
+#define TFT_DC_HIGH		{/*TFT_DDR |= TFT_DC;*/ TFT_PORT |= TFT_DC;}		
+	
+//background light, at now not used
+//#define TFT_BL			(1 << PINC3)//0x80
+//#define TFT_BL_OFF		{TFT_DDR |= TFT_BL; TFT_PORT &=~ TFT_BL;}		
+//#define TFT_BL_ON		{TFT_DDR |= TFT_BL; TFT_PORT |= TFT_BL;}		
 
-#define TS_MINX			116 * 2
-#define TS_MAXX			890 * 2
-#define TS_MINY			83 * 2
-#define TS_MAXY			913 * 2
+//#define YP				A2 // must be an analog pin, use "An" notation!
+//#define XM				A1 // must be an analog pin, use "An" notation!
+//#define YM				14 // can be a digital pin, this is A0
+//#define XP				17 // can be a digital pin, this is A3
+
+//#define TS_MINX			116 * 2
+//#define TS_MAXX			890 * 2
+//#define TS_MINY			83 * 2
+//#define TS_MAXY			913 * 2
 
 #define constrain(amt, low, high) ((amt) < (low) ? (low) : ((amt) > (high) ? (high) : (amt)))
 
-extern uint8_t simpleFont[][8];
+//extern uint8_t simpleFont[][8];
 
 void TFT_init (void);
 void TFT_setCol(uint16_t StartCol, uint16_t EndCol);
@@ -75,7 +84,7 @@ void TFT_sendData(uint16_t data);
 uint8_t TFT_Read_Register(uint8_t Addr, uint8_t xParameter);
 void TFT_fillScreen(uint16_t XL, uint16_t XR, uint16_t YU, uint16_t YD, uint16_t color);
 void TFT_fillScreen1(void);
-uint8_t TFT_readID(void);
+//uint8_t TFT_readID(void);
 
 void TFT_drawChar(uint8_t ascii, uint16_t poX, uint16_t poY, uint16_t size, uint16_t fgcolor);
 void TFT_drawString(char *string, uint16_t poX, uint16_t poY, uint16_t size, uint16_t fgcolor);

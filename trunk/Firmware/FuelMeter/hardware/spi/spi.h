@@ -14,14 +14,14 @@
 #include <util/delay.h>
 #include <stdlib.h>
 
-
-#define SPI_DDR		DDRB
-#define SPI_PORT	PORTB
-#define SPI_PIN		PINB
-#define SS			PB4
-#define MOSI		PB5
-#define MISO		PB6
-#define SCK			PB7
+//					atmega32	atmega328
+#define SPI_DDR		DDRB		//DDRB
+#define SPI_PORT	PORTB		//PORTB
+#define SPI_PIN		PINB		//PINB
+#define SS			PB4			//PB2
+#define MOSI		PB5			//PB3
+#define MISO		PB6			//PB4
+#define SCK			PB7			//PB5
 
 #define HIGH				0x1
 #define LOW					0x0

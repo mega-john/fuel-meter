@@ -8,27 +8,19 @@
 
 void SPI_begin( void )
 {
-  // Set SS to high so a connected chip will be "deselected" by default
-  DigitalWrite(SS, HIGH);
+    PinMode(SCK, OUTPUT);
+    PinMode(MOSI, OUTPUT);
+    PinMode(SS, OUTPUT);
+    
+    DigitalWrite(SCK, LOW);
+    DigitalWrite(MOSI, LOW);
+    DigitalWrite(SS, HIGH);
 
-  // When the SS pin is set as OUTPUT, it can be used as
-  // a general purpose output port (it doesn't influence SPI operations).
-  PinMode(SS, OUTPUT);
-
-  // Warning: if the SS pin ever becomes a LOW INPUT then SPI
-  // automatically switches to Slave, so the data direction of
-  // the SS pin MUST be kept as OUTPUT.
-  sb(SPCR, MSTR);
-  sb(SPCR, SPE);
-
-  // Set direction register for SCK and MOSI pin.
-  // MISO pin automatically overrides to INPUT.
-  // By doing this AFTER enabling SPI, we avoid accidentally
-  // clocking in a single bit since the lines go directly
-  // from "input" to SPI control.
-  // http://code.google.com/p/arduino/issues/detail?id=888  
-  PinMode(SCK, OUTPUT);
-  PinMode(MOSI, OUTPUT);	
+    // Warning: if the SS pin ever becomes a LOW INPUT then SPI
+    // automatically switches to Slave, so the data direction of
+    // the SS pin MUST be kept as OUTPUT.
+    SPCR |= _BV(MSTR);
+    SPCR |= _BV(SPE);
 }
 
 void SPI_end( void )
