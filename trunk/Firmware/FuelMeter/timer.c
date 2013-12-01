@@ -3,14 +3,14 @@
 
 #include "global.h"
 #include "timer.h"
-#include "Menu.h"
+//#include "Menu.h"
 
 extern uint8_t in_fuel;
 extern uint8_t out_fuel;
 extern uint8_t in_distance;
 
-extern uint8_t fuel_impulses;
-extern uint8_t distance_impulses;
+volatile uint8_t fuel_impulses;
+volatile uint8_t distance_impulses;
 
 extern status_flags flags;
 extern struct Menu_State MN;
@@ -40,7 +40,7 @@ void ProcessButton(uint8_t button_index)
 			bs[button_index].pressed_time++;
 			if(bs[button_index].pressed_time++ > LONG_PRESS)
 			{
-				LongButtonPress();
+//				LongButtonPress();
 				//tb(PORTD, PINC5);
 				bs[button_index].state = BS_LONGPRESSED;
 				//flags.update_menu = 1;
@@ -54,7 +54,7 @@ void ProcessButton(uint8_t button_index)
 			if(bs[button_index].pressed_time > DEBOUNCE)
 			{
 				//tb(PORTD, PINC4);
-				ShortButtonPress(button_index);
+//				ShortButtonPress(button_index);
 				//flags.update_menu = 1;
 			}
 		}

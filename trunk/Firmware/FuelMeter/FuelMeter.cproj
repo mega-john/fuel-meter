@@ -156,12 +156,6 @@
     <Compile Include="hardware\display\ili9341.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="hardware\display\ks0108.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="hardware\display\ks0108.h">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="hardware\display\SystemRus5x7.h">
       <SubType>compile</SubType>
     </Compile>
@@ -189,16 +183,28 @@
     <Compile Include="hardware\wire\onewire.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="keyboard.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="keyboard.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="Measurement.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Measurement.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="Menu.c">
+    <Compile Include="Menu1.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="Menu.h">
+    <Compile Include="Menu1.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="messages.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="messages.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="timer.c">
