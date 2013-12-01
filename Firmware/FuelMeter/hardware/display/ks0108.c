@@ -1,13 +1,3 @@
-/*
- * Copyright:      Fabian Maximilian Thiele  mailto:me@apetech.de
- * Author:         Fabian Maximilian Thiele
- * Remarks:        this Copyright must be included
- * known Problems: none
- * Version:        1.1
- * Description:    Graphic Library for KS0108- (and compatible) based LCDs
- * 
- */
-
 #include <inttypes.h>
 #include <avr/io.h>
 #include <avr/pgmspace.h>
@@ -19,9 +9,6 @@ uint8_t				ks0108Inverted = 0x00;
 ks0108FontCallback	ks0108FontRead = 0x00;
 uint8_t				ks0108FontColor = 0x00;
 const uint8_t*		ks0108Font = 0x00;
-uint8_t				displayBuffer[1024];
-
-//inline uint8_t ks0108ReadData(void);
 
 void ks0108DrawLine(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2, uint8_t color) 
 {
