@@ -31,7 +31,7 @@ volatile status_flags flags;
 volatile time_struct ts; 
 extern button_struct bs[4];
 volatile double consumption = 0.0;
-volatile Menu_State MN;
+//volatile Menu_State MN;
 volatile uint16_t total_measurements = 0;;
 measurement_struct ms1;
   
@@ -135,7 +135,7 @@ int main(void)
 	//eeWriteBytes(200, (void*)&tmp, 100);
 	//eeWriteBytes(300, (void*)&tmp, 100);
 
-	ks0108SelectFont(SystemRus5x7, ks0108ReadFontData, BLACK);
+	//ks0108SelectFont(SystemRus5x7, ks0108ReadFontData, BLACK);
 	//ks0108DrawRoundRect(0, 0, 127, SC_HEIGHT, 4, BLACK);
 	//ks0108GotoXY(0, 0);
 	//ks0108Puts("header");
@@ -147,10 +147,10 @@ int main(void)
   
   //ks0108Puts((char*)&tmp);
   /*while(1)*/
-	ks0108GotoXY(0, 0);
-	sprintf(tmp, "found: %i", nDevices);
-	ks0108Puts((char*)&tmp[0]);
-	_delay_ms(1000);
+	//ks0108GotoXY(0, 0);
+	//sprintf(tmp, "found: %i", nDevices);
+	//ks0108Puts((char*)&tmp[0]);
+	//_delay_ms(1000);
     //sprintf(tmp, "ךכלםמןנסעףפץצקרשתûü‎#", nDevices);
     //ks0108Puts((char*)&tmp);
     //ks0108GotoXY(0, 30);
@@ -210,11 +210,11 @@ int main(void)
   
     while(1)
     {
-		if(old_menu_index != MN.menuNo)
-		{
-		  ks0108ClearScreen();
-		  old_menu_index = MN.menuNo;
-		}
-		MFPtr(0);   
+		//if(old_menu_index != MN.menuNo)
+		//{
+		  //ks0108ClearScreen();
+		  //old_menu_index = MN.menuNo;
+		//}
+		//MFPtr(0);   
    }
 }

@@ -18,8 +18,9 @@
 
 #include "ext_interrupt.h"
 #include "timer.h"
-#include "hardware/display/ks0108.h"
-#include "Menu.h"
+//#include "hardware/display/ks0108.h"
+//#include "Menu.h"
+#include "Menu1.h"
 #include "Measurement.h"
 #include "hardware/memory/24Cxx.h"
 #include "hardware/clock/ds1703.h"
