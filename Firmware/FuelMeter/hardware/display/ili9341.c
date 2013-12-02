@@ -37,49 +37,49 @@ void TFT_init( void )
     //{
 	    //TFTDriver = TFT_readID();
     //}
-
-    TFT_sendCMD(0xCB);
+    
+    TFT_sendCMD(0xCB);//power control A
     TFT_WRITE_DATA(0x39);
     TFT_WRITE_DATA(0x2C);
     TFT_WRITE_DATA(0x00);
-    TFT_WRITE_DATA(0x34);
-    TFT_WRITE_DATA(0x02);
+    TFT_WRITE_DATA(0x34);//Vcore = 1.6
+    TFT_WRITE_DATA(0x02);//DDVDH = 5.6
 
-    TFT_sendCMD(0xCF);
+    TFT_sendCMD(0xCF);//power control B
     TFT_WRITE_DATA(0x00);
     TFT_WRITE_DATA(0XC1);
     TFT_WRITE_DATA(0X30);
 
-    TFT_sendCMD(0xE8);
-    TFT_WRITE_DATA(0x85);
-    TFT_WRITE_DATA(0x00);
-    TFT_WRITE_DATA(0x78);
+    TFT_sendCMD(0xE8);//driver timing control A
+    TFT_WRITE_DATA(0x85);//gate driver non-overlap timing control: 1:default + 1unit 
+    TFT_WRITE_DATA(0x00);//EQ timing control: 0 - default – 1unit,  CR timing control: 0 - default – 1unit
+    TFT_WRITE_DATA(0x78);//pre-charge timing control: 10 - default pre-charge timing 
 
-    TFT_sendCMD(0xEA);
+    TFT_sendCMD(0xEA);//driver timing control B
     TFT_WRITE_DATA(0x00);
     TFT_WRITE_DATA(0x00);
 
-    TFT_sendCMD(0xED);
+    TFT_sendCMD(0xED);//Power on sequence control
     TFT_WRITE_DATA(0x64);
     TFT_WRITE_DATA(0x03);
     TFT_WRITE_DATA(0X12);
-    TFT_WRITE_DATA(0X81);
+    TFT_WRITE_DATA(0X81);//DDVDH enhance mode(only for 8 external capacitors): enable
 
-    TFT_sendCMD(0xF7);
-    TFT_WRITE_DATA(0x20);
+    TFT_sendCMD(0xF7);//Pump ratio control
+    TFT_WRITE_DATA(0x20);//ratio control = 10:DDVDH=2xVCI 
 
-    TFT_sendCMD(0xC0);         //Power control
-    TFT_WRITE_DATA(0x23);         //VRH[5:0]
+    TFT_sendCMD(0xC0);         //Power Control 1
+    TFT_WRITE_DATA(0x23);         //VRH[5:0] = 4.6V
 
-    TFT_sendCMD(0xC1);         //Power control
+    TFT_sendCMD(0xC1);         //Power control 2
     TFT_WRITE_DATA(0x10);         //SAP[2:0];BT[3:0]
 
-    TFT_sendCMD(0xC5);         //VCM control
-    TFT_WRITE_DATA(0x3e);         //Contrast
-    TFT_WRITE_DATA(0x28);
+    TFT_sendCMD(0xC5);         //VCM control 1
+    TFT_WRITE_DATA(0x3e);         //Contrast, VCOMH(V) = 4.275
+    TFT_WRITE_DATA(0x28);//VCOML(V)  = -1.500
 
-    TFT_sendCMD(0xC7);         //VCM control2
-    TFT_WRITE_DATA(0x86);          //--
+    TFT_sendCMD(0xC7);         //VCM control 2
+    TFT_WRITE_DATA(0x86);          //Set the VCOM offset voltage: VMH – 58  VML – 58
 
     TFT_sendCMD(0x36);         // Memory Access Control
     TFT_WRITE_DATA(0x48);         //C8         //48 68???//28 E8 ???
