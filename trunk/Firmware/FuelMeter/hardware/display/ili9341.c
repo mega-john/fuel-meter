@@ -7,12 +7,10 @@
 #include "ili9341.h"
 
 #define FONT_SPACE 6
-#define FONT_X 8
+#define FONT_X 5
 #define FONT_Y 8
 
 uint8_t DisplayDirect;
-
-uint8_t simpleFont[][8] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
 
 void TFT_init( void )
 {
@@ -68,41 +66,43 @@ void TFT_init( void )
     TFT_sendCMD(0xF7);//Pump ratio control
     TFT_WRITE_DATA(0x20);//ratio control = 10:DDVDH=2xVCI 
 
-    TFT_sendCMD(0xC0);         //Power Control 1
-    TFT_WRITE_DATA(0x23);         //VRH[5:0] = 4.6V
+    TFT_sendCMD(0xC0);//Power Control 1
+    TFT_WRITE_DATA(0x23);//VRH[5:0] = 4.6V
 
-    TFT_sendCMD(0xC1);         //Power control 2
-    TFT_WRITE_DATA(0x10);         //SAP[2:0];BT[3:0]
+    TFT_sendCMD(0xC1);//Power control 2
+    TFT_WRITE_DATA(0x10);//SAP[2:0];BT[3:0]
 
-    TFT_sendCMD(0xC5);         //VCM control 1
-    TFT_WRITE_DATA(0x3e);         //Contrast, VCOMH(V) = 4.275
+    TFT_sendCMD(0xC5);//VCM control 1
+    TFT_WRITE_DATA(0x3e);//Contrast, VCOMH(V) = 4.275
     TFT_WRITE_DATA(0x28);//VCOML(V)  = -1.500
 
-    TFT_sendCMD(0xC7);         //VCM control 2
-    TFT_WRITE_DATA(0x86);          //Set the VCOM offset voltage: VMH – 58  VML – 58
+    TFT_sendCMD(0xC7);//VCM control 2
+    TFT_WRITE_DATA(0x86);//Set the VCOM offset voltage: VMH – 58  VML – 58
 
-    TFT_sendCMD(0x36);         // Memory Access Control
-    TFT_WRITE_DATA(0x48);         //C8         //48 68???//28 E8 ???
+    TFT_sendCMD(0x36);// Memory Access Control
+    TFT_WRITE_DATA(0x48);//C8         //48 68???//28 E8 ???
 
-    TFT_sendCMD(0x3A);
-    TFT_WRITE_DATA(0x55);
+    TFT_sendCMD(0x3A);//Pixel Format Set
+    TFT_WRITE_DATA(0x55);//16 bits / pixel 
 
-    TFT_sendCMD(0xB1);
+    TFT_sendCMD(0xB1);//Frame Rate Control (In Normal Mode/Full Colors) 
     TFT_WRITE_DATA(0x00);
-    TFT_WRITE_DATA(0x18);
+    TFT_WRITE_DATA(0x18);//24 clocks
+    //TFT_WRITE_DATA(0x10);//16 clocks
+    //TFT_WRITE_DATA(0x1F);//31 clocks
 
-    TFT_sendCMD(0xB6);         // Display Function Control
+    TFT_sendCMD(0xB6);// Display Function Control
     TFT_WRITE_DATA(0x08);
     TFT_WRITE_DATA(0x82);
     TFT_WRITE_DATA(0x27);
 
-    TFT_sendCMD(0xF2);         // 3Gamma Function Disable
+    TFT_sendCMD(0xF2);// 3Gamma Function
+    TFT_WRITE_DATA(0x01);//Disable
+
+    TFT_sendCMD(0x26);//Gamma curve selected
     TFT_WRITE_DATA(0x00);
 
-    TFT_sendCMD(0x26);         //Gamma curve selected
-    TFT_WRITE_DATA(0x01);
-
-    TFT_sendCMD(0xE0);         //Set Gamma
+    TFT_sendCMD(0xE0);//Positive Gamma Correction
     TFT_WRITE_DATA(0x0F);
     TFT_WRITE_DATA(0x31);
     TFT_WRITE_DATA(0x2B);
@@ -119,7 +119,7 @@ void TFT_init( void )
     TFT_WRITE_DATA(0x09);
     TFT_WRITE_DATA(0x00);
 
-    TFT_sendCMD(0XE1);         //Set Gamma
+    TFT_sendCMD(0XE1);//Negative Gamma Correction
     TFT_WRITE_DATA(0x00);
     TFT_WRITE_DATA(0x0E);
     TFT_WRITE_DATA(0x14);
@@ -136,25 +136,25 @@ void TFT_init( void )
     TFT_WRITE_DATA(0x36);
     TFT_WRITE_DATA(0x0F);
 
-    TFT_sendCMD(0x11);         //Exit Sleep
-    _delay_ms(120);
+    TFT_sendCMD(0x11);//Exit Sleep
+    _delay_ms(10);
 
-    TFT_sendCMD(0x29); //Display on
-    TFT_sendCMD(0x2c);
+    TFT_sendCMD(0x29);//Display on
+    TFT_sendCMD(0x2c);//Memory Write
     TFT_fillScreen1();	
 	TFT_setDisplayDirect(LEFT2RIGHT);
 }
 
 void TFT_setCol( uint16_t StartCol, uint16_t EndCol )
 {
-    TFT_sendCMD(0x2A); /* Column Command address */
+    TFT_sendCMD(0x2A);//Column Address Set
     TFT_sendData(StartCol);
     TFT_sendData(EndCol);	
 }
 
 void TFT_setPage( uint16_t StartPage, uint16_t EndPage )
 {
-    TFT_sendCMD(0x2B); /* Column Command address */
+    TFT_sendCMD(0x2B);//Page Address Set
     TFT_sendData(StartPage);
     TFT_sendData(EndPage);	
 }
@@ -163,7 +163,7 @@ void TFT_setXY( uint16_t poX, uint16_t poY )
 {
     TFT_setCol(poX, poX);
     TFT_setPage(poY, poY);
-    TFT_sendCMD(0x2c);	
+    TFT_sendCMD(0x2c);//Memory Write	
 }
 
 void TFT_setPixel( uint16_t poX, uint16_t poY, uint16_t color )
@@ -362,18 +362,28 @@ void TFT_setDisplayDirect( uint8_t Direction)
 
 void TFT_drawChar( uint8_t ascii, uint16_t poX, uint16_t poY, uint16_t size, uint16_t fgcolor )
 {
-    if((ascii >= 32) && (ascii <= 127))
-    {
-	    ;
-    }
-    else
-    {
-	    ascii = '?' - 32;
-    }
+    //if((ascii >= 32) && (ascii <= 127))
+    //{
+	    //;
+    //}
+    //else
+    //{
+	    //ascii = '?' - 32;
+    //}
+	
+	if(ascii < ' ')
+	{
+		ascii = '?' - 32;
+	}
+	else if(ascii > 127)
+	{
+		ascii -= 0x40;
+	}	
+	
     for (int i = 0; i < FONT_X; i++ ) 
 	{
 	    uint8_t temp = pgm_read_byte(&simpleFont[ascii - 0x20][i]);
-	    for(uint8_t f = 0; f < 8; f++)
+	    for(uint8_t f = 0; f < FONT_Y; f++)
 	    {
 		    if((temp >> f) & 0x01)
 		    {
@@ -411,7 +421,7 @@ void TFT_drawString( char *string, uint16_t poX, uint16_t poY, uint16_t size, ui
 	    {
 		    if(poX < MAX_X)
 		    {
-			    poX += 8 * size; // Move cursor right
+			    poX += 12 /** size*/; // Move cursor right
 		    }
 	    }
 	    else if(DisplayDirect == DOWN2UP)
@@ -443,21 +453,30 @@ void TFT_fillRectangle( uint16_t poX, uint16_t poY, uint16_t length, uint16_t wi
 	//TFT_fillScreen(poX, poX + length, poY, poY + width, color);
 	for(int i = 0; i < width; i++)
 	{
-		if(DisplayDirect == LEFT2RIGHT)
+		//if(DisplayDirect == LEFT2RIGHT)
+		//{
+			//TFT_drawHorizontalLine(poX, poY + i, length, color);
+		//}
+		//else if (DisplayDirect ==  DOWN2UP)
+		//{
+			//TFT_drawHorizontalLine(poX, poY - i, length, color);
+		//}
+		//else if(DisplayDirect == RIGHT2LEFT)
+		//{
+			//TFT_drawHorizontalLine(poX, poY - i, length, color);
+		//}
+		//else if(DisplayDirect == UP2DOWN)
+		//{
+			//TFT_drawHorizontalLine(poX, poY + i, length, color);
+		//}
+		
+		if(DisplayDirect == LEFT2RIGHT || DisplayDirect == UP2DOWN)
 		{
 			TFT_drawHorizontalLine(poX, poY + i, length, color);
 		}
-		else if (DisplayDirect ==  DOWN2UP)
+		else 
 		{
 			TFT_drawHorizontalLine(poX, poY - i, length, color);
-		}
-		else if(DisplayDirect == RIGHT2LEFT)
-		{
-			TFT_drawHorizontalLine(poX, poY - i, length, color);
-		}
-		else if(DisplayDirect == UP2DOWN)
-		{
-			TFT_drawHorizontalLine(poX, poY + i, length, color);
 		}
 	}
 }
@@ -498,7 +517,7 @@ void TFT_drawVerticalLine( uint16_t poX, uint16_t poY,uint16_t length, uint16_t 
 {
     TFT_setCol(poX, poX);
     TFT_setPage(poY, poY + length);
-    TFT_sendCMD(0x2c);
+    TFT_sendCMD(0x2c);//Memory Write
     for(int i = 0; i < length; i++)
     {
 		TFT_sendData(color);	
@@ -509,7 +528,7 @@ void TFT_drawHorizontalLine( uint16_t poX, uint16_t poY, uint16_t length, uint16
 {
     TFT_setCol(poX, poX + length);
     TFT_setPage(poY, poY);
-    TFT_sendCMD(0x2c);
+    TFT_sendCMD(0x2c);//Memory Write
     for(int i = 0; i < length; i++)
     {
 		TFT_sendData(color);	

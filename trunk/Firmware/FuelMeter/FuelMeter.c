@@ -102,6 +102,9 @@ void tft_demo()
 	TFT_drawRectangle(100, 170, 120,60,BLUE);
 }
 
+const char * str = "“≈—“Œ¬¿ﬂ ƒÀ»ÕÕ¿ﬂ –”—— ¿ﬂ —“–Œ ¿";
+const char * str1 = " ƒ–”√¿ﬂ “≈—“Œ¬¿ﬂ ƒÀ»ÕÕ¿ﬂ –”—— ¿ﬂ —“–Œ ¿";
+
 int main(void)
 {
 	//init_ports();
@@ -115,11 +118,26 @@ int main(void)
   
 	sei();
 	TFT_init();
-
+	uint8_t size = 2;
+	TFT_fillScreen(0, 239, 0, 319, BLACK);
 	
 	while(1)
 	{
-		TFT_fillScreen(0, 239, 0, 319, random());
+		TFT_setDisplayDirect(LEFT2RIGHT);
+		//TFT_fillScreen(0, 239, 0, 319, BLACK);
+		TFT_drawString(str1, 0, 0, size, BLACK);
+		TFT_drawString(str, 0, 0, size, RED);
+		//TFT_setDisplayDirect(RIGHT2LEFT);
+		//TFT_drawString(str, 239, 160, size, GREEN);
+		//TFT_setDisplayDirect(DOWN2UP);
+		//TFT_drawString(str, 100, 150, size, BLUE);
+		//TFT_setDisplayDirect(UP2DOWN);
+		//TFT_drawString(str, 100, 150, size, YELLOW);
+		_delay_ms(5000);
+		TFT_drawString(str, 0, 0, size, BLACK);
+		TFT_drawString(str1, 0, 0, size, RED);
+		_delay_ms(5000);
+		//size++;
 	};
 
 
