@@ -63,8 +63,8 @@
 
 #define constrain(amt, low, high) ((amt) < (low) ? (low) : ((amt) > (high) ? (high) : (amt)))
 
-//extern uint8_t simpleFont[][8];
-extern uint8_t simpleFont[][8];
+extern const uint8_t simpleFont[][5];
+//extern uint8_t const simpleFont[][8];
 
 /**Macro definitions for char display direction**/
 #define LEFT2RIGHT 0
