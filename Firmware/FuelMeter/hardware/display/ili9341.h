@@ -17,10 +17,7 @@
 #include <avr/pgmspace.h>
 
 #include "..\spi\spi.h"
-//#include "..\display\SystemRus5x7.h"
-//#include "..\display\Verdana_digits_24.h"
-//#include "..\display\Arial_bold_14.h"
-#include "..\display\fixednums15x31.h"
+#include "..\display\fonts\fonts.h"
 
 //Basic Colors
 #define RED             0xf800
@@ -93,7 +90,7 @@ void TFT_fillScreen1(void);
 //uint8_t TFT_readID(void);
 
 void TFT_drawChar(uint8_t ascii, uint16_t poX, uint16_t poY, uint16_t size, uint16_t fgcolor);
-void TFT_drawString(char *string, uint16_t poX, uint16_t poY, uint16_t size, uint16_t fgcolor);
+void TFT_drawString(const char *string, uint16_t poX, uint16_t poY, uint16_t size, uint16_t fgcolor);
 void TFT_fillRectangle(uint16_t poX, uint16_t poY, uint16_t length, uint16_t width, uint16_t color);
 
 void TFT_drawLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color);

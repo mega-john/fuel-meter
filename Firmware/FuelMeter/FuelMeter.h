@@ -15,6 +15,7 @@
 #include <avr/eeprom.h>
 #include <util/delay.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "ext_interrupt.h"
 #include "timer.h"
@@ -22,6 +23,7 @@
 //#include "Menu.h"
 #include "Menu1.h"
 #include "Measurement.h"
+#include "hardware/wire/onewire.h"
 #include "hardware/memory/24Cxx.h"
 #include "hardware/clock/ds1703.h"
 #include "hardware/temperature/ds18x20.h"
