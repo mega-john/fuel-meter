@@ -166,6 +166,12 @@
     <Compile Include="hardware\display\ili9341.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="hardware\i2c\i2c.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="hardware\i2c\i2c.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="hardware\memory\24Cxx.c">
       <SubType>compile</SubType>
     </Compile>
@@ -227,6 +233,7 @@
     <Folder Include="hardware\display\fonts" />
     <Folder Include="hardware\memory" />
     <Folder Include="hardware\clock" />
+    <Folder Include="hardware\i2c" />
     <Folder Include="hardware\temperature" />
     <Folder Include="hardware\wire" />
     <Folder Include="hardware\spi" />

@@ -45,6 +45,7 @@ typedef struct
 #define cb(port, bit) (port &= ~_BV(bit))	//clear bit
 #define tb(port, bit) (port ^= _BV(bit))	//toggle bit
 #define compare_bit(byte1, byte2, bit) ((!(_SFR_BYTE(byte1) & _BV(bit))) && (_SFR_BYTE(byte2) & _BV(bit)))
+#define CheckBit(port, bit) (port & _BV(bit))
 
 #define BTN_UP		4
 #define BTN_RIGHT	5
