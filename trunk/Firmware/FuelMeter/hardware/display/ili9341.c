@@ -11,6 +11,9 @@
 #define FONT_Y 8
 
 uint8_t DisplayDirect;
+FontCallback	FontRead = 0x00;
+uint8_t			FontColor = 0x00;
+const uint8_t*	Font = 0x00;
 
 void TFT_init( void )
 {
@@ -236,19 +239,19 @@ void TFT_sendData( uint16_t data )
     TFT_CS_HIGH;
 }
 
-uint8_t TFT_Read_Register( uint8_t Addr, uint8_t xParameter )
-{
-    uint8_t data = 0;
-    TFT_sendCMD(0xd9); /* ext command */
-    TFT_WRITE_DATA(0x10 + xParameter); /* 0x11 is the first Parameter */
-    TFT_DC_LOW;
-    TFT_CS_LOW;
-    SPI_transfer(Addr);
-    TFT_DC_HIGH;
-    data = SPI_transfer(0);
-    TFT_CS_HIGH;
-    return data;	
-}
+//uint8_t TFT_Read_Register( uint8_t Addr, uint8_t xParameter )
+//{
+    //uint8_t data = 0;
+    //TFT_sendCMD(0xd9); /* ext command */
+    //TFT_WRITE_DATA(0x10 + xParameter); /* 0x11 is the first Parameter */
+    //TFT_DC_LOW;
+    //TFT_CS_LOW;
+    //SPI_transfer(Addr);
+    //TFT_DC_HIGH;
+    //data = SPI_transfer(0);
+    //TFT_CS_HIGH;
+    //return data;	
+//}
 
 void TFT_fillScreen( uint16_t XL, uint16_t XR, uint16_t YU, uint16_t YD, uint16_t color )
 {
@@ -341,71 +344,128 @@ void TFT_fillScreen1(void)
     //return ToF;	
 //}
 
-void TFT_setOrientation(uint8_t HV)//horizontal or vertical
-{
-	TFT_sendCMD(0x03);
-	if(HV == 1)//vertical
-	{
-		TFT_sendData(0x5038);
-	}
-	else//horizontal
-	{
-		TFT_sendData(0x5030);
-	}
-	TFT_sendCMD(0x2c); //Start to write to display RAM
-}
+//void TFT_setOrientation(uint8_t HV)//horizontal or vertical
+//{
+	//TFT_sendCMD(0x03);
+	//if(HV == 1)//vertical
+	//{
+		//TFT_sendData(0x5038);
+	//}
+	//else//horizontal
+	//{
+		//TFT_sendData(0x5030);
+	//}
+	//TFT_sendCMD(0x2c); //Start to write to display RAM
+//}
 
 void TFT_setDisplayDirect( uint8_t Direction)
 {
 	DisplayDirect = Direction;
 }
 
-void TFT_drawChar( uint8_t ascii, uint16_t poX, uint16_t poY, uint16_t size, uint16_t fgcolor )
+void TFT_drawChar( uint8_t c, uint16_t poX, uint16_t poY, uint16_t size, uint16_t fgcolor )
 {
-    //if((ascii >= 32) && (ascii <= 127))
-    //{
-	    //;
-    //}
-    //else
-    //{
-	    //ascii = '?' - 32;
-    //}
+	uint8_t width = 0;
+	uint8_t height = FontRead(Font + FONT_HEIGHT);
+	uint8_t bytes = (height + 7) >> 3;// / 8;
 	
-	if(ascii < ' ')
+	uint8_t firstChar = FontRead(Font + FONT_FIRST_CHAR);
+	uint8_t charCount = FontRead(Font + FONT_CHAR_COUNT);
+	
+	uint16_t index = 0;
+
+	if(c < firstChar || c >= (firstChar + charCount))
 	{
-		ascii = '?' - 32;
+		return 1;
 	}
-	else if(ascii > 127)
+	else if(c > 127)
 	{
-		ascii -= 0x40;
-	}	
-	
-    for (int i = 0; i < FONT_X; i++ ) 
+		c -= 0x40;
+	}
+	c -= firstChar;
+
+	if(isFixedWidthFont(Font))
 	{
-	    uint8_t temp = pgm_read_byte(&simpleFont[ascii - 0x20][i]);
-	    for(uint8_t f = 0; f < FONT_Y; f++)
-	    {
-		    if((temp >> f) & 0x01)
-		    {
-			    if(DisplayDirect == LEFT2RIGHT)
-			    {
-					TFT_fillRectangle(poX + i * size, poY + f * size, size, size, fgcolor);
+		//thielefont = 0;
+		width = FontRead(Font + FONT_FIXED_WIDTH);
+		index = c * bytes * width + FONT_WIDTH_TABLE;
+	}
+	else
+	{
+		//thielefont = 1;
+		for(uint8_t i = 0; i < c; i++)
+		{
+			index += FontRead(Font + FONT_WIDTH_TABLE + i);
+		}
+		index = index * bytes + charCount + FONT_WIDTH_TABLE;
+		width = FontRead(Font + FONT_WIDTH_TABLE + c);
+	}
+
+	for(uint8_t i = 0; i < bytes; i++)
+	{
+		uint8_t page = i * width;
+		for(uint8_t j = 0; j < width; j++)
+		{
+			uint8_t data = FontRead(Font + index + page + j);
+			
+			if((height > 8) && (height < (i + 1) << 3))
+			{
+				data >>= (((i + 1) << 3) - height);
+			}
+			if(data == 0)
+			{
+				continue;
+			}
+			
+			for(uint8_t f = 0; f < 8; f++)
+			{
+				if((data >> f) & 0x01)
+				{
+					TFT_fillRectangle(poX + j * size, poY + f * size + i * 8 * size, size, size, fgcolor);
 				}
-			    else if(DisplayDirect == DOWN2UP)
-			    {
-					TFT_fillRectangle(poX + f * size, poY - i * size, size, size, fgcolor);
-				}
-			    else if(DisplayDirect == RIGHT2LEFT)
-			    {
-					TFT_fillRectangle(poX - i * size, poY - f * size, size, size, fgcolor);
-				}
-			    else if(DisplayDirect == UP2DOWN)
-			    {
-					TFT_fillRectangle(poX - f * size, poY + i * size, size, size, fgcolor);
-				}
-		    }
-	    }
-    }
+			}
+		}
+	}
+	//ks0108GotoXY(x + width + 1, y);
+
+
+    //for (int i = 0; i < FONT_X; i++ ) {
+	    //uint8_t temp = pgm_read_byte(&simpleFont[ascii-0x20][i]);
+	    //for(uint8_t f = 0; f < 8; f++)
+	    //{
+		    //if((temp >> f) & 0x01)
+		    //{
+			    //TFT_fillRectangle(poX + i * size, poY + f * size, size, size, fgcolor);
+		    //}
+	    //}
+    //}
+	//
+    //for (int i = 0; i < FONT_X; i++ ) 
+	//{
+	    //uint8_t temp = pgm_read_byte(&simpleFont[c - 0x20][i]);
+	    //for(uint8_t f = 0; f < FONT_Y; f++)
+	    //{
+		    //if((temp >> f) & 0x01)
+		    //{
+			    //if(DisplayDirect == LEFT2RIGHT)
+			    //{
+					//TFT_fillRectangle(poX + i * size, poY + f * size, size, size, fgcolor);
+				//}
+			    //else if(DisplayDirect == DOWN2UP)
+			    //{
+					//TFT_fillRectangle(poX + f * size, poY - i * size, size, size, fgcolor);
+				//}
+			    //else if(DisplayDirect == RIGHT2LEFT)
+			    //{
+					//TFT_fillRectangle(poX - i * size, poY - f * size, size, size, fgcolor);
+				//}
+			    //else if(DisplayDirect == UP2DOWN)
+			    //{
+					//TFT_fillRectangle(poX - f * size, poY + i * size, size, size, fgcolor);
+				//}
+		    //}
+	    //}
+    //}
 }
 
 void TFT_drawString( char *string, uint16_t poX, uint16_t poY, uint16_t size, uint16_t fgcolor )
@@ -421,7 +481,7 @@ void TFT_drawString( char *string, uint16_t poX, uint16_t poY, uint16_t size, ui
 	    {
 		    if(poX < MAX_X)
 		    {
-			    poX += 12 /** size*/; // Move cursor right
+			    poX += 20 * size; // Move cursor right
 		    }
 	    }
 	    else if(DisplayDirect == DOWN2UP)
@@ -751,4 +811,65 @@ uint8_t TFT_drawFloat1( float floatNumber, uint16_t poX, uint16_t poY, uint16_t 
     }
     f += decimal;
     return f;	
+}
+
+uint8_t ReadFontData(const uint8_t* ptr)
+{
+	return pgm_read_byte(ptr);
+}
+
+void SelectFont(const uint8_t* font, FontCallback callback, uint8_t color)
+{
+	Font = font;
+	FontRead = callback;
+	FontColor = color;
+}
+
+void TFT_set_orientation(uint8_t orientation)
+{
+	TFT_sendCMD(0x36);//wr_cmd(0x36);                     // MEMORY_ACCESS_CONTROL
+	switch (orientation) 
+	{
+		case 0:
+			TFT_WRITE_DATA(0x48);//_spi.write(0x48);
+		break;
+		case 1:
+			TFT_WRITE_DATA(0x28);//_spi.write(0x28);
+		break;
+		case 2:
+			TFT_WRITE_DATA(0x88);//_spi.write(0x88);
+		break;
+		case 3:
+			TFT_WRITE_DATA(0xE8);//_spi.write(0xE8);
+		break;
+	}
+    //TFT_CS_HIGH;//_cs = 1;
+}
+
+uint8_t CharWidth(char c)
+{
+	uint8_t width = 0;
+	uint8_t firstChar = FontRead(Font + FONT_FIRST_CHAR);
+	uint8_t charCount = FontRead(Font + FONT_CHAR_COUNT);
+	
+	// read width data
+	if(c >= firstChar && c < (firstChar + charCount))
+	{
+		c -= firstChar;
+		width = FontRead(Font + FONT_WIDTH_TABLE + c) + 1;
+	}
+	
+	return width;
+}
+
+uint8_t StringWidth(char* str)
+{
+	uint8_t width = 0;
+	
+	while(*str != 0)
+	{
+		width += CharWidth(*str++);
+	}
+	
+	return width;
 }

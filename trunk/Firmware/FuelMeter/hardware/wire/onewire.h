@@ -6,7 +6,7 @@
 #include <stdbool.h>
 
 // Максимальное количество устройств на шине
-#define MAXDEVICES 10
+#define MAXDEVICES 4
 
 // Если для эмуляции шины используется USART
 //#define UART_AS_OneWire
