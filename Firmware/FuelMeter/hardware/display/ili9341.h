@@ -17,7 +17,10 @@
 #include <avr/pgmspace.h>
 
 #include "..\spi\spi.h"
-#include "..\display\SystemRus5x7.h"
+//#include "..\display\SystemRus5x7.h"
+//#include "..\display\Verdana_digits_24.h"
+//#include "..\display\Arial_bold_14.h"
+#include "..\display\fixednums15x31.h"
 
 //Basic Colors
 #define RED             0xf800
@@ -63,8 +66,11 @@
 
 #define constrain(amt, low, high) ((amt) < (low) ? (low) : ((amt) > (high) ? (high) : (amt)))
 
-extern const uint8_t simpleFont[][5];
+//extern const uint8_t simpleFont[][5];
 //extern uint8_t const simpleFont[][8];
+
+typedef uint8_t (*FontCallback)(const uint8_t*);
+
 
 /**Macro definitions for char display direction**/
 #define LEFT2RIGHT 0
@@ -81,7 +87,7 @@ void TFT_sendCMD(uint8_t index);
 void TFT_WRITE_Package(uint16_t *data, uint8_t howmany);
 void TFT_WRITE_DATA(uint8_t data);
 void TFT_sendData(uint16_t data);
-uint8_t TFT_Read_Register(uint8_t Addr, uint8_t xParameter);
+//uint8_t TFT_Read_Register(uint8_t Addr, uint8_t xParameter);
 void TFT_fillScreen(uint16_t XL, uint16_t XR, uint16_t YU, uint16_t YD, uint16_t color);
 void TFT_fillScreen1(void);
 //uint8_t TFT_readID(void);
@@ -103,7 +109,22 @@ uint8_t TFT_drawNumber(long long_num, uint16_t poX, uint16_t poY, uint16_t size,
 uint8_t TFT_drawFloat(float floatNumber, uint8_t decimal, uint16_t poX, uint16_t poY, uint16_t size, uint16_t fgcolor);
 uint8_t TFT_drawFloat1(float floatNumber, uint16_t poX, uint16_t poY, uint16_t size, uint16_t fgcolor);
 
-void TFT_setOrientation(uint8_t HV);
+//void TFT_setOrientation(uint8_t HV);
 void TFT_setDisplayDirect(uint8_t data);
+void TFT_set_orientation(uint8_t orientation);
+
+
+// Font Functions
+#define isFixedWidthFont(font)  ((FontRead(font + FONT_LENGTH) == 0) && (FontRead(font + FONT_LENGTH + 1) == 0))
+uint8_t ReadFontData(const uint8_t* ptr);		//Standard Read Callback
+void SelectFont(const uint8_t* font, FontCallback callback, uint8_t color);
+
+// Font Indices
+#define FONT_LENGTH			0
+#define FONT_FIXED_WIDTH	2
+#define FONT_HEIGHT			3
+#define FONT_FIRST_CHAR		4
+#define FONT_CHAR_COUNT		5
+#define FONT_WIDTH_TABLE	6
 
 #endif /* ILI9341_H_ */

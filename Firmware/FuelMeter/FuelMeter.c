@@ -4,19 +4,20 @@
  * Created: 15.08.2013 21:04:46
  *  Author: john
  
-Type          FCH-m-POM-LC
-Dimensions        (L x W x H) 58 x 41 x 27 mm
-Impulse number      D1: 10000 Impulse/l, D3: 2500 Impulse/l
-Operating voltage     5 - 24 Vdc
-Connection        2 x 9.73 mm (G 1/8") + 2 x M5
-Accuracy        ±2 %
-Current consumption   8 mA
-Measurement range     (with nozzle 1 mm) 0.01 - 1.0 l/min/(without nozzle, D = 3 mm) 0.05 - 3.5 l/min
-Output current      20 mA
-Material        POM, O-Ring: FKM
-Pressure        Max 4 bar
-Temperature range     -20 - +60 °C
+Type					FCH-m-POM-LC
+Dimensions				(L x W x H) 58 x 41 x 27 mm
+Impulse number			D1: 10000 Impulse/l, D3: 2500 Impulse/l
+Operating voltage		5 - 24 Vdc
+Connection				2 x 9.73 mm (G 1/8") + 2 x M5
+Accuracy				±2 %
+Current consumption		8 mA
+Measurement range		(with nozzle 1 mm) 0.01 - 1.0 l/min/(without nozzle, D = 3 mm) 0.05 - 3.5 l/min
+Output current			20 mA
+Material				POM, O-Ring: FKM
+Pressure				Max 4 bar
+Temperature range		-20 - +60 °C
  */ 
+
 #include <string.h>
 
 #include "FuelMeter.h"
@@ -69,7 +70,7 @@ unsigned char search_ow_devices(void) // ïîèñê âñåõ óñòðîéñòâ íà øèíå
 
   sensors_count = 0;
 
-  for( diff = OW_SEARCH_FIRST; diff != OW_LAST_DEVICE && sensors_count < MAXDEVICES ; )
+  for(diff = OW_SEARCH_FIRST; diff != OW_LAST_DEVICE && sensors_count < MAXDEVICES ;)
   {
     OW_FindROM( &diff, &id[0] );
 
@@ -103,10 +104,11 @@ void tft_demo()
 }
 
 const char * str = "ÒÅÑÒÎÂÀß ÄËÈÍÍÀß ÐÓÑÑÊÀß ÑÒÐÎÊÀ";
-const char * str1 = " ÄÐÓÃÀß ÒÅÑÒÎÂÀß ÄËÈÍÍÀß ÐÓÑÑÊÀß ÑÒÐÎÊÀ";
+const char * str1 = "01234";
 
 int main(void)
 {
+	//cli();
 	//init_ports();
 	//init_ext_interrupts();
 	//init_timers();
@@ -117,26 +119,46 @@ int main(void)
 	//_delay_ms(500); 
   
 	sei();
+	//SelectFont(SystemRus5x7, ReadFontData, 0);
+	SelectFont(fixednums15x31, ReadFontData, 0);
+	//TFT_drawString(str1, 0, 0, 1, RED);
 	TFT_init();
-	uint8_t size = 2;
+	uint8_t size = 5;
 	TFT_fillScreen(0, 239, 0, 319, BLACK);
+	//SelectFont(Arial_bold_14, ReadFontData, 0);
 	
 	while(1)
 	{
-		TFT_setDisplayDirect(LEFT2RIGHT);
+		//TFT_setDisplayDirect(LEFT2RIGHT);
+		TFT_set_orientation(0);
 		//TFT_fillScreen(0, 239, 0, 319, BLACK);
-		TFT_drawString(str1, 0, 0, size, BLACK);
-		TFT_drawString(str, 0, 0, size, RED);
+		TFT_drawString(str1, 100, 100, 1, RED);
+		_delay_ms(2000);
+		TFT_set_orientation(1);
+		//TFT_fillScreen(0, 239, 0, 319, BLACK);
+		TFT_drawString(str1, 100, 100, 1, RED);
+		_delay_ms(2000);
+		TFT_set_orientation(2);
+		//TFT_fillScreen(0, 239, 0, 319, BLACK);
+		TFT_drawString(str1, 100, 100, 1, RED);
+		_delay_ms(2000);
+		TFT_set_orientation(3);
+		//TFT_fillScreen(0, 239, 0, 319, BLACK);
+		TFT_drawString(str1, 100, 100, 1, RED);
+		_delay_ms(2000);
+		
+		//TFT_drawString(str, 0, 0, size, RED);
 		//TFT_setDisplayDirect(RIGHT2LEFT);
 		//TFT_drawString(str, 239, 160, size, GREEN);
 		//TFT_setDisplayDirect(DOWN2UP);
 		//TFT_drawString(str, 100, 150, size, BLUE);
 		//TFT_setDisplayDirect(UP2DOWN);
 		//TFT_drawString(str, 100, 150, size, YELLOW);
-		_delay_ms(5000);
-		TFT_drawString(str, 0, 0, size, BLACK);
-		TFT_drawString(str1, 0, 0, size, RED);
-		_delay_ms(5000);
+		//_delay_ms(5000);
+		//TFT_drawString(str, 0, 0, size, BLACK);
+		//TFT_drawString(str1, 0, 0, size, RED);
+		//TFT_fillScreen(0, 239, 0, 319, GREEN);
+		//_delay_ms(5000);
 		//size++;
 	};
 
@@ -144,7 +166,7 @@ int main(void)
 	menu_init();    
 
 	//char tmp[100] = "ÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèé\0";
-	char tmp[100] = "qwertyuiop\0";
+	//char tmp[100] = "qwertyuiop\0";
 	//memset(&tmp, 0xff, 100);
 	//
 	//uint16_t addr = 100;

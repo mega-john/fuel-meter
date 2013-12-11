@@ -8,6 +8,7 @@
 
 void SPI_begin( void )
 {
+	SPI_setClockDivider(SPI_CLOCK_DIV2);
     PinMode(SCK, OUTPUT);
     PinMode(MOSI, OUTPUT);
     PinMode(SS, OUTPUT);
