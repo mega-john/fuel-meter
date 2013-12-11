@@ -376,7 +376,7 @@ void TFT_drawChar( uint8_t c, uint16_t poX, uint16_t poY, uint16_t size, uint16_
 
 	if(c < firstChar || c >= (firstChar + charCount))
 	{
-		return 1;
+		return;
 	}
 	else if(c > 127)
 	{
@@ -468,7 +468,7 @@ void TFT_drawChar( uint8_t c, uint16_t poX, uint16_t poY, uint16_t size, uint16_
     //}
 }
 
-void TFT_drawString( char *string, uint16_t poX, uint16_t poY, uint16_t size, uint16_t fgcolor )
+void TFT_drawString(const char *string, uint16_t poX, uint16_t poY, uint16_t size, uint16_t fgcolor )
 {
     while(*string)
     {

@@ -17,7 +17,7 @@ typedef struct PROGMEM{
 	void       *Parent;
 	void       *Child;
 	uint8_t     Select;
-	const char  Text[10];
+	const char  Text[12];
 } menuItem;
 
 menuItem* selectedMenuItem; // текущий пункт меню

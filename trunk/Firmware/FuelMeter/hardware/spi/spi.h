@@ -29,14 +29,14 @@
 #define INPUT				0x0
 #define OUTPUT				0x1
 
+#define SPI_CLOCK_DIV2		0x04
 #define SPI_CLOCK_DIV4		0x00
+#define SPI_CLOCK_DIV8		0x05
 #define SPI_CLOCK_DIV16		0x01
+#define SPI_CLOCK_DIV32		0x06
 #define SPI_CLOCK_DIV64		0x02
 #define SPI_CLOCK_DIV128	0x03
-#define SPI_CLOCK_DIV2		0x04
-#define SPI_CLOCK_DIV8		0x05
-#define SPI_CLOCK_DIV32		0x06
-#define SPI_CLOCK_DIV64		0x07
+//#define SPI_CLOCK_DIV64		0x07
 
 #define SPI_MODE0			0x00
 #define SPI_MODE1			0x04
@@ -49,29 +49,29 @@
 
 #define DigitalRead(P) ((SPI_PIN & (1 << P)) != 0)
 
-#define DigitalWrite(P, ST)		\
-{								\ 
-	if(ST == HIGH)				\
-	{							\
-		(SPI_PORT |= (1 << P)); \
-	}							\
-	else						\
-	{							\
-		(SPI_PORT &= ~(1 << P));\ 
-	}							\
-}								\
+#define DigitalWrite(P, ST)			\
+{									\
+	if(ST == HIGH)					\
+	{								\
+		(SPI_PORT |= (1 << P));		\
+	}								\
+	else							\
+	{								\
+		(SPI_PORT &= ~(1 << P));	\
+	}								\
+}									\
 
-#define PinMode(P, ST)			\
-{								\
-	if(ST == OUTPUT)			\
-	{							\
-		(SPI_DDR |= (1 << P));	\
-	}							\
-	else						\
-	{							\
-		(SPI_DDR &= ~(1 << P)); \
-	}							\
-}								\
+#define PinMode(P, ST)				\
+{									\
+	if(ST == OUTPUT)				\
+	{								\
+		(SPI_DDR |= (1 << P));		\
+	}								\
+	else							\
+	{								\
+		(SPI_DDR &= ~(1 << P));		\
+	}								\
+}									\
 
 void SPI_begin(void);
 void SPI_end(void);

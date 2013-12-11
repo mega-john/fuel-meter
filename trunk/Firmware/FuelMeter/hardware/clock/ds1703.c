@@ -6,9 +6,6 @@
  */ 
 #include "ds1703.h"
 
-
-
-
 #define MAX_TRIES 50
 
 #define DS1307_ID    0xD0        // I2C DS1307 Device Identifier
