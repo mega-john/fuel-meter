@@ -8,7 +8,7 @@
 #include <stdlib.h>
 
 #include <avr/io.h>
-#include <util/twi.h>	
+#include <util/twi.h>
 #include <stdbool.h>
 
 #define DEBUG 0
@@ -28,36 +28,28 @@
 #  define UBRR UBRRL
 #endif
 
-/*
- * TWI address for 24Cxx EEPROM:
- *
- * 1 0 1 0 E2 E1 E0 R/~W	24C01/24C02
- * 1 0 1 0 E2 E1 A8 R/~W	24C04
- * 1 0 1 0 E2 A9 A8 R/~W	24C08
- * 1 0 1 0 A10 A9 A8 R/~W	24C16
- */
-#define TWI_SLA_24CXX	0xa0	/* E2 E1 E0 = 0 0 0 */
 
-#define TWI_SLA_DS1703	0xD0
+#define DEV_ADDR_24CXX	0xA0
+#define DEV_ADDR_DS1703	0xD0
 
 #define WORD_ADDRESS_16BIT
-#define MAX_ITER	200
-#define PAGE_SIZE 8
+#define MAX_ITER		200
+#define PAGE_SIZE		8
 
-#define SEND_START_CONDITION (_BV(TWINT) | _BV(TWSTA) | _BV(TWEN))
-#define SEND_STOP_CONDITION (_BV(TWINT) | _BV(TWSTO) | _BV(TWEN))
-#define SEND_DATA_WITH_ACK (_BV(TWEA) | _BV(TWINT) | _BV(TWEN))
-#define SEND_DATA_WITH_NACK (_BV(TWINT) | _BV(TWEN))
-#define WAIT_FOR_TRANSMIT while((TWCR & _BV(TWINT)) == 0)
+#define SEND_START_CONDITION	(_BV(TWINT) | _BV(TWEN) | _BV(TWSTA))
+#define SEND_STOP_CONDITION		(_BV(TWINT) | _BV(TWEN) | _BV(TWSTO))
+#define SEND_DATA_WITH_ACK		(_BV(TWINT) | _BV(TWEN) | _BV(TWEA))
+#define SEND_DATA_WITH_NACK		(_BV(TWINT) | _BV(TWEN))
+#define WAIT_FOR_TRANSMIT		while((TWCR & _BV(TWINT)) == 0)
 
 void ioinit(void);
-int ee24xx_read_bytes(uint16_t eeaddr, int len, uint8_t *buf);
-int ee24xx_write_page(uint16_t eeaddr, int len, uint8_t *buf);
-int ee24xx_write_bytes(uint16_t eeaddr, int len, uint8_t *buf);
+uint8_t ee24xx_read_bytes(uint16_t eeaddr, int len, uint8_t *buf);
+uint8_t ee24xx_write_page(uint16_t eeaddr, int len, uint8_t *buf);
+uint8_t ee24xx_write_bytes(uint16_t eeaddr, int len, uint8_t *buf);
 
 void eeInit(void);
-bool eeReadBytes(uint16_t address, uint8_t* data, uint8_t len);
-bool eeWriteBytes(uint16_t address, uint8_t* data, uint8_t len);
+bool eeReadBytes(uint16_t address, uint8_t *data, uint8_t len);
+bool eeWriteBytes(uint16_t address, uint8_t *data, uint8_t len);
 
 //// Convert Decimal to Binary Coded Decimal (BCD)
 //char dec2bcd(char num);

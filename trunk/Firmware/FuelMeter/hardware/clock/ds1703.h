@@ -3,9 +3,7 @@
  *
  * Created: 06.10.2013 23:02:32
  *  Author: john
- */ 
-
-
+ */
 #ifndef DS1703_H_
 #define DS1703_H_
 

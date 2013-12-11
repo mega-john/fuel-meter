@@ -1,9 +1,10 @@
 #ifndef ONEWIRE_H
 #define ONEWIRE_H
 
-
+#include "..\..\global.h"
 #include <avr/io.h>
 #include <stdbool.h>
+
 
 // ћаксимальное количество устройств на шине
 #define MAXDEVICES 4
@@ -36,10 +37,10 @@
 #define OW_CMD_MATCHROM		0x55
 #define OW_CMD_SKIPROM		0xCC
 
-#define	OW_SEARCH_FIRST	0xFF		// start new search
-#define	OW_PRESENCE_ERR	0xFF
-#define	OW_DATA_ERR	    0xFE
-#define OW_LAST_DEVICE	0x00		// last device found
+#define	OW_SEARCH_FIRST		0xFF		// start new search
+#define	OW_PRESENCE_ERR		0xFF
+#define	OW_DATA_ERR			0xFE
+#define OW_LAST_DEVICE		0x00		// last device found
 //			0x01 ... 0x40: continue searching
 
 #define OW_DS1990_FAMILY_CODE	1
@@ -56,19 +57,19 @@
 // rom-code size including CRC
 #define OW_ROMCODE_SIZE	8
 
-unsigned char OW_Reset(void);
-void OW_WriteBit(unsigned char bit);
-unsigned char OW_ReadBit(void);
+uint8_t OW_Reset(void);
+void OW_WriteBit(uint8_t bit);
+uint8_t OW_ReadBit(void);
 #ifndef UART_AS_OneWire
-	unsigned char OW_ReadByte(void);
-	void OW_WriteByte(unsigned char byte);
+	uint8_t OW_ReadByte(void);
+	void OW_WriteByte(uint8_t byte);
 #else
-	unsigned char OW_WriteByte(unsigned char byte);
+	uint8_t OW_WriteByte(uint8_t byte);
 	#define OW_ReadByte() OW_WriteByte(0xFF)
 #endif
-unsigned char OW_SearchROM( unsigned char diff, unsigned char *id );
-void OW_FindROM(unsigned char *diff, unsigned char id[]);
-unsigned char OW_ReadROM(unsigned char *buffer);
-unsigned char OW_MatchROM(unsigned char *rom);
+uint8_t OW_SearchROM(uint8_t diff, uint8_t *id );
+void OW_FindROM(uint8_t *diff, uint8_t id[]);
+uint8_t OW_ReadROM(uint8_t *buffer);
+uint8_t OW_MatchROM(uint8_t *rom);
 
 #endif

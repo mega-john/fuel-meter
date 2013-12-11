@@ -44,7 +44,7 @@ unsigned char i2c_transmit(unsigned char type)
 	switch(type) 
 	{
 		case I2C_START:    // Send Start Condition
-			TWCR = (1 << TWINT) | (1 << TWSTA) | (1 << TWEN);
+			TWCR = (1 << TWINT) | (1 << TWEN) | (1 << TWSTA);
 		break;
 		
 		case I2C_DATA:     // Send Data with No-Acknowledge
@@ -52,7 +52,7 @@ unsigned char i2c_transmit(unsigned char type)
 		break;
 		
 		case I2C_DATA_ACK: // Send Data with Acknowledge
-			TWCR = (1 << TWEA) | (1 << TWINT) | (1 << TWEN);
+			TWCR = (1 << TWINT) | (1 << TWEN) | (1 << TWEA);
 		break;
 		
 		case I2C_STOP:     // Send Stop Condition

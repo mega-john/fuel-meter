@@ -52,32 +52,39 @@ void init_ports(void)
   PORTD = 0xf0;
 }
 
-unsigned char nDevices; // количество сенсоров
-unsigned char owDevicesIDs[MAXDEVICES][8];  // Их ID
+uint8_t nDevices; // количество сенсоров
+uint8_t owDevicesIDs[MAXDEVICES][8];  // Их ID
 
-unsigned char search_ow_devices(void) // поиск всех устройств на шине
+uint8_t search_ow_devices(void) // поиск всех устройств на шине
 {
-  unsigned char i;
-  unsigned char id[OW_ROMCODE_SIZE];
-  unsigned char diff, sensors_count;
+	uint8_t i;
+	uint8_t id[OW_ROMCODE_SIZE];
+	uint8_t diff, sensors_count;
 
-  sensors_count = 0;
+	sensors_count = 0;
 
-  for(diff = OW_SEARCH_FIRST; diff != OW_LAST_DEVICE && sensors_count < MAXDEVICES ;)
-  {
-    OW_FindROM( &diff, &id[0] );
+	for(diff = OW_SEARCH_FIRST; diff != OW_LAST_DEVICE && sensors_count < MAXDEVICES;)
+	{
+		OW_FindROM(&diff, &id[0]);
 
-    if( diff == OW_PRESENCE_ERR ) break;
+		if(diff == OW_PRESENCE_ERR) 
+		{
+			break;
+		}
 
-    if( diff == OW_DATA_ERR ) break;
+		if(diff == OW_DATA_ERR) 
+		{
+			break;
+		}
 
-    for (i = 0; i < OW_ROMCODE_SIZE; i++)
-    owDevicesIDs[sensors_count][i] = id[i];
+		for (i = 0; i < OW_ROMCODE_SIZE; i++)
+		{
+			owDevicesIDs[sensors_count][i] = id[i];
+		}
     
-    sensors_count++;
-  }
-  return sensors_count;
-
+		sensors_count++;
+	}
+	return sensors_count;
 }
 
 const char * str = "ТЕСТОВАЯ ДЛИННАЯ РУССКАЯ СТРОКА";
