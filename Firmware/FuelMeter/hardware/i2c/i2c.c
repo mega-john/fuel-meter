@@ -27,7 +27,7 @@ uint8_t i2c_transmit(uint8_t type)
     }
 
     // Wait for TWINT flag set on Register TWCR
-    while(!(TWCR & (1 << TWINT)));
+    WAIT_FOR_TRANSMIT;
 
     // Return TWI Status Register, mask the prescaller bits (TWPS1,TWPS0)
     return TW_STATUS;
