@@ -11,6 +11,8 @@
 #include <util/twi.h>
 #include <stdbool.h>
 
+#include "..\i2c\i2c.h"
+
 #define DEBUG 0
 
 #ifndef UCSRB
@@ -44,8 +46,10 @@
 
 void ioinit(void);
 uint8_t ee24xx_read_bytes(uint16_t eeaddr, int len, uint8_t *buf);
+uint8_t _ee24xx_read_bytes(uint16_t dev_id, uint16_t addr, bool is16bit, int len, uint8_t *buf);
 uint8_t ee24xx_write_page(uint16_t eeaddr, int len, uint8_t *buf);
 uint8_t ee24xx_write_bytes(uint16_t eeaddr, int len, uint8_t *buf);
+uint8_t _ee24xx_write_bytes(uint16_t dev_id, uint16_t addr, bool is16bit, int len, uint8_t *buf);
 
 void eeInit(void);
 bool eeReadBytes(uint16_t address, uint8_t *data, uint8_t len);
