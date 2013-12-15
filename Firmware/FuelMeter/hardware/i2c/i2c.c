@@ -5,7 +5,7 @@
  *  Author: estarcev
  */
 #include "i2c.h"
-uint8_t i2c_transmit(uint8_t type)
+uint8_t _i2c_transmit(uint8_t type)
 {
     switch(type)
     {
@@ -13,7 +13,7 @@ uint8_t i2c_transmit(uint8_t type)
             TWCR = SEND_START_CONDITION;
             break;
 
-        case I2C_DATA:     // Send Data with No-Acknowledge
+        case I2C_DATA_NAK:     // Send Data with No-Acknowledge
             TWCR = SEND_DATA_WITH_NACK;
             break;
 
@@ -25,90 +25,151 @@ uint8_t i2c_transmit(uint8_t type)
             TWCR = SEND_STOP_CONDITION;
             return 0;
     }
+    
+    WAIT_FOR_TRANSMIT;// Wait for TWINT flag set on Register TWCR
 
-    // Wait for TWINT flag set on Register TWCR
-    WAIT_FOR_TRANSMIT;
-
-    // Return TWI Status Register, mask the prescaller bits (TWPS1,TWPS0)
-    return TW_STATUS;
+    return TW_STATUS;// Return TWI Status Register
 }
 
-uint8_t i2c_set_device_address(uint16_t dev_id, uint16_t addr, uint8_t rw_type, bool is16bit)
+static uint8_t sla;
+
+uint8_t i2c_set_device_address(uint16_t dev_id, uint16_t addr, bool is16bit)
 {
-    s_eeprom_addr = eprom_addr;
     char retries = MAX_RETRIES;
     char err = 0;
-
-    goto start;
+	uint8_t status;
+	
+    goto begin;
 
 retry:
-    TWCR = SEND_STOP_CONDITION;
-    retries--;
-    _delay_us(500);
-    if(retries <= 0)
+	//_i2c_transmit(I2C_STOP);
+    if(--retries <= 0)
     {
-        return err;
+        return -1;
     }
 
-start:
-    if(i2c_transmit(I2C_START) != TW_START)
-    {
-        err = 0xe1;
-        goto retry;
-    }
+begin:
+	status = _i2c_transmit(I2C_START);	
+	switch(status)
+	{
+		case TW_REP_START:		/* OK, but should not happen */
+		case TW_START:
+		break;
+		case TW_MT_ARB_LOST:
+		goto begin;
+		default:
+		return -1;		/* error: not in start condition */
+		/* NB: do /not/ send stop condition */
+	}
 
     // set I2C Address
-    TWDR = eprom_addr;
-    TWCR = (1 << TWINT) | (1 << TWEN);
-    while(!(TWCR & (1 << TWINT)));
-    if(TW_STATUS != TW_MT_SLA_ACK)
+	sla = is16bit ? (dev_id | TW_WRITE) : ((dev_id | (((addr >> 8) & 0x07) << 1)) | TW_WRITE);
+    TWDR =  sla;	
+	status = _i2c_transmit(I2C_DATA_NAK);	
+    switch(status)
     {
-        err = 0xe2;
-        goto retry;
-    }
+	    case TW_MT_SLA_ACK:
+	    break;
+	    case TW_MT_SLA_NACK:	/* nack during select: device busy writing */
+	    goto retry;
+	    case TW_MT_ARB_LOST:	/* re-arbitrate */
+	    goto begin;
+	    default:
+		_i2c_transmit(I2C_STOP);
+		return -1;
+    }    
 
-    if(s_AddresBits == 16)
+    if(is16bit)
     {
         TWDR = addr >> 8;
-        TWCR = (1 << TWINT) | (1 << TWEN);
-        while(!(TWCR & (1 << TWINT)));
-        if(TW_STATUS != TW_MT_DATA_ACK)
-        {
-            err = 0xe3;
-            goto retry;
-        }
+		status = _i2c_transmit(I2C_DATA_NAK);
+		switch(status)
+		{
+			case TW_MT_DATA_ACK:
+			break;
+			case TW_MT_DATA_NACK:
+			_i2c_transmit(I2C_STOP);
+			return 0;
+			case TW_MT_ARB_LOST:
+			goto begin;
+			default:
+			_i2c_transmit(I2C_STOP);
+			return -1;
+		}
     }
 
-    _delay_us(100);
+    //_delay_us(100);
 
-    TWDR = (unsigned char)(addr & 0xff);
-    TWCR = (1 << TWINT) | (1 << TWEN);
-    while(!(TWCR & (1 << TWINT)));
-    if(TW_STATUS != TW_MT_DATA_ACK)
+    TWDR = addr;
+	status = _i2c_transmit(I2C_DATA_NAK);
+    switch(status)
     {
-        err = 0xe4;
-        goto retry;
+	    case TW_MT_DATA_ACK:
+	    break;
+
+	    case TW_MT_DATA_NACK:
+		_i2c_transmit(I2C_STOP);
+		return 0;
+
+	    case TW_MT_ARB_LOST:
+	    goto begin;
+
+	    default:
+		_i2c_transmit(I2C_STOP);
+		return -1;
     }
 
     //TWCR = (1 << TWINT) | (1 << TWEN) | (1 << TWSTO);
 
-    _delay_us(100);
+    //_delay_us(100);
 
     return 1;
 }
 
-uint8_t i2c_write(uint16_t eeaddr, int len, uint8_t *buf)
+uint8_t _i2c_write(uint16_t eeaddr, int len, uint8_t *buf)
 {
+	int rv = 0;
+	uint8_t status;
+    for(; len > 0; len--)
+    {
+	    TWDR = *buf++;
+		status = _i2c_transmit(I2C_DATA_NAK);
+	    switch(status)
+	    {
+		    case TW_MT_DATA_NACK:
+		    goto error;		/* device write protected -- Note [16] */
 
+		    case TW_MT_DATA_ACK:
+		    rv++;
+		    break;
+
+		    default:
+		    goto error;
+	    }
+    }
+quit:
+	_i2c_transmit(I2C_STOP);//TWCR = SEND_STOP_CONDITION;//_BV(TWINT) | _BV(TWSTO) | _BV(TWEN); /* send stop condition */
+	return rv;
+
+error:
+	rv = -1;
+	goto quit;	
 }
 
-uint8_t i2c_read(uint16_t eeaddr, int len, uint8_t *buf)
+uint8_t _i2c_read(uint16_t eeaddr, int len, uint8_t *buf)
 {
-
+	uint8_t status;
+	status = _i2c_transmit(I2C_START);
 }
 
-uint8_t i2c_stop(void)
+uint8_t _i2c_stop(void)
 {
-    i2c_transmit(I2C_STOP);
+    _i2c_transmit(I2C_STOP);
+}
+
+void i2c_init( void )
+{
+	TWSR = 0;
+	TWBR = (F_CPU / 100000UL - 16) / 2;
 }
 

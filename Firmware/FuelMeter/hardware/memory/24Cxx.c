@@ -201,6 +201,23 @@ error:
     goto quit;
 }
 
+uint8_t _ee24xx_read_bytes(uint16_t dev_id, uint16_t addr, bool is16bit, int len, uint8_t *buf)
+{
+	uint8_t res = 0;
+	res = i2c_set_device_address(dev_id, addr, true);
+	_i2c_read(0, len, buf);
+}
+
+
+
+uint8_t _ee24xx_write_bytes( uint16_t dev_id, uint16_t addr, bool is16bit, int len, uint8_t *buf )
+{
+	uint8_t res = 0;
+	res = i2c_set_device_address(dev_id, addr, true);
+	_i2c_write(0, len, buf);
+}
+
+
 uint8_t ee24xx_write_page(uint16_t eeaddr, int len, uint8_t *buf)
 {
     uint8_t sla, n = 0;

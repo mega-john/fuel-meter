@@ -52,57 +52,83 @@ void init_ports(void)
   PORTD = 0xf0;
 }
 
-uint8_t nDevices; // количество сенсоров
-uint8_t owDevicesIDs[MAXDEVICES][8];  // Их ID
+//uint8_t nDevices; // количество сенсоров
+//uint8_t owDevicesIDs[MAXDEVICES][8];  // Их ID
 
-uint8_t search_ow_devices(void) // поиск всех устройств на шине
-{
-	uint8_t i;
-	uint8_t id[OW_ROMCODE_SIZE];
-	uint8_t diff, sensors_count;
-
-	sensors_count = 0;
-
-	for(diff = OW_SEARCH_FIRST; diff != OW_LAST_DEVICE && sensors_count < MAXDEVICES;)
-	{
-		OW_FindROM(&diff, &id[0]);
-
-		if(diff == OW_PRESENCE_ERR) 
-		{
-			break;
-		}
-
-		if(diff == OW_DATA_ERR) 
-		{
-			break;
-		}
-
-		for (i = 0; i < OW_ROMCODE_SIZE; i++)
-		{
-			owDevicesIDs[sensors_count][i] = id[i];
-		}
-    
-		sensors_count++;
-	}
-	return sensors_count;
-}
+//uint8_t search_ow_devices(void) // поиск всех устройств на шине
+//{
+	//uint8_t i;
+	//uint8_t id[OW_ROMCODE_SIZE];
+	//uint8_t diff, sensors_count;
+//
+	//sensors_count = 0;
+//
+	//for(diff = OW_SEARCH_FIRST; diff != OW_LAST_DEVICE && sensors_count < MAXDEVICES;)
+	//{
+		//OW_FindROM(&diff, &id[0]);
+//
+		//if(diff == OW_PRESENCE_ERR) 
+		//{
+			//break;
+		//}
+//
+		//if(diff == OW_DATA_ERR) 
+		//{
+			//break;
+		//}
+//
+		//for (i = 0; i < OW_ROMCODE_SIZE; i++)
+		//{
+			//owDevicesIDs[sensors_count][i] = id[i];
+		//}
+    //
+		//sensors_count++;
+	//}
+	//return sensors_count;
+//}
 
 const char * str = "ТЕСТОВАЯ ДЛИННАЯ РУССКАЯ СТРОКА";
-const char * str1 = "01234";
+//const char * str1 = "000000000000000000000";
+//const char * str2 = "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0";
+uint8_t str2[] = {0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff};
+
+void test_i2c()
+{
+	uint8_t res = 0;
+	for (uint8_t i = 0; i < 50; i ++)
+	{
+		res = eeWriteBytes(0x0, str2, 10);
+		//res = _ee24xx_write_bytes(DEV_ADDR_24CXX, i*10, true, 10, str2);
+		_delay_us(100);
+	}
+//	res = eeWriteBytes(0x0, str2, strlen(str2));
+	_delay_us(10);
+	char result[100];
+	//res = _ee24xx_write_bytes(DEV_ADDR_24CXX, 0x0, true, strlen(str2), str2);
+}
 
 int main(void)
 {
-	//cli();
-	//init_ports();
+	cli();
+	init_ports();
 	//init_ext_interrupts();
 	//init_timers();
-	//eeInit();
+	eeInit();
 	//ks0108Init(0);
 	// Wait a little while the display starts up
 	//for(volatile uint16_t i = 0; i < 15000; i++);
 	//_delay_ms(500); 
   
 	sei();
+	
+	test_i2c();
+	
+	while (true)
+	{
+	};
+	
+	
+	
 	//SelectFont(SystemRus5x7, ReadFontData, 0);
 	SelectFont(fixednums15x31, ReadFontData, 0);
 	//TFT_drawString(str1, 0, 0, 1, RED);
@@ -116,19 +142,19 @@ int main(void)
 		//TFT_setDisplayDirect(LEFT2RIGHT);
 		TFT_set_orientation(0);
 		//TFT_fillScreen(0, 239, 0, 319, BLACK);
-		TFT_drawString(str1, 100, 100, 1, RED);
+		TFT_drawString(str, 100, 100, 1, RED);
 		_delay_ms(2000);
 		TFT_set_orientation(1);
 		//TFT_fillScreen(0, 239, 0, 319, BLACK);
-		TFT_drawString(str1, 100, 100, 1, RED);
+		TFT_drawString(str, 100, 100, 1, RED);
 		_delay_ms(2000);
 		TFT_set_orientation(2);
 		//TFT_fillScreen(0, 239, 0, 319, BLACK);
-		TFT_drawString(str1, 100, 100, 1, RED);
+		TFT_drawString(str, 100, 100, 1, RED);
 		_delay_ms(2000);
 		TFT_set_orientation(3);
 		//TFT_fillScreen(0, 239, 0, 319, BLACK);
-		TFT_drawString(str1, 100, 100, 1, RED);
+		TFT_drawString(str, 100, 100, 1, RED);
 		_delay_ms(2000);
 		
 		//TFT_drawString(str, 0, 0, size, RED);
@@ -167,7 +193,7 @@ int main(void)
 	//uint8_t data[7] = {0, 23, 23, 6, 6, 10 , 13};
 	//ds1703_write((uint8_t*)&data);
 //
-	nDevices = search_ow_devices(); // ищем все устройства
+	//nDevices = search_ow_devices(); // ищем все устройства
   
   //ks0108Puts((char*)&tmp);
   /*while(1)*/

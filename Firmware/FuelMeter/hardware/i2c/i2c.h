@@ -18,9 +18,14 @@
 #include <avr/io.h>
 #include <util/twi.h>
 #include <stdbool.h>
+#include <util/delay.h>
+
+#define DEV_ADDR_24CXX	0xA0
+#define DEV_ADDR_DS1703	0xD0
+
 
 #define I2C_START		0
-#define I2C_DATA		1
+#define I2C_DATA_NAK	1
 #define I2C_DATA_ACK	2
 #define I2C_STOP		3
 #define ACK				1
@@ -36,11 +41,12 @@
 #define WAIT_FOR_TRANSMIT		while((TWCR & _BV(TWINT)) == 0)
 
 
-uint8_t i2c_transmit(uint8_t type);
-uint8_t i2c_set_device_address(uint16_t dev_id, uint16_t dev_addr, uint8_t rw_type, bool is16bit);
-uint8_t i2c_write(uint16_t eeaddr, int len, uint8_t *buf);
-uint8_t i2c_read(uint16_t eeaddr, int len, uint8_t *buf);
-uint8_t i2c_stop(void);
+void i2c_init(void);
+uint8_t _i2c_transmit(uint8_t type);
+uint8_t i2c_set_device_address(uint16_t dev_id, uint16_t dev_addr, bool is16bit);
+uint8_t _i2c_write(uint16_t eeaddr, int len, uint8_t *buf);
+uint8_t _i2c_read(uint16_t eeaddr, int len, uint8_t *buf);
+uint8_t _i2c_stop(void);
 
 
 
