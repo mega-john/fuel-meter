@@ -159,12 +159,12 @@ error:
 uint8_t _i2c_read(uint16_t eeaddr, int len, uint8_t *buf)
 {
 	uint8_t status;
-	status = _i2c_transmit(I2C_START);
+	return status = _i2c_transmit(I2C_START);
 }
 
 uint8_t _i2c_stop(void)
 {
-    _i2c_transmit(I2C_STOP);
+    return _i2c_transmit(I2C_STOP);
 }
 
 void i2c_init( void )

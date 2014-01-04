@@ -9,7 +9,7 @@
 #include "global.h"
 #include "keyboard.h"
 #include "messages.h"
-//#include "lcd.h"
+#include "hardware/display/ili9341.h"
 
 typedef struct PROGMEM{
 	void       *Next;
@@ -158,4 +158,9 @@ uint8_t startMenu()
 void initMenu() 
 {
 //	lcd_init();
+}
+
+void DrawBackground()
+{
+TFT_drawRectangle(0, 226, MAX_X, 4, WHITE);	
 }

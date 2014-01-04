@@ -151,6 +151,9 @@
     <Compile Include="hardware\clock\ds1703.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="hardware\display\fonts\ArialNums40x37.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="hardware\display\fonts\fixednums15x31.h">
       <SubType>compile</SubType>
     </Compile>
