@@ -363,7 +363,7 @@ void TFT_setDisplayDirect( uint8_t Direction)
 	DisplayDirect = Direction;
 }
 
-void TFT_drawChar( uint8_t c, uint16_t poX, uint16_t poY, uint16_t size, uint16_t fgcolor )
+uint8_t TFT_drawChar( uint8_t c, uint16_t poX, uint16_t poY, uint16_t size, uint16_t fgcolor )
 {
 	uint8_t width = 0;
 	uint8_t height = FontRead(Font + FONT_HEIGHT);
@@ -376,7 +376,7 @@ void TFT_drawChar( uint8_t c, uint16_t poX, uint16_t poY, uint16_t size, uint16_
 
 	if(c < firstChar || c >= (firstChar + charCount))
 	{
-		return;
+		return 0;
 	}
 	else if(c > 127)
 	{
@@ -426,6 +426,7 @@ void TFT_drawChar( uint8_t c, uint16_t poX, uint16_t poY, uint16_t size, uint16_
 			}
 		}
 	}
+	return width + 1;
 	//ks0108GotoXY(x + width + 1, y);
 
 
@@ -470,39 +471,40 @@ void TFT_drawChar( uint8_t c, uint16_t poX, uint16_t poY, uint16_t size, uint16_
 
 void TFT_drawString(const char *string, uint16_t poX, uint16_t poY, uint16_t size, uint16_t fgcolor )
 {
+	uint8_t width = 0;
+	
     while(*string)
     {
-	    {
-		    TFT_drawChar(*string, poX, poY, size, fgcolor);
-	    }
+		width = TFT_drawChar(*string++, poX, poY, size, fgcolor);
 	    
-	    *string++;
+	    //*string++;
+		
 	    if(DisplayDirect == LEFT2RIGHT)
 	    {
 		    if(poX < MAX_X)
 		    {
-			    poX += 20 * size; // Move cursor right
+			    poX += width * size; // Move cursor right
 		    }
 	    }
 	    else if(DisplayDirect == DOWN2UP)
 	    {
 		    if(poY > 0)
 		    {
-			    poY -= 8 * size; // Move cursor right
+			    poY -= width * size; // Move cursor right
 		    }
 	    }
 	    else if(DisplayDirect == RIGHT2LEFT)
 	    {
 		    if(poX > 0)
 		    {
-			    poX -= 8 * size; // Move cursor right
+			    poX -= width * size; // Move cursor right
 		    }
 	    }
 	    else if(DisplayDirect == UP2DOWN)
 	    {
 		    if(poY < MAX_Y)
 		    {
-			    poY += 8 * size; // Move cursor right
+			    poY += width * size; // Move cursor right
 		    }
 	    }
     }

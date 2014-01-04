@@ -87,7 +87,7 @@ void init_ports(void)
 	//return sensors_count;
 //}
 
-const char * str = "“≈—“Œ¬¿ﬂ ƒÀ»ÕÕ¿ﬂ –”—— ¿ﬂ —“–Œ ¿";
+const char * str = "19:49";
 //const char * str1 = "000000000000000000000";
 //const char * str2 = "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0";
 uint8_t str2[] = {0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff};
@@ -121,11 +121,11 @@ int main(void)
   
 	sei();
 	
-	test_i2c();
-	
-	while (true)
-	{
-	};
+	//test_i2c();
+	//
+	//while (true)
+	//{
+	//};
 	
 	
 	
@@ -140,23 +140,33 @@ int main(void)
 	while(1)
 	{
 		//TFT_setDisplayDirect(LEFT2RIGHT);
-		TFT_set_orientation(0);
-		//TFT_fillScreen(0, 239, 0, 319, BLACK);
-		TFT_drawString(str, 100, 100, 1, RED);
+		//TFT_set_orientation(0);
+		TFT_fillRectangle(10, 47, MAX_X - 20, 3, WHITE);
+		TFT_fillRectangle(10, 226, MAX_X - 20, 3, WHITE);
+		TFT_fillRectangle(10, 268, MAX_X - 20, 3, WHITE);
+		SelectFont(fixednums15x31, ReadFontData, 0);
+		TFT_drawString(str, 80, 10, 1, WHITE);
+		SelectFont(SystemRus5x7, ReadFontData, WHITE);
+		TFT_drawString("1/10", MAX_X - 80, 150, 1, WHITE);
+		TFT_drawString("ÀËÚÓ‚.˜‡Ò", MAX_X - 80, 160, 1, WHITE);
+		SelectFont(ArialNums40x37, ReadFontData, 0);
+		TFT_drawString("66.6abc", 10, 80, 2, WHITE);
+		////TFT_fillScreen(0, 239, 0, 319, BLACK);
+		//TFT_drawString(str, 100, 100, 1, RED);
+		//_delay_ms(2000);
+		//TFT_set_orientation(1);
+		////TFT_fillScreen(0, 239, 0, 319, BLACK);
+		//TFT_drawString(str, 100, 100, 1, RED);
 		_delay_ms(2000);
-		TFT_set_orientation(1);
-		//TFT_fillScreen(0, 239, 0, 319, BLACK);
-		TFT_drawString(str, 100, 100, 1, RED);
-		_delay_ms(2000);
-		TFT_set_orientation(2);
-		//TFT_fillScreen(0, 239, 0, 319, BLACK);
-		TFT_drawString(str, 100, 100, 1, RED);
-		_delay_ms(2000);
-		TFT_set_orientation(3);
-		//TFT_fillScreen(0, 239, 0, 319, BLACK);
-		TFT_drawString(str, 100, 100, 1, RED);
-		_delay_ms(2000);
-		
+		//TFT_set_orientation(2);
+		////TFT_fillScreen(0, 239, 0, 319, BLACK);
+		//TFT_drawString(str, 100, 100, 1, RED);
+		//_delay_ms(2000);
+		//TFT_set_orientation(3);
+		////TFT_fillScreen(0, 239, 0, 319, BLACK);
+		//TFT_drawString(str, 100, 100, 1, RED);
+		//_delay_ms(2000);
+		//
 		//TFT_drawString(str, 0, 0, size, RED);
 		//TFT_setDisplayDirect(RIGHT2LEFT);
 		//TFT_drawString(str, 239, 160, size, GREEN);
