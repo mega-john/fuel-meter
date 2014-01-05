@@ -77,7 +77,7 @@ void menuChange(menuItem* NewMenu)
 
 unsigned char dispMenu(msg_par par) 
 {
-	menuItem* tempMenu;
+	//menuItem* tempMenu;
 
 	//lcd_clrscr(1);
 	//// первая строка - заголовок. Или пункт меню верхнего уровня
@@ -155,12 +155,16 @@ uint8_t startMenu()
 	return (0);
 }
 
+void DrawMainBackground();
+
 void initMenu() 
 {
-//	lcd_init();
+DrawMainBackground();
 }
 
-void DrawBackground()
+void DrawMainBackground()
 {
-TFT_drawRectangle(0, 226, MAX_X, 4, WHITE);	
+	TFT_fillRectangle(10, 47, MAX_X - 20, 3, WHITE);
+	TFT_fillRectangle(10, 226, MAX_X - 20, 3, WHITE);
+	TFT_fillRectangle(10, 268, MAX_X - 20, 3, WHITE);
 }

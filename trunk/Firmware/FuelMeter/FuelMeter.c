@@ -144,13 +144,22 @@ int main(void)
 		TFT_fillRectangle(10, 47, MAX_X - 20, 3, WHITE);
 		TFT_fillRectangle(10, 226, MAX_X - 20, 3, WHITE);
 		TFT_fillRectangle(10, 268, MAX_X - 20, 3, WHITE);
+		
 		SelectFont(fixednums15x31, ReadFontData, 0);
 		TFT_drawString(str, 80, 10, 1, WHITE);
+		
 		SelectFont(SystemRus5x7, ReadFontData, WHITE);
-		TFT_drawString("1/10", MAX_X - 80, 150, 1, WHITE);
-		TFT_drawString("Литров.час", MAX_X - 80, 160, 1, WHITE);
+		TFT_drawString("1/10", MAX_X - 80, 150, 2, WHITE);
+		TFT_set_orientation(1);
+		TFT_drawString("Литров.час", MAX_X - 80, 170, 1, WHITE);
+		TFT_set_orientation(0);
+		
 		SelectFont(ArialNums40x37, ReadFontData, 0);
-		TFT_drawString("66.6abc", 10, 80, 2, WHITE);
+		TFT_drawString("*66.6abc", 60, 60, 2, WHITE);
+		SelectFont(fixednums15x31, ReadFontData, 0);
+
+		TFT_drawString("250000", 5, 280, 1, WHITE);
+		TFT_drawString("212.3", MAX_X - 85, 280, 1, WHITE);
 		////TFT_fillScreen(0, 239, 0, 319, BLACK);
 		//TFT_drawString(str, 100, 100, 1, RED);
 		//_delay_ms(2000);
