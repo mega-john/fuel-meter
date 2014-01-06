@@ -25,6 +25,6 @@
 #include "hardware\memory\24Cxx.h"
 #include "hardware\clock\ds1703.h"
 #include "hardware\temperature\ds18x20.h"
-#include "hardware\display\ili9341.h"
+#include "hardware\display\Display.h"
 
 #endif /* FUELMETER_H_ */

@@ -46,20 +46,16 @@ const menuItem        Null_Menu = {(void*)0, (void*)0, (void*)0, (void*)0, 0, {0
 
 //                 NEXT,		PREVIOUS	PARENT,		CHILD
 MAKE_MENU(m_s1i1,  m_s1i2,		m_s1i3,		NULL_ENTRY, m_s2i1,       0, "History");
-	// подменю History
 	MAKE_MENU(m_s2i1,  m_s2i2,    NULL_ENTRY,  m_s1i1,     NULL_ENTRY,   MENU_MODE1, "Mode 1");
 	MAKE_MENU(m_s2i2,  m_s2i3,    m_s2i1,      m_s1i1,     NULL_ENTRY,   MENU_MODE2, "Mode 2");
 	MAKE_MENU(m_s2i3,  NULL_ENTRY,m_s2i2,      m_s1i1,     NULL_ENTRY,   MENU_MODE3, "Mode 3");
 
 MAKE_MENU(m_s1i2,  m_s1i3,		m_s1i1,		NULL_ENTRY, m_s3i1,       0, "Settings");	
-	// подменю Настройка
 	MAKE_MENU(m_s3i1,  m_s3i2,    NULL_ENTRY,  m_s1i2,     m_s4i1,       0, "Temperature");
-		// подменю Давление
 		MAKE_MENU(m_s4i1,  m_s4i2,		m_s4i3,		m_s3i1,     NULL_ENTRY,   MENU_SENS1, "Sensor 1");
 		MAKE_MENU(m_s4i2,  m_s4i3,		m_s4i1,     m_s3i1,     NULL_ENTRY,   MENU_SENS2, "Sensor 2");
 		MAKE_MENU(m_s4i3,  m_s4i1,		m_s4i2,     m_s3i1,     NULL_ENTRY,   MENU_SENS3, "Sensor 3");	
 	MAKE_MENU(m_s3i2,  NULL_ENTRY,m_s3i1,      m_s1i2,     m_s5i1,       0, "Time");
-		//// подменю Время
 		MAKE_MENU(m_s5i1,  m_s5i2,    NULL_ENTRY,  m_s3i2,     NULL_ENTRY,   MENU_WARM, "Warm");
 		MAKE_MENU(m_s5i2,  NULL_ENTRY,m_s5i1,      m_s3i2,     NULL_ENTRY,   MENU_PROCESS, "Process");
 
