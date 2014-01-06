@@ -114,7 +114,7 @@ int main(void)
 	//init_ext_interrupts();
 	//init_timers();
 	eeInit();
-	//ks0108Init(0);
+	displayInit();
 	// Wait a little while the display starts up
 	//for(volatile uint16_t i = 0; i < 15000; i++);
 	//_delay_ms(500); 
@@ -130,36 +130,24 @@ int main(void)
 	
 	
 	//SelectFont(SystemRus5x7, ReadFontData, 0);
-	SelectFont(fixednums15x31, ReadFontData, 0);
+	displaySelectFont(SystemRus5x7, ReadFontData, 0);
 	//TFT_drawString(str1, 0, 0, 1, RED);
-	TFT_init();
-	uint8_t size = 5;
-	TFT_fillScreen(0, 239, 0, 319, BLACK);
-	//SelectFont(Arial_bold_14, ReadFontData, 0);
+
 	
 	while(1)
 	{
 		//TFT_setDisplayDirect(LEFT2RIGHT);
 		//TFT_set_orientation(0);
-		TFT_fillRectangle(10, 47, MAX_X - 20, 3, WHITE);
-		TFT_fillRectangle(10, 226, MAX_X - 20, 3, WHITE);
-		TFT_fillRectangle(10, 268, MAX_X - 20, 3, WHITE);
+		//displayFillRectangle(10, 47, MAX_X - 20, 3, WHITE);
+		//displayFillRectangle(10, 226, MAX_X - 20, 3, WHITE);
+		//displayFillRectangle(10, 268, MAX_X - 20, 3, WHITE);
+		//
+		//displaySelectFont(fixednums15x31, ReadFontData, 0);
+		displayDrawString(str, 80, 10, 1, WHITE);
 		
-		SelectFont(fixednums15x31, ReadFontData, 0);
-		TFT_drawString(str, 80, 10, 1, WHITE);
-		
-		SelectFont(SystemRus5x7, ReadFontData, WHITE);
-		TFT_drawString("1/10", MAX_X - 80, 150, 2, WHITE);
-		TFT_set_orientation(1);
-		TFT_drawString("Литров.час", MAX_X - 80, 170, 1, WHITE);
-		TFT_set_orientation(0);
-		
-		SelectFont(ArialNums40x37, ReadFontData, 0);
-		TFT_drawString("*66.6abc", 60, 60, 2, WHITE);
-		SelectFont(fixednums15x31, ReadFontData, 0);
-
-		TFT_drawString("250000", 5, 280, 1, WHITE);
-		TFT_drawString("212.3", MAX_X - 85, 280, 1, WHITE);
+		displaySelectFont(SystemRus5x7, ReadFontData, WHITE);
+		displayDrawString("1/10", MAX_X - 80, 150, 2, WHITE);
+		displayDrawString("Литров.час", MAX_X - 80, 170, 1, WHITE);
 		////TFT_fillScreen(0, 239, 0, 319, BLACK);
 		//TFT_drawString(str, 100, 100, 1, RED);
 		//_delay_ms(2000);

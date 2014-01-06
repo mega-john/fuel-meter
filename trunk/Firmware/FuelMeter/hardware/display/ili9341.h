@@ -115,6 +115,7 @@ void TFT_set_orientation(uint8_t orientation);
 #define isFixedWidthFont(font)  ((FontRead(font + FONT_LENGTH) == 0) && (FontRead(font + FONT_LENGTH + 1) == 0))
 uint8_t ReadFontData(const uint8_t* ptr);		//Standard Read Callback
 void SelectFont(const uint8_t* font, FontCallback callback, uint8_t color);
+uint16_t StringWidth(const char* str);
 
 // Font Indices
 #define FONT_LENGTH			0

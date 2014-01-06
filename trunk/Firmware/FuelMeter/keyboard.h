@@ -1,11 +1,11 @@
 #ifndef _KEYBOARD_H_
 #define _KEYBOARD_H_
 
-#define KBD_PIN_LEFT		PD5		//настроено
-#define KBD_PIN_RIGHT		PD6		//настроено
+#define KBD_PIN_LEFT		PD6		
+#define KBD_PIN_RIGHT		PD5		
 #define KBD_PIN_ENC1		PD2
 #define KBD_PIN_ENC2		PD3		
-#define KBD_PIN_OK			PD4		//настроено
+#define KBD_PIN_OK			PD4	
 
 #define KBD_MASK (_BV(KBD_PIN_ENC1) | _BV(KBD_PIN_ENC2) | _BV(KBD_PIN_LEFT) | _BV(KBD_PIN_RIGHT) | _BV(KBD_PIN_OK))
 

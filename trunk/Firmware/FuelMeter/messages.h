@@ -66,7 +66,7 @@ void killHandler(msg_num msg, handler hnd);
 void sendMessage(msg_num msg, msg_par par);
 
 // обработка событий
-void dispatchMessage() __attribute__((always_inline));
+void dispatchMessage();// __attribute__((always_inline));
 
 // установить таймер
 // пример вызова: setTimer(MSG_LCD_REFRESH, 0, 50);

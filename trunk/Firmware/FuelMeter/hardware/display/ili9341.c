@@ -864,7 +864,7 @@ uint8_t CharWidth(char c)
 	return width;
 }
 
-uint8_t StringWidth(char* str)
+uint16_t StringWidth(const char* str)
 {
 	uint8_t width = 0;
 	
