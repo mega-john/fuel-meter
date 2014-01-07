@@ -1,18 +1,20 @@
 ﻿#ifndef GLOBAL_H_
 #define GLOBAL_H_
 
+//#define DEBUG_IN_STUDIO
+
 #include <avr/io.h>
 
 typedef struct  
 {
-	unsigned update_fuel_values:1   ;
-	unsigned update_total_fuel:1   ;
-	unsigned update_time:1   ;
-	unsigned update_menu:1   ;
-	unsigned bit4:1   ;
-	unsigned bit5:1   ;
-	unsigned bit6:1   ;
-	unsigned bit7:1   ;
+	unsigned update_fuel_values:1;
+	unsigned update_total_fuel:1;
+	unsigned update_time:1;
+	unsigned update_menu:1;
+	unsigned update_consumption:1;
+	unsigned bit5:1;
+	unsigned bit6:1;
+	unsigned bit7:1;
 } status_flags;
 
 typedef struct
@@ -47,10 +49,10 @@ typedef struct
 #define compare_bit(byte1, byte2, bit) ((!(_SFR_BYTE(byte1) & _BV(bit))) && (_SFR_BYTE(byte2) & _BV(bit)))
 #define CheckBit(port, bit) (port & _BV(bit))
 
-#define BTN_UP		4
-#define BTN_RIGHT	5
-#define BTN_LEFT	6
-#define BTN_DOWN	7
+#define BTN_UP		PIND4
+#define BTN_RIGHT	PIND5
+#define BTN_LEFT	PIND6
+#define BTN_DOWN	PIND7
 #define BTN_PIN		PIND
 #define DEBOUNCE	10//x*16ms
 #define LONG_PRESS	100//x*16ms

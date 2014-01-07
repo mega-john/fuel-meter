@@ -36,10 +36,10 @@
 #define TFT_MAGENTA			0xf8df
 
 //TFT resolution 240*320
-#define MIN_X			0
-#define MIN_Y			0
-#define MAX_X			239
-#define MAX_Y			319
+#define MIN_X			0U
+#define MIN_Y			0U
+#define MAX_X			239U
+#define MAX_Y			319U
 
 #define TFT_DDR			DDRC
 #define TFT_PORT		PORTC

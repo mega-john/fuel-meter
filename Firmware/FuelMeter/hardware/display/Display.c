@@ -24,7 +24,7 @@ void displayDrawLine( uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16
 #endif	
 }
 
-void displaySelectFont( const uint8_t* font, uint8_t color )
+void displaySelectFont( const uint8_t* font, uint16_t color )
 {
 #ifdef ILI_DISPLAY
 	TFT_SelectFont(font, TFT_ReadFontData, color);

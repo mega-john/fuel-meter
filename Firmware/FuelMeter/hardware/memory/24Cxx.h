@@ -45,10 +45,10 @@
 #define WAIT_FOR_TRANSMIT		while((TWCR & _BV(TWINT)) == 0)
 
 void ioinit(void);
-uint8_t ee24xx_read_bytes(uint16_t eeaddr, int len, uint8_t *buf);
+int8_t ee24xx_read_bytes(uint16_t eeaddr, int len, uint8_t *buf);
 uint8_t _ee24xx_read_bytes(uint16_t dev_id, uint16_t addr, bool is16bit, int len, uint8_t *buf);
 uint8_t ee24xx_write_page(uint16_t eeaddr, int len, uint8_t *buf);
-uint8_t ee24xx_write_bytes(uint16_t eeaddr, int len, uint8_t *buf);
+int8_t ee24xx_write_bytes(uint16_t eeaddr, int len, uint8_t *buf);
 uint8_t _ee24xx_write_bytes(uint16_t dev_id, uint16_t addr, bool is16bit, int len, uint8_t *buf);
 
 void eeInit(void);

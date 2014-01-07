@@ -1,4 +1,4 @@
-#ifndef _MESSAGES_H_
+п»ї#ifndef _MESSAGES_H_
 #define _MESSAGES_H_
 
 #include <avr/io.h>
@@ -7,7 +7,7 @@
 #define maxMessages 128
 #define maxTimers	32
 
-//Сообщения
+//РЎРѕРѕР±С‰РµРЅРёСЏ
 enum 
 {
 	MSG_KEY_PRESS = 1,
@@ -19,65 +19,65 @@ enum
 	MSG_TIMER_SEC
 };
 
-typedef uint8_t msg_num; // тип события - мне пока хватает одного байта
-typedef uint16_t msg_par; // тип параметра события
-typedef uint8_t (*handler)(msg_par); // описание функции-обработчика
+typedef uint8_t msg_num; // С‚РёРї СЃРѕР±С‹С‚РёСЏ - РјРЅРµ РїРѕРєР° С…РІР°С‚Р°РµС‚ РѕРґРЅРѕРіРѕ Р±Р°Р№С‚Р°
+typedef uint16_t msg_par; // С‚РёРї РїР°СЂР°РјРµС‚СЂР° СЃРѕР±С‹С‚РёСЏ
+typedef uint8_t (*handler)(msg_par); // РѕРїРёСЃР°РЅРёРµ С„СѓРЅРєС†РёРё-РѕР±СЂР°Р±РѕС‚С‡РёРєР°
 
-// структура записи из списка обработчиков
+// СЃС‚СЂСѓРєС‚СѓСЂР° Р·Р°РїРёСЃРё РёР· СЃРїРёСЃРєР° РѕР±СЂР°Р±РѕС‚С‡РёРєРѕРІ
 typedef struct 
 {
-	msg_num msg; // обрабатываемое событие
-	handler hnd; // собственно сам обработчик
+	msg_num msg; // РѕР±СЂР°Р±Р°С‚С‹РІР°РµРјРѕРµ СЃРѕР±С‹С‚РёРµ
+	handler hnd; // СЃРѕР±СЃС‚РІРµРЅРЅРѕ СЃР°Рј РѕР±СЂР°Р±РѕС‚С‡РёРє
 } iHandler;
 
-// структура события из буфера событий
+// СЃС‚СЂСѓРєС‚СѓСЂР° СЃРѕР±С‹С‚РёСЏ РёР· Р±СѓС„РµСЂР° СЃРѕР±С‹С‚РёР№
 typedef struct 
 {
-	msg_num msg; // номер события
-	msg_par par; // параметр
+	msg_num msg; // РЅРѕРјРµСЂ СЃРѕР±С‹С‚РёСЏ
+	msg_par par; // РїР°СЂР°РјРµС‚СЂ
 } iMessage;
 
-// структура таймера
+// СЃС‚СЂСѓРєС‚СѓСЂР° С‚Р°Р№РјРµСЂР°
 typedef struct 
 {
-	msg_num msg; // номер генерируемого сообщения
-	msg_par par; // его параметр
-	uint16_t time; // таймер в условных тиках (сейчас 10 мсек)
-	uint16_t timeOrigin; // таймер в условных тиках (сейчас 10 мсек)
+	msg_num msg; // РЅРѕРјРµСЂ РіРµРЅРµСЂРёСЂСѓРµРјРѕРіРѕ СЃРѕРѕР±С‰РµРЅРёСЏ
+	msg_par par; // РµРіРѕ РїР°СЂР°РјРµС‚СЂ
+	uint16_t time; // С‚Р°Р№РјРµСЂ РІ СѓСЃР»РѕРІРЅС‹С… С‚РёРєР°С… (СЃРµР№С‡Р°СЃ 10 РјСЃРµРє)
+	uint16_t timeOrigin; // С‚Р°Р№РјРµСЂ РІ СѓСЃР»РѕРІРЅС‹С… С‚РёРєР°С… (СЃРµР№С‡Р°СЃ 10 РјСЃРµРє)
 } iTimer;
 
-extern volatile iTimer lTimer[maxTimers]; // список таймеров
-extern volatile iHandler lHandler[maxHandlers]; // список обработчиков
+extern volatile iTimer lTimer[maxTimers]; // СЃРїРёСЃРѕРє С‚Р°Р№РјРµСЂРѕРІ
+extern volatile iHandler lHandler[maxHandlers]; // СЃРїРёСЃРѕРє РѕР±СЂР°Р±РѕС‚С‡РёРєРѕРІ
 extern volatile uint8_t numHandlers, numTimers;
 
-extern volatile iMessage lMessage[maxMessages]; // буфер сообщений
-extern volatile uint16_t lMesPointer, hMesPointer; // указатели на начало и конец буфера
+extern volatile iMessage lMessage[maxMessages]; // Р±СѓС„РµСЂ СЃРѕРѕР±С‰РµРЅРёР№
+extern volatile uint16_t lMesPointer, hMesPointer; // СѓРєР°Р·Р°С‚РµР»Рё РЅР° РЅР°С‡Р°Р»Рѕ Рё РєРѕРЅРµС† Р±СѓС„РµСЂР°
 
-// установка обработчика события
-// вызывается: setHandler(MSG_KEY_PRESS, &checkKey);
+// СѓСЃС‚Р°РЅРѕРІРєР° РѕР±СЂР°Р±РѕС‚С‡РёРєР° СЃРѕР±С‹С‚РёСЏ
+// РІС‹Р·С‹РІР°РµС‚СЃСЏ: setHandler(MSG_KEY_PRESS, &checkKey);
 void setHandler(msg_num msg, handler hnd);
 
-// снятие обработчика события
-// вызывается: killHandler(MSG_KEY_PRESS, &checkKey);
+// СЃРЅСЏС‚РёРµ РѕР±СЂР°Р±РѕС‚С‡РёРєР° СЃРѕР±С‹С‚РёСЏ
+// РІС‹Р·С‹РІР°РµС‚СЃСЏ: killHandler(MSG_KEY_PRESS, &checkKey);
 void killHandler(msg_num msg, handler hnd);
 
-// занести событие в очередь
-// пример вызова: sendMessage(MSG_KEY_PRESS, KEY_MENU)
+// Р·Р°РЅРµСЃС‚Рё СЃРѕР±С‹С‚РёРµ РІ РѕС‡РµСЂРµРґСЊ
+// РїСЂРёРјРµСЂ РІС‹Р·РѕРІР°: sendMessage(MSG_KEY_PRESS, KEY_MENU)
 void sendMessage(msg_num msg, msg_par par);
 
-// обработка событий
+// РѕР±СЂР°Р±РѕС‚РєР° СЃРѕР±С‹С‚РёР№
 void dispatchMessage();// __attribute__((always_inline));
 
-// установить таймер
-// пример вызова: setTimer(MSG_LCD_REFRESH, 0, 50);
+// СѓСЃС‚Р°РЅРѕРІРёС‚СЊ С‚Р°Р№РјРµСЂ
+// РїСЂРёРјРµСЂ РІС‹Р·РѕРІР°: setTimer(MSG_LCD_REFRESH, 0, 50);
 void setTimer(msg_num msg, msg_par par, uint16_t time);
 
-// убить таймер
-// особенность - убивает все установленные таймеры на данное событие,
-// не зависимо от параметра события
+// СѓР±РёС‚СЊ С‚Р°Р№РјРµСЂ
+// РѕСЃРѕР±РµРЅРЅРѕСЃС‚СЊ - СѓР±РёРІР°РµС‚ РІСЃРµ СѓСЃС‚Р°РЅРѕРІР»РµРЅРЅС‹Рµ С‚Р°Р№РјРµСЂС‹ РЅР° РґР°РЅРЅРѕРµ СЃРѕР±С‹С‚РёРµ,
+// РЅРµ Р·Р°РІРёСЃРёРјРѕ РѕС‚ РїР°СЂР°РјРµС‚СЂР° СЃРѕР±С‹С‚РёСЏ
 void killTimer(msg_num msg);
 
-// начальная инициализация
+// РЅР°С‡Р°Р»СЊРЅР°СЏ РёРЅРёС†РёР°Р»РёР·Р°С†РёСЏ
 void initMessages();
 
 #endif

@@ -16,6 +16,9 @@ extern status_flags flags;
 extern struct Menu_State MN;
 extern time_struct ts;
 
+extern float peak_consumption;
+extern float total_consumption;
+
 volatile button_struct bs[4];
 
 extern void LongButtonPress(uint8_t button_index);
@@ -96,6 +99,8 @@ ISR(TIMER1_OVF_vect/*, ISR_BLOCK*/)
 			}
 		}
 	}	
+	peak_consumption += 0.1;
+	flags.update_consumption = 1;
 }
 
 void timer0_init(void)
