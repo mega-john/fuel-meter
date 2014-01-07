@@ -37,8 +37,8 @@ MainMenuFuncPtr CurrentMainMenuPage = NULL;
 bool IsMainMenuMode = true;
 volatile status_flags flags;
 volatile time_struct ts;
-volatile double peak_consumption = 0.0;
-volatile double total_consumption = 0.0;
+volatile float peak_consumption = 0.0;
+volatile float total_consumption = 0.0;
 
 
 const MainMenuFuncPtr MainMenuFuncPtrTable[MAIN_PAGES_COUNT] PROGMEM=
@@ -108,13 +108,16 @@ void ShortButtonPress(uint8_t button_index)
 	else
 	{
 	}
-	
-	
+}
+
+void DrawTime()
+{
+	displaySelectFont(fixednums15x31, TFT_WHITE);	
 }
 
 void DrawMainMenuBackground()
 {
-	displaySelectFont(fixednums15x31, TFT_WHITE);
+	//displaySelectFont(fixednums15x31, TFT_WHITE);
 	uint_fast16_t width = TFT_StringWidth("14:02");
 	TFT_drawString("14:02", 120 - (width >> 1), 10, 1, TFT_WHITE);
 	TFT_fillRectangle(10, 47, MAX_X - 20, 3, TFT_WHITE);
@@ -123,66 +126,76 @@ void DrawMainMenuBackground()
 
 	
 	TFT_fillRectangle(10, 268, MAX_X - 20, 3, TFT_WHITE);
-	TFT_drawNumber(width >> 1, 10, 270, 1, TFT_WHITE, 0);
+	//TFT_drawNumber(width >> 1, 10, 270, 1, TFT_WHITE, 0);
 }
 
 void MainMenuPage1(uint8_t cmd)
 {
-	displaySelectFont(SystemRus5x7, TFT_WHITE);
-	TFT_fillRectangle(10, 230, MAX_X - 20, 38, TFT_BLACK);
-	TFT_drawString("MainMenuPage1", 10, 230, 1, TFT_WHITE);
+	if(flags.update_menu)
+	{
+		DrawMainMenuBackground();
+		flags.update_menu = 0;
+	}
+
+	if (flags.update_consumption)
+	{
+		displaySelectFont(ArialNums40x37, TFT_WHITE);
+		TFT_fillRectangle(10, 50, MAX_X - 20, 38, TFT_BLACK);
+		TFT_drawFloat(peak_consumption, 4, 90, 60, 2, TFT_WHITE);
+		flags.update_consumption = false;
+	}
+	
 }
 
 void MainMenuPage2(uint8_t cmd)
 {
-	displaySelectFont(SystemRus5x7, 0xffff);
+	//displaySelectFont(SystemRus5x7, 0xffff);
 	TFT_fillRectangle(10, 230, MAX_X - 20, 38, TFT_BLACK);
 	TFT_drawString("MainMenuPage2", 10, 230, 1, TFT_WHITE);
 }
 
 void MainMenuPage3(uint8_t cmd)
 {
-	displaySelectFont(SystemRus5x7, 0xffff);
+	//displaySelectFont(SystemRus5x7, 0xffff);
 	TFT_fillRectangle(10, 230, MAX_X - 20, 38, TFT_BLACK);
 	TFT_drawString("MainMenuPage3", 10, 230, 1, TFT_WHITE);
 }
 
 void MainMenuPage4(uint8_t cmd)
 {
-	displaySelectFont(SystemRus5x7, 0xffff);
+	//displaySelectFont(SystemRus5x7, 0xffff);
 	TFT_fillRectangle(10, 230, MAX_X - 20, 38, TFT_BLACK);
 	TFT_drawString("MainMenuPage4", 10, 230, 1, TFT_WHITE);
 }
 
 void MainMenuPage5(uint8_t cmd)
 {
-	displaySelectFont(SystemRus5x7, 0xffff);
+	//displaySelectFont(SystemRus5x7, 0xffff);
 	TFT_fillRectangle(10, 230, MAX_X - 20, 38, TFT_BLACK);
 	TFT_drawString("MainMenuPage5", 10, 230, 1, TFT_WHITE);
 }
 
 void MainMenuPage6(uint8_t cmd)
 {
-	displaySelectFont(SystemRus5x7, 0xffff);
+	//displaySelectFont(SystemRus5x7, 0xffff);
 	TFT_fillRectangle(10, 230, MAX_X - 20, 38, TFT_BLACK);
 	TFT_drawString("MainMenuPage6", 10, 230, 1, TFT_WHITE);
 }
 
 void MainMenuPage7(uint8_t cmd)
 {
-	displaySelectFont(SystemRus5x7, 0xffff);
+	//displaySelectFont(SystemRus5x7, 0xffff);
 	TFT_fillRectangle(10, 230, MAX_X - 20, 38, TFT_BLACK);
 	TFT_drawString("MainMenuPage7", 10, 230, 1, TFT_WHITE);
 }
 
 void ProcessMenu( uint8_t cmd )
 {
-	if (flags.update_menu)
+	//if (flags.update_menu)
 	{
 		//TFT_fillScreen(0, 239, 0, 319, TFT_BLACK);
-		DrawMainMenuBackground();
 		CurrentMainMenuPage(cmd);
-		flags.update_menu = false;
+		//flags.update_menu = false;
 	}
 }
 

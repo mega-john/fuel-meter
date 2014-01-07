@@ -23,7 +23,7 @@ void ioinit(void)
 #endif
 }
 
-uint8_t ee24xx_read_bytes(uint16_t eeaddr, int len, uint8_t *buf)
+int8_t ee24xx_read_bytes(uint16_t eeaddr, int len, uint8_t *buf)
 {
     uint8_t sla, twcr, n = 0;
     int rv = 0;
@@ -356,7 +356,7 @@ error:
     goto quit;
 }
 
-uint8_t ee24xx_write_bytes(uint16_t eeaddr, int len, uint8_t *buf)
+int8_t ee24xx_write_bytes(uint16_t eeaddr, int len, uint8_t *buf)
 {
     int rv, total;
 

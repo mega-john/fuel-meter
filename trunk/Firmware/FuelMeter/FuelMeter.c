@@ -17,7 +17,6 @@ Material				POM, O-Ring: FKM
 Pressure				Max 4 bar
 Temperature range		-20 - +60 °C
  */ 
-
 #include "FuelMeter.h"
 
 //volatile uint8_t old_menu_index = 0;
@@ -41,69 +40,38 @@ void init_ports(void)
 
   // Port C initialization
   //если DDRx pin установлен в единицу, то вывод назначен как выход, если 0 то вход
-  DDRC = 0b11111000;
+  DDRC = 0xf8;//0b11111000;
   //If PORTxn is written logic one when the pin is configured as an input pin, the pull-up resistor is activated
-  PORTC = 0b00000111;
+  PORTC = 0x07;//0b00000111;
 
   // Port D initialization
   DDRD = 0x00;
   PORTD = 0xf0;
 }
 
-//uint8_t nDevices; // количество сенсоров
-//uint8_t owDevicesIDs[MAXDEVICES][8];  // Их ID
-
-//uint8_t search_ow_devices(void) // поиск всех устройств на шине
-//{
-	//uint8_t i;
-	//uint8_t id[OW_ROMCODE_SIZE];
-	//uint8_t diff, sensors_count;
-//
-	//sensors_count = 0;
-//
-	//for(diff = OW_SEARCH_FIRST; diff != OW_LAST_DEVICE && sensors_count < MAXDEVICES;)
-	//{
-		//OW_FindROM(&diff, &id[0]);
-//
-		//if(diff == OW_PRESENCE_ERR) 
-		//{
-			//break;
-		//}
-//
-		//if(diff == OW_DATA_ERR) 
-		//{
-			//break;
-		//}
-//
-		//for (i = 0; i < OW_ROMCODE_SIZE; i++)
-		//{
-			//owDevicesIDs[sensors_count][i] = id[i];
-		//}
-    //
-		//sensors_count++;
-	//}
-	//return sensors_count;
-//}
-
 const char * str = "19:49";
 
 int main(void)
 {
 	cli();
-	init_ports();
+	//init_ports();
 	//init_ext_interrupts();
-	init_timers();
+	//init_timers();
 	//eeInit();
+#ifndef DEBUG_IN_STUDIO
 	displayInit();
 	InitMenu();
+#endif	
 	sei();	
 	
 	
 	//SelectFont(SystemRus5x7, ReadFontData, 0);
-	displaySelectFont(SystemRus5x7, 0xffff);
+	displaySelectFont(ArialNums40x37, TFT_WHITE);
 	//displayDrawString(str, 80, 80, 1, WHITE);
 	//displayClear();
-	while(1){ProcessMenu(0);};
+	TFT_set_orientation(LEFT2RIGHT);
+	TFT_drawNumber(123456, 0, 0, 2, TFT_WHITE, 0);
+	while(1){/*ProcessMenu(0);*/};
 	
 	while(1)
 	{
@@ -114,12 +82,12 @@ int main(void)
 		//displayFillRectangle(10, 268, MAX_X - 20, 3, WHITE);
 		//
 		//displaySelectFont(fixednums15x31, ReadFontData, 0);
-		displayDrawString(str, 80, 10, 1, 0xffff);
+		displayDrawString(str, 80, 10, 1, TFT_WHITE);
 		
-		displaySelectFont(SystemRus5x7, 0xffff);
-		displayDrawString("1/10", MAX_X - 80, 150, 2, 0xffff);
-		TFT_drawFloat(66.6789, 5, MAX_X - 80, 170, 1, 0xffff);
-		TFT_drawFloatRound(-66.6489, MAX_X - 80, 190, 1, 0xffff);
+		//displaySelectFont(SystemRus5x7, 0xffff);
+		displayDrawString("1/10", MAX_X - 80, 150, 2, TFT_WHITE);
+		TFT_drawFloat(66.6789, 5, MAX_X - 80, 170, 1, TFT_WHITE);
+		TFT_drawFloatRound(-66.6489, MAX_X - 80, 190, 1, TFT_WHITE);
 		////TFT_fillScreen(0, 239, 0, 319, BLACK);
 		//TFT_drawString(str, 100, 100, 1, RED);
 		//_delay_ms(2000);
@@ -152,7 +120,7 @@ int main(void)
 	};
 
 
-	menu_init();    
+	//menu_init();    
 
 	//char tmp[100] = "ХЦЧШЩЪЫЬЭЮЯабвгдежзий\0";
 	//char tmp[100] = "qwertyuiop\0";

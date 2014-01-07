@@ -1,33 +1,33 @@
-#include <avr/io.h>
+п»ї#include <avr/io.h>
 #include <util/atomic.h>
 #include "messages.h"
 #include "global.h"
 
-volatile iTimer lTimer[maxTimers]; // список таймеров
-volatile iHandler lHandler[maxHandlers]; // список обработчиков
+volatile iTimer lTimer[maxTimers]; // СЃРїРёСЃРѕРє С‚Р°Р№РјРµСЂРѕРІ
+volatile iHandler lHandler[maxHandlers]; // СЃРїРёСЃРѕРє РѕР±СЂР°Р±РѕС‚С‡РёРєРѕРІ
 volatile uint8_t numHandlers, numTimers;
 
-volatile iMessage lMessage[maxMessages]; // буфер сообщений
-volatile uint16_t lMesPointer, hMesPointer; // указатели на начало и конец буфера
+volatile iMessage lMessage[maxMessages]; // Р±СѓС„РµСЂ СЃРѕРѕР±С‰РµРЅРёР№
+volatile uint16_t lMesPointer, hMesPointer; // СѓРєР°Р·Р°С‚РµР»Рё РЅР° РЅР°С‡Р°Р»Рѕ Рё РєРѕРЅРµС† Р±СѓС„РµСЂР°
 
-// установка обработчика события
-// вызывается: setHandler(MSG_KEY_PRESS, &checkKey);
+// СѓСЃС‚Р°РЅРѕРІРєР° РѕР±СЂР°Р±РѕС‚С‡РёРєР° СЃРѕР±С‹С‚РёСЏ
+// РІС‹Р·С‹РІР°РµС‚СЃСЏ: setHandler(MSG_KEY_PRESS, &checkKey);
 void setHandler(msg_num msg, handler hnd) 
 {
 	ATOMIC_BLOCK(ATOMIC_RESTORESTATE) 
     {
 		if (numHandlers < maxHandlers) 
         {
-			lHandler[numHandlers].hnd = hnd; // и регистрирем обработчик
+			lHandler[numHandlers].hnd = hnd; // Рё СЂРµРіРёСЃС‚СЂРёСЂРµРј РѕР±СЂР°Р±РѕС‚С‡РёРє
 			lHandler[numHandlers].msg = msg;
 			numHandlers++;
 		}
 	}
 }
 
-// снятие обработчика события
-// вызывается: killHandler(MSG_KEY_PRESS, &checkKey);
-// удаляет один последний обработчик.
+// СЃРЅСЏС‚РёРµ РѕР±СЂР°Р±РѕС‚С‡РёРєР° СЃРѕР±С‹С‚РёСЏ
+// РІС‹Р·С‹РІР°РµС‚СЃСЏ: killHandler(MSG_KEY_PRESS, &checkKey);
+// СѓРґР°Р»СЏРµС‚ РѕРґРёРЅ РїРѕСЃР»РµРґРЅРёР№ РѕР±СЂР°Р±РѕС‚С‡РёРє.
 void killHandler(msg_num msg, handler hnd) 
 {
 	if (numHandlers == 0)
@@ -42,7 +42,7 @@ void killHandler(msg_num msg, handler hnd)
         {
 			if ((lHandler[i].msg == msg) && (lHandler[i].hnd == hnd)) 
             {
-				// сдвигаем все записи к началу списка, чтобы дырок не было
+				// СЃРґРІРёРіР°РµРј РІСЃРµ Р·Р°РїРёСЃРё Рє РЅР°С‡Р°Р»Сѓ СЃРїРёСЃРєР°, С‡С‚РѕР±С‹ РґС‹СЂРѕРє РЅРµ Р±С‹Р»Рѕ
 				for (j = i; j < numHandlers - 1 ; j++) 
                 {
 					lHandler[j].msg = lHandler[j + 1].msg;
@@ -55,24 +55,24 @@ void killHandler(msg_num msg, handler hnd)
 	}
 }
 
-// занести событие в очередь
-// пример вызова: sendMessage(MSG_KEY_PRESS, KEY_MENU)
+// Р·Р°РЅРµСЃС‚Рё СЃРѕР±С‹С‚РёРµ РІ РѕС‡РµСЂРµРґСЊ
+// РїСЂРёРјРµСЂ РІС‹Р·РѕРІР°: sendMessage(MSG_KEY_PRESS, KEY_MENU)
 void sendMessage(msg_num msg, msg_par par) 
 {
 	ATOMIC_BLOCK(ATOMIC_RESTORESTATE) 
     {
-		hMesPointer = (hMesPointer + 1) & (maxMessages - 1); // сдвигаем указатель головы
+		hMesPointer = (hMesPointer + 1) & (maxMessages - 1); // СЃРґРІРёРіР°РµРј СѓРєР°Р·Р°С‚РµР»СЊ РіРѕР»РѕРІС‹
 
-		lMessage[hMesPointer].msg = msg; // заносим событие и параметр
+		lMessage[hMesPointer].msg = msg; // Р·Р°РЅРѕСЃРёРј СЃРѕР±С‹С‚РёРµ Рё РїР°СЂР°РјРµС‚СЂ
 		lMessage[hMesPointer].par = par;
-		if (hMesPointer == lMesPointer) // догнали начало очереди, убиваем необработанное сообытие
+		if (hMesPointer == lMesPointer) // РґРѕРіРЅР°Р»Рё РЅР°С‡Р°Р»Рѕ РѕС‡РµСЂРµРґРё, СѓР±РёРІР°РµРј РЅРµРѕР±СЂР°Р±РѕС‚Р°РЅРЅРѕРµ СЃРѕРѕР±С‹С‚РёРµ
         { 
 			lMesPointer = (lMesPointer + 1) & (maxMessages - 1);
 		}
 	}
 }
 
-// обработка событий
+// РѕР±СЂР°Р±РѕС‚РєР° СЃРѕР±С‹С‚РёР№
 void dispatchMessage(void) 
 {
 	int8_t i;
@@ -80,14 +80,14 @@ void dispatchMessage(void)
 	msg_num msg;
 	msg_par par;
 
-	if (hMesPointer == lMesPointer) // если пустая очередь - возврат
+	if (hMesPointer == lMesPointer) // РµСЃР»Рё РїСѓСЃС‚Р°СЏ РѕС‡РµСЂРµРґСЊ - РІРѕР·РІСЂР°С‚
     { 
 		return;
 	}
 
 	ATOMIC_BLOCK(ATOMIC_RESTORESTATE) 
     {
-		lMesPointer = (lMesPointer + 1) & (maxMessages - 1); // сдвинем указатель
+		lMesPointer = (lMesPointer + 1) & (maxMessages - 1); // СЃРґРІРёРЅРµРј СѓРєР°Р·Р°С‚РµР»СЊ
 
 		msg = lMessage[lMesPointer].msg;
 		par = lMessage[lMesPointer].par;
@@ -95,12 +95,12 @@ void dispatchMessage(void)
 
 	if (msg != 0 && numHandlers > 0) 
     {
-		for (i = numHandlers - 1; i >= 0; i--) // просматриваем обработчики с конца
+		for (i = numHandlers - 1; i >= 0; i--) // РїСЂРѕСЃРјР°С‚СЂРёРІР°РµРј РѕР±СЂР°Р±РѕС‚С‡РёРєРё СЃ РєРѕРЅС†Р°
         { 
-			if (lHandler[i].msg == msg) // последний занесенный имеет приоритет
+			if (lHandler[i].msg == msg) // РїРѕСЃР»РµРґРЅРёР№ Р·Р°РЅРµСЃРµРЅРЅС‹Р№ РёРјРµРµС‚ РїСЂРёРѕСЂРёС‚РµС‚
             { 
-				res = lHandler[i].hnd(par); // вызываем обработчик
-				if (res) // если обработчик вернул 1, перываем обработку события
+				res = lHandler[i].hnd(par); // РІС‹Р·С‹РІР°РµРј РѕР±СЂР°Р±РѕС‚С‡РёРє
+				if (res) // РµСЃР»Рё РѕР±СЂР°Р±РѕС‚С‡РёРє РІРµСЂРЅСѓР» 1, РїРµСЂС‹РІР°РµРј РѕР±СЂР°Р±РѕС‚РєСѓ СЃРѕР±С‹С‚РёСЏ
                 { 
 					break;
 				}
@@ -109,8 +109,8 @@ void dispatchMessage(void)
 	}
 }
 
-// установить таймер
-// пример вызова: setTimer(MSG_LCD_REFRESH, 0, 50);
+// СѓСЃС‚Р°РЅРѕРІРёС‚СЊ С‚Р°Р№РјРµСЂ
+// РїСЂРёРјРµСЂ РІС‹Р·РѕРІР°: setTimer(MSG_LCD_REFRESH, 0, 50);
 void setTimer(msg_num msg, msg_par par, uint16_t time) 
 {
 	uint8_t i, firstFree;
@@ -124,14 +124,14 @@ void setTimer(msg_num msg, msg_par par, uint16_t time)
         {
 			firstFree = numTimers + 1;
 
-			for (i = 0; i <= numTimers; i++) // ищем установленный таймер
+			for (i = 0; i <= numTimers; i++) // РёС‰РµРј СѓСЃС‚Р°РЅРѕРІР»РµРЅРЅС‹Р№ С‚Р°Р№РјРµСЂ
             { 
 				if (lTimer[i].msg == 0) 
                 {
 					firstFree = i;
 				} 
                 else 
-                { // если нашли - обновляем время
+                { // РµСЃР»Рё РЅР°С€Р»Рё - РѕР±РЅРѕРІР»СЏРµРј РІСЂРµРјСЏ
 					//if ((lTimer[i].msg == msg) && (lTimer[i].par == par)) {
 					if (lTimer[i].msg == msg) 
                     {
@@ -144,7 +144,7 @@ void setTimer(msg_num msg, msg_par par, uint16_t time)
 				}
 			}
 			if (firstFree <= maxTimers) 
-            { // иначе - просто добавляем новый
+            { // РёРЅР°С‡Рµ - РїСЂРѕСЃС‚Рѕ РґРѕР±Р°РІР»СЏРµРј РЅРѕРІС‹Р№
 				lTimer[firstFree].msg = msg;
 				lTimer[firstFree].par = par;
 				lTimer[firstFree].time = time;
@@ -157,9 +157,9 @@ void setTimer(msg_num msg, msg_par par, uint16_t time)
 	}
 }
 
-// убить таймер
-// особенность - убивает все установленные таймеры на данное событие,
-// не зависимо от параметра события
+// СѓР±РёС‚СЊ С‚Р°Р№РјРµСЂ
+// РѕСЃРѕР±РµРЅРЅРѕСЃС‚СЊ - СѓР±РёРІР°РµС‚ РІСЃРµ СѓСЃС‚Р°РЅРѕРІР»РµРЅРЅС‹Рµ С‚Р°Р№РјРµСЂС‹ РЅР° РґР°РЅРЅРѕРµ СЃРѕР±С‹С‚РёРµ,
+// РЅРµ Р·Р°РІРёСЃРёРјРѕ РѕС‚ РїР°СЂР°РјРµС‚СЂР° СЃРѕР±С‹С‚РёСЏ
 void killTimer(msg_num msg) 
 {
 	uint8_t i;
@@ -179,7 +179,7 @@ void killTimer(msg_num msg)
 	}
 }
 
-// диспетчер таймеров
+// РґРёСЃРїРµС‚С‡РµСЂ С‚Р°Р№РјРµСЂРѕРІ
 void dispatchTimer() 
 {
 	uint8_t i;
@@ -191,13 +191,13 @@ void dispatchTimer()
 			continue;
 		}
 
-		if (lTimer[i].time > 0) // если не пришло время
+		if (lTimer[i].time > 0) // РµСЃР»Рё РЅРµ РїСЂРёС€Р»Рѕ РІСЂРµРјСЏ
         { 
-			lTimer[i].time--; // просто уменьшаем время
+			lTimer[i].time--; // РїСЂРѕСЃС‚Рѕ СѓРјРµРЅСЊС€Р°РµРј РІСЂРµРјСЏ
 		} 
         else 
         {
-			sendMessage(lTimer[i].msg, lTimer[i].par); // создаем событие
+			sendMessage(lTimer[i].msg, lTimer[i].par); // СЃРѕР·РґР°РµРј СЃРѕР±С‹С‚РёРµ
 			lTimer[i].time = lTimer[i].timeOrigin;
 		}
 	}
@@ -210,13 +210,13 @@ void initMessages()
 	lMesPointer = 0;
 	hMesPointer = 0;
 
-	// главный таймер	прерывание будет происходить каждые 0,01мС
-	TCCR2 = _BV(WGM21) | _BV(CS22) | _BV(CS21);		//предделитель тактовой частоты на 256 (CTC)
+	// РіР»Р°РІРЅС‹Р№ С‚Р°Р№РјРµСЂ	РїСЂРµСЂС‹РІР°РЅРёРµ Р±СѓРґРµС‚ РїСЂРѕРёСЃС…РѕРґРёС‚СЊ РєР°Р¶РґС‹Рµ 0,01РјРЎ
+	TCCR2 = _BV(WGM21) | _BV(CS22) | _BV(CS21);		//РїСЂРµРґРґРµР»РёС‚РµР»СЊ С‚Р°РєС‚РѕРІРѕР№ С‡Р°СЃС‚РѕС‚С‹ РЅР° 256 (CTC)
 	OCR2 = 2; 										// (0.0001C*6000000)/256
-	TIMSK |= _BV(OCIE2);							//разрешаем прерывания
+	TIMSK |= _BV(OCIE2);							//СЂР°Р·СЂРµС€Р°РµРј РїСЂРµСЂС‹РІР°РЅРёСЏ
 }
 
 ISR(TIMER2_COMP_vect)
 {
-	dispatchTimer(); // а вот и диспетчер
+	dispatchTimer(); // Р° РІРѕС‚ Рё РґРёСЃРїРµС‚С‡РµСЂ
 }
