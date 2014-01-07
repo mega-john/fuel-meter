@@ -1,4 +1,4 @@
-/*
+п»ї/*
  * FuelMeter.c
  *
  * Created: 15.08.2013 21:04:46
@@ -9,25 +9,23 @@ Dimensions				(L x W x H) 58 x 41 x 27 mm
 Impulse number			D1: 10000 Impulse/l, D3: 2500 Impulse/l
 Operating voltage		5 - 24 Vdc
 Connection				2 x 9.73 mm (G 1/8") + 2 x M5
-Accuracy				±2 %
+Accuracy				В±2 %
 Current consumption		8 mA
 Measurement range		(with nozzle 1 mm) 0.01 - 1.0 l/min/(without nozzle, D = 3 mm) 0.05 - 3.5 l/min
 Output current			20 mA
 Material				POM, O-Ring: FKM
 Pressure				Max 4 bar
-Temperature range		-20 - +60 °C
+Temperature range		-20 - +60 В°C
  */ 
 
 #include "FuelMeter.h"
 
-volatile uint8_t old_menu_index = 0;
-volatile status_flags flags;
-volatile time_struct ts; 
-extern button_struct bs[4];
-volatile double consumption = 0.0;
+//volatile uint8_t old_menu_index = 0;
+//extern button_struct bs[4];
+//volatile double consumption = 0.0;
 //volatile Menu_State MN;
-volatile uint16_t total_measurements = 0;;
-measurement_struct ms1;
+volatile uint16_t total_measurements = 0;
+//measurement_struct ms1;
   
 void init_ports(void)
 {
@@ -42,20 +40,20 @@ void init_ports(void)
   PORTB = 0xFF;
 
   // Port C initialization
-  //если DDRx pin установлен в единицу, то вывод назначен как выход, если 0 то вход
+  //РµСЃР»Рё DDRx pin СѓСЃС‚Р°РЅРѕРІР»РµРЅ РІ РµРґРёРЅРёС†Сѓ, С‚Рѕ РІС‹РІРѕРґ РЅР°Р·РЅР°С‡РµРЅ РєР°Рє РІС‹С…РѕРґ, РµСЃР»Рё 0 С‚Рѕ РІС…РѕРґ
   DDRC = 0b11111000;
   //If PORTxn is written logic one when the pin is configured as an input pin, the pull-up resistor is activated
   PORTC = 0b00000111;
 
   // Port D initialization
-  DDRD = 0xf0;
+  DDRD = 0x00;
   PORTD = 0xf0;
 }
 
-//uint8_t nDevices; // количество сенсоров
-//uint8_t owDevicesIDs[MAXDEVICES][8];  // Их ID
+//uint8_t nDevices; // РєРѕР»РёС‡РµСЃС‚РІРѕ СЃРµРЅСЃРѕСЂРѕРІ
+//uint8_t owDevicesIDs[MAXDEVICES][8];  // РС… ID
 
-//uint8_t search_ow_devices(void) // поиск всех устройств на шине
+//uint8_t search_ow_devices(void) // РїРѕРёСЃРє РІСЃРµС… СѓСЃС‚СЂРѕР№СЃС‚РІ РЅР° С€РёРЅРµ
 //{
 	//uint8_t i;
 	//uint8_t id[OW_ROMCODE_SIZE];
@@ -88,51 +86,24 @@ void init_ports(void)
 //}
 
 const char * str = "19:49";
-//const char * str1 = "000000000000000000000";
-//const char * str2 = "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0";
-uint8_t str2[] = {0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff,0xff};
-
-void test_i2c()
-{
-	uint8_t res = 0;
-	for (uint8_t i = 0; i < 50; i ++)
-	{
-		res = eeWriteBytes(0x0, str2, 10);
-		//res = _ee24xx_write_bytes(DEV_ADDR_24CXX, i*10, true, 10, str2);
-		_delay_us(100);
-	}
-//	res = eeWriteBytes(0x0, str2, strlen(str2));
-	_delay_us(10);
-	char result[100];
-	//res = _ee24xx_write_bytes(DEV_ADDR_24CXX, 0x0, true, strlen(str2), str2);
-}
 
 int main(void)
 {
 	cli();
 	init_ports();
 	//init_ext_interrupts();
-	//init_timers();
-	eeInit();
+	init_timers();
+	//eeInit();
 	displayInit();
-	// Wait a little while the display starts up
-	//for(volatile uint16_t i = 0; i < 15000; i++);
-	//_delay_ms(500); 
-  
-	sei();
-	
-	//test_i2c();
-	//
-	//while (true)
-	//{
-	//};
-	
+	InitMenu();
+	sei();	
 	
 	
 	//SelectFont(SystemRus5x7, ReadFontData, 0);
-	displaySelectFont(SystemRus5x7, ReadFontData, 0);
-	//TFT_drawString(str1, 0, 0, 1, RED);
-
+	displaySelectFont(SystemRus5x7, 0xffff);
+	//displayDrawString(str, 80, 80, 1, WHITE);
+	//displayClear();
+	while(1){ProcessMenu(0);};
 	
 	while(1)
 	{
@@ -143,18 +114,19 @@ int main(void)
 		//displayFillRectangle(10, 268, MAX_X - 20, 3, WHITE);
 		//
 		//displaySelectFont(fixednums15x31, ReadFontData, 0);
-		displayDrawString(str, 80, 10, 1, WHITE);
+		displayDrawString(str, 80, 10, 1, 0xffff);
 		
-		displaySelectFont(SystemRus5x7, ReadFontData, WHITE);
-		displayDrawString("1/10", MAX_X - 80, 150, 2, WHITE);
-		displayDrawString("Литров.час", MAX_X - 80, 170, 1, WHITE);
+		displaySelectFont(SystemRus5x7, 0xffff);
+		displayDrawString("1/10", MAX_X - 80, 150, 2, 0xffff);
+		TFT_drawFloat(66.6789, 5, MAX_X - 80, 170, 1, 0xffff);
+		TFT_drawFloatRound(-66.6489, MAX_X - 80, 190, 1, 0xffff);
 		////TFT_fillScreen(0, 239, 0, 319, BLACK);
 		//TFT_drawString(str, 100, 100, 1, RED);
 		//_delay_ms(2000);
 		//TFT_set_orientation(1);
 		////TFT_fillScreen(0, 239, 0, 319, BLACK);
 		//TFT_drawString(str, 100, 100, 1, RED);
-		_delay_ms(2000);
+		//_delay_ms(2000);
 		//TFT_set_orientation(2);
 		////TFT_fillScreen(0, 239, 0, 319, BLACK);
 		//TFT_drawString(str, 100, 100, 1, RED);
@@ -182,7 +154,7 @@ int main(void)
 
 	menu_init();    
 
-	//char tmp[100] = "ХЦЧШЩЪЫЬЭЮЯабвгдежзий\0";
+	//char tmp[100] = "РҐР¦Р§РЁР©РЄР«Р¬Р­Р®РЇР°Р±РІРіРґРµР¶Р·РёР№\0";
 	//char tmp[100] = "qwertyuiop\0";
 	//memset(&tmp, 0xff, 100);
 	//
@@ -200,7 +172,7 @@ int main(void)
 	//uint8_t data[7] = {0, 23, 23, 6, 6, 10 , 13};
 	//ds1703_write((uint8_t*)&data);
 //
-	//nDevices = search_ow_devices(); // ищем все устройства
+	//nDevices = search_ow_devices(); // РёС‰РµРј РІСЃРµ СѓСЃС‚СЂРѕР№СЃС‚РІР°
   
   //ks0108Puts((char*)&tmp);
   /*while(1)*/
@@ -208,31 +180,31 @@ int main(void)
 	//sprintf(tmp, "found: %i", nDevices);
 	//ks0108Puts((char*)&tmp[0]);
 	//_delay_ms(1000);
-    //sprintf(tmp, "клмнопрстуфхцчшщъыьэ#", nDevices);
+    //sprintf(tmp, "РєР»РјРЅРѕРїСЂСЃС‚СѓС„С…С†С‡С€С‰СЉС‹СЊСЌ#", nDevices);
     //ks0108Puts((char*)&tmp);
     //ks0108GotoXY(0, 30);
-    //sprintf(tmp, "%i юя123567890!\"№;%:?*()_+", nDevices);
+    //sprintf(tmp, "%i СЋСЏ123567890!\"в„–;%:?*()_+", nDevices);
     //ks0108Puts((char*)&tmp);
 	//while(1);
 	//ks0108ClearScreen();
 	//while(1)   
 	//{
-		//for (unsigned char i = 0; i < nDevices; i++) // теперь сотируем устройства и запрашиваем данные
+		//for (unsigned char i = 0; i < nDevices; i++) // С‚РµРїРµСЂСЊ СЃРѕС‚РёСЂСѓРµРј СѓСЃС‚СЂРѕР№СЃС‚РІР° Рё Р·Р°РїСЂР°С€РёРІР°РµРј РґР°РЅРЅС‹Рµ
 		//{
-		//// узнать устройство можно по его груповому коду, который расположен в первом байте адресса
+		//// СѓР·РЅР°С‚СЊ СѓСЃС‚СЂРѕР№СЃС‚РІРѕ РјРѕР¶РЅРѕ РїРѕ РµРіРѕ РіСЂСѓРїРѕРІРѕРјСѓ РєРѕРґСѓ, РєРѕС‚РѕСЂС‹Р№ СЂР°СЃРїРѕР»РѕР¶РµРЅ РІ РїРµСЂРІРѕРј Р±Р°Р№С‚Рµ Р°РґСЂРµСЃСЃР°
 			//switch (owDevicesIDs[i][0])
 			//{
 				//case OW_DS18B20_FAMILY_CODE: 
-				//{ // если найден термодатчик DS18B20
-					////printf("\r"); print_address(owDevicesIDs[i]); // печатаем знак переноса строки, затем - адрес
-					////printf(" - Thermometer DS18B20"); // печатаем тип устройства
-					//DS18x20_StartMeasureAddressed(owDevicesIDs[i]); // запускаем измерение
-					////timerDelayMs(800); // ждем минимум 750 мс, пока конвентируется температура
-					//_delay_ms(800); // ждем минимум 750 мс, пока конвентируется температура
-					//unsigned char data[2]; // переменная для хранения старшего и младшего байта данных
-					//DS18x20_ReadData(owDevicesIDs[i], data); // считываем данные
-					//unsigned char themperature[3]; // в этот массив будет записана температура
-					//DS18x20_ConvertToThemperature(data, themperature); // преобразовываем температуру в человекопонятный вид
+				//{ // РµСЃР»Рё РЅР°Р№РґРµРЅ С‚РµСЂРјРѕРґР°С‚С‡РёРє DS18B20
+					////printf("\r"); print_address(owDevicesIDs[i]); // РїРµС‡Р°С‚Р°РµРј Р·РЅР°Рє РїРµСЂРµРЅРѕСЃР° СЃС‚СЂРѕРєРё, Р·Р°С‚РµРј - Р°РґСЂРµСЃ
+					////printf(" - Thermometer DS18B20"); // РїРµС‡Р°С‚Р°РµРј С‚РёРї СѓСЃС‚СЂРѕР№СЃС‚РІР°
+					//DS18x20_StartMeasureAddressed(owDevicesIDs[i]); // Р·Р°РїСѓСЃРєР°РµРј РёР·РјРµСЂРµРЅРёРµ
+					////timerDelayMs(800); // Р¶РґРµРј РјРёРЅРёРјСѓРј 750 РјСЃ, РїРѕРєР° РєРѕРЅРІРµРЅС‚РёСЂСѓРµС‚СЃСЏ С‚РµРјРїРµСЂР°С‚СѓСЂР°
+					//_delay_ms(800); // Р¶РґРµРј РјРёРЅРёРјСѓРј 750 РјСЃ, РїРѕРєР° РєРѕРЅРІРµРЅС‚РёСЂСѓРµС‚СЃСЏ С‚РµРјРїРµСЂР°С‚СѓСЂР°
+					//unsigned char data[2]; // РїРµСЂРµРјРµРЅРЅР°СЏ РґР»СЏ С…СЂР°РЅРµРЅРёСЏ СЃС‚Р°СЂС€РµРіРѕ Рё РјР»Р°РґС€РµРіРѕ Р±Р°Р№С‚Р° РґР°РЅРЅС‹С…
+					//DS18x20_ReadData(owDevicesIDs[i], data); // СЃС‡РёС‚С‹РІР°РµРј РґР°РЅРЅС‹Рµ
+					//unsigned char themperature[3]; // РІ СЌС‚РѕС‚ РјР°СЃСЃРёРІ Р±СѓРґРµС‚ Р·Р°РїРёСЃР°РЅР° С‚РµРјРїРµСЂР°С‚СѓСЂР°
+					//DS18x20_ConvertToThemperature(data, themperature); // РїСЂРµРѕР±СЂР°Р·РѕРІС‹РІР°РµРј С‚РµРјРїРµСЂР°С‚СѓСЂСѓ РІ С‡РµР»РѕРІРµРєРѕРїРѕРЅСЏС‚РЅС‹Р№ РІРёРґ
 					//ks0108GotoXY(0, 10 * i);
 					//ks0108FillRect(ks0108StringWidth("value: "), 10 * i, 10, 12, WHITE);
 					//sprintf(tmp, "value: %c%d.%1d C", themperature[0], themperature[1], themperature[2]);

@@ -1,4 +1,4 @@
-// the values are calculated with AvrWiz for ATmega8 @ 16 mhz
+п»ї// the values are calculated with AvrWiz for ATmega8 @ 16 mhz
 #ifndef timer_h__
 #define timer_h__
 
@@ -77,8 +77,8 @@
 #endif
 
 /*
-с делителем на 8, один тик таймера равен 0.5us на частоте 16mHz
-переполнение каждые 32.768ms
+СЃ РґРµР»РёС‚РµР»РµРј РЅР° 8, РѕРґРёРЅ С‚РёРє С‚Р°Р№РјРµСЂР° СЂР°РІРµРЅ 0.5us РЅР° С‡Р°СЃС‚РѕС‚Рµ 16mHz
+РїРµСЂРµРїРѕР»РЅРµРЅРёРµ РєР°Р¶РґС‹Рµ 32.768ms
 */
 #ifdef TIMER1_32768ms//1000Hz
 #define TIMER_1_INITIAL_VALUE	0UL

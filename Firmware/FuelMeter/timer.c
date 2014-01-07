@@ -1,4 +1,4 @@
-#include <avr/io.h>
+п»ї#include <avr/io.h>
 #include <avr/interrupt.h>
 
 #include "global.h"
@@ -18,8 +18,9 @@ extern time_struct ts;
 
 volatile button_struct bs[4];
 
-extern void LongButtonPress();
+extern void LongButtonPress(uint8_t button_index);
 extern void ShortButtonPress(uint8_t button_index);
+extern void ProcessMenu(uint8_t cmd);
 
 void RepeatButton()
 {
@@ -28,7 +29,7 @@ void RepeatButton()
 
 void ProcessButton(uint8_t button_index)
 {
-	if (bit_is_clear(BTN_PIN, button_index))
+	if (/*bit_is_clear*/!CheckBit(BTN_PIN, button_index))
 	{
 		if(bs[button_index].state == BS_UNPRESSED)
 		{
@@ -54,7 +55,7 @@ void ProcessButton(uint8_t button_index)
 			if(bs[button_index].pressed_time > DEBOUNCE)
 			{
 				//tb(PORTD, PINC4);
-//				ShortButtonPress(button_index);
+				ShortButtonPress(button_index);
 				//flags.update_menu = 1;
 			}
 		}
@@ -101,7 +102,7 @@ void timer0_init(void)
 {
 	TCCR0 = PRESCALLER0;
 	TCNT0 = TIMER_0_INITIAL_VALUE;
-	sb(TIMSK, TOIE0);//разрешить прерывание по переполнению
+	sb(TIMSK, TOIE0);//СЂР°Р·СЂРµС€РёС‚СЊ РїСЂРµСЂС‹РІР°РЅРёРµ РїРѕ РїРµСЂРµРїРѕР»РЅРµРЅРёСЋ
 }
 
 void timer1_init(void)

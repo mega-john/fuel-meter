@@ -1,12 +1,12 @@
-#include <util/delay.h>
+ï»¿#include <util/delay.h>
 #include <avr/io.h>
 
 #define SER_PORT   PORTA
 #define SER_DDR    DDRA
 
-#define SER_CLOCK   (1 << 0)//SH_CP – âõîä äëÿ òàêòîâûõ èìïóëüñîâ
-#define SER_PRESENT (1 << 1)//ST_CP – âõîä «çàù¸ëêèâàþùèé» äàííûå
-#define SER_DATA    (1 << 2)//DS – âõîä äàííûõ
+#define SER_CLOCK   (1 << 0)//SH_CP â€“ Ð²Ñ…Ð¾Ð´ Ð´Ð»Ñ Ñ‚Ð°ÐºÑ‚Ð¾Ð²Ñ‹Ñ… Ð¸Ð¼Ð¿ÑƒÐ»ÑŒÑÐ¾Ð²
+#define SER_PRESENT (1 << 1)//ST_CP â€“ Ð²Ñ…Ð¾Ð´ Â«Ð·Ð°Ñ‰Ñ‘Ð»ÐºÐ¸Ð²Ð°ÑŽÑ‰Ð¸Ð¹Â» Ð´Ð°Ð½Ð½Ñ‹Ðµ
+#define SER_DATA    (1 << 2)//DS â€“ Ð²Ñ…Ð¾Ð´ Ð´Ð°Ð½Ð½Ñ‹Ñ…
 
 void Shift74HC595_Write8(unsigned char v)
 {

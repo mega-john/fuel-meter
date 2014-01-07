@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright:      Fabian Maximilian Thiele  mailto:me@apetech.de
  * Author:         Fabian Maximilian Thiele
  * Remarks:        this Copyright must be included

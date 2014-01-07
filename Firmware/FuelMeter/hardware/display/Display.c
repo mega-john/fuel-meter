@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Display.c
  *
  * Created: 05.01.2014 23:41:20
@@ -11,7 +11,7 @@ void displayInit()
 #ifdef ILI_DISPLAY
 	TFT_init();
 #else
-	ks0108Init(0);
+	//ks0108Init(0);
 #endif	
 }
 
@@ -20,25 +20,25 @@ void displayDrawLine( uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16
 #ifdef ILI_DISPLAY
 	TFT_drawLine(x0, y0, x1, y1, color);
 #else
-	ks0108DrawLine(x0, y0, x1, y1, color);
+	//ks0108DrawLine(x0, y0, x1, y1, color);
 #endif	
 }
 
-void displaySelectFont( const uint8_t* font, FontCallback callback, uint8_t color )
+void displaySelectFont( const uint8_t* font, uint8_t color )
 {
 #ifdef ILI_DISPLAY
-	SelectFont(font, callback, color);
+	TFT_SelectFont(font, TFT_ReadFontData, color);
 #else
-	ks0108SelectFont(font, callback, color);
+	//ks0108SelectFont(font, ks0108ReadFontData, color);
 #endif
 }
 
 void displayClear()
 {
 #ifdef ILI_DISPLAY
-	TFT_fillScreen(0, 239, 0, 319, BLACK);
+	TFT_fillScreen(0, 239, 0, 319, TFT_BLACK);
 #else
-	ks0108ClearScreen();
+	//ks0108ClearScreen();
 #endif
 }
 
@@ -47,8 +47,8 @@ void displayDrawString( const char *string, uint16_t poX, uint16_t poY, uint16_t
 #ifdef ILI_DISPLAY
 	TFT_drawString(string, poX, poY, size, fgcolor);
 #else
-	ks0108GotoXY(poX, poY);
-	ks0108Puts(string);
+	//ks0108GotoXY(poX, poY);
+	//ks0108Puts(string);
 #endif	
 }
 
@@ -57,6 +57,6 @@ void displayFillRectangle( uint16_t poX, uint16_t poY, uint16_t length, uint16_t
 #ifdef ILI_DISPLAY
 	TFT_fillRectangle(poX, poY, length, width, color);
 #else
-	ks0108FillRect(poX, poY, width, length, color);
+	//ks0108FillRect(poX, poY, width, length, color);
 #endif
 }

@@ -1,4 +1,4 @@
-#ifndef _24CXX_H_
+﻿#ifndef _24CXX_H_
 #define _24CXX_H_
 
 #include "..\..\global.h"
