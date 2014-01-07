@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Menu1.h
  *
  * Created: 30.11.2013 15:26:11
@@ -9,7 +9,10 @@
 #ifndef MENU1_H_
 #define MENU1_H_
 
+#include <avr/pgmspace.h>
+#include <stdbool.h>
 #include "global.h"
+#include "hardware/display/display.h"
 
 enum
 {
@@ -25,7 +28,7 @@ enum
 	MENU_PROCESS
 };
 
-uint8_t startMenu();
-void initMenu();
+void InitMenu();
+void ProcessMenu(uint8_t cmd);
 
 #endif /* MENU1_H_ */

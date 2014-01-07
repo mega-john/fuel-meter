@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Measurement.c
  *
  * Created: 11.09.2013 0:59:55

@@ -1,4 +1,4 @@
-/*
+﻿/*
  * ili9341.h
  *
  * Created: 05.11.2013 11:01:46
@@ -20,20 +20,20 @@
 #include "..\display\fonts\fonts.h"
 
 //Basic Colors
-#define RED             0xf800
-#define GREEN			0x07e0
-#define BLUE			0x001f
-#define BLACK			0x0000
-#define YELLOW			0xffe0
-#define WHITE			0xffff
+#define TFT_RED             0xf800
+#define TFT_GREEN			0x07e0
+#define TFT_BLUE			0x001f
+#define TFT_BLACK			0x0000
+#define TFT_YELLOW			0xffe0
+#define TFT_WHITE			0xffff
 
 //Other Colors
-#define CYAN			0x07ff
-#define PINK			0xf810
-#define GRAY1			0x8410
-#define GRAY2			0x4208
-#define DARK_GREEN		0x02e0
-#define MAGENTA			0xf8df
+#define TFT_CYAN			0x07ff
+#define TFT_PINK			0xf810
+#define TFT_GRAY1			0x8410
+#define TFT_GRAY2			0x4208
+#define TFT_DARK_GREEN		0x02e0
+#define TFT_MAGENTA			0xf8df
 
 //TFT resolution 240*320
 #define MIN_X			0
@@ -102,9 +102,9 @@ void TFT_drawCircle(int poX, int poY, int r, uint16_t color);
 void TFT_fillCircle(int poX, int poY, int r, uint16_t color);
 
 void TFT_drawTriangle(int poX1, int poY1, int poX2, int poY2, int poX3, int poY3, uint16_t color);
-uint8_t TFT_drawNumber(long long_num, uint16_t poX, uint16_t poY, uint16_t size, uint16_t fgcolor);
+uint8_t TFT_drawNumber(long long_num, uint16_t poX, uint16_t poY, uint16_t size, uint16_t fgcolor, uint16_t* out_width);
 uint8_t TFT_drawFloat(float floatNumber, uint8_t decimal, uint16_t poX, uint16_t poY, uint16_t size, uint16_t fgcolor);
-uint8_t TFT_drawFloat1(float floatNumber, uint16_t poX, uint16_t poY, uint16_t size, uint16_t fgcolor);
+uint8_t TFT_drawFloatRound(float floatNumber, uint16_t poX, uint16_t poY, uint16_t size, uint16_t fgcolor);
 
 //void TFT_setOrientation(uint8_t HV);
 void TFT_setDisplayDirect(uint8_t data);
@@ -112,10 +112,10 @@ void TFT_set_orientation(uint8_t orientation);
 
 
 // Font Functions
-#define isFixedWidthFont(font)  ((FontRead(font + FONT_LENGTH) == 0) && (FontRead(font + FONT_LENGTH + 1) == 0))
-uint8_t ReadFontData(const uint8_t* ptr);		//Standard Read Callback
-void SelectFont(const uint8_t* font, FontCallback callback, uint8_t color);
-uint16_t StringWidth(const char* str);
+#define TFT_isFixedWidthFont(font)  ((FontRead(font + FONT_LENGTH) == 0) && (FontRead(font + FONT_LENGTH + 1) == 0))
+void TFT_SelectFont(const uint8_t* font, FontCallback callback, uint8_t color);
+uint8_t TFT_ReadFontData(const uint8_t* ptr);		//Standard Read Callback
+uint16_t TFT_StringWidth(const char* str);
 
 // Font Indices
 #define FONT_LENGTH			0

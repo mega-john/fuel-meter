@@ -1,4 +1,4 @@
-#include "onewire.h"
+п»ї#include "onewire.h"
 
 #ifdef UART_AS_OneWire
 	#include <avr/interrupt.h>
@@ -59,7 +59,7 @@ uint8_t OW_Reset(void)
 
 	while(CheckBit(UCSRA, RXC))
 	{
-		UDR; //Зачистка буферов
+		UDR; //Р—Р°С‡РёСЃС‚РєР° Р±СѓС„РµСЂРѕРІ
 	}
 	cli();
 	UDR = 0xF0;
@@ -102,7 +102,7 @@ void OW_WriteBit(uint8_t bit)
 	unsigned char	d = 0x00;
 	while(CheckBit(UCSRA, RXC))
 	{
-		UDR; //Зачистка буферов
+		UDR; //Р—Р°С‡РёСЃС‚РєР° Р±СѓС„РµСЂРѕРІ
 	}
 	if (bit)
 	{
@@ -115,7 +115,7 @@ void OW_WriteBit(uint8_t bit)
 	while(!CheckBit(UCSRA,TXC));
 	while(CheckBit(UCSRA, RXC))
 	{
-		UDR; //Зачистка буферов
+		UDR; //Р—Р°С‡РёСЃС‚РєР° Р±СѓС„РµСЂРѕРІ
 	}
 #else
 	//Pull line low for 1uS
@@ -140,7 +140,7 @@ uint8_t OW_ReadBit(void)
 	unsigned char	c;
 	while(CheckBit(UCSRA, RXC))
 	{
-		UDR; //Зачистка буферов
+		UDR; //Р—Р°С‡РёСЃС‚РєР° Р±СѓС„РµСЂРѕРІ
 	}
 	cli();
 	UDR = 0xFF;

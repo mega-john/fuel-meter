@@ -1,4 +1,4 @@
-/*
+ï»¿/*
  * ili9341.c
  *
  * Created: 05.11.2013 11:01:37
@@ -6,9 +6,9 @@
  */ 
 #include "ili9341.h"
 
-#define FONT_SPACE 6
-#define FONT_X 5
-#define FONT_Y 8
+#define FONT_SPACE 20
+//#define FONT_X 5
+//#define FONT_Y 8
 
 uint8_t DisplayDirect;
 FontCallback	FontRead = 0x00;
@@ -53,7 +53,7 @@ void TFT_init( void )
 
     TFT_sendCMD(0xE8);//driver timing control A
     TFT_WRITE_DATA(0x85);//gate driver non-overlap timing control: 1:default + 1unit 
-    TFT_WRITE_DATA(0x00);//EQ timing control: 0 - default – 1unit,  CR timing control: 0 - default – 1unit
+    TFT_WRITE_DATA(0x00);//EQ timing control: 0 - default â€“ 1unit,  CR timing control: 0 - default â€“ 1unit
     TFT_WRITE_DATA(0x78);//pre-charge timing control: 10 - default pre-charge timing 
 
     TFT_sendCMD(0xEA);//driver timing control B
@@ -80,7 +80,7 @@ void TFT_init( void )
     TFT_WRITE_DATA(0x28);//VCOML(V)  = -1.500
 
     TFT_sendCMD(0xC7);//VCM control 2
-    TFT_WRITE_DATA(0x86);//Set the VCOM offset voltage: VMH – 58  VML – 58
+    TFT_WRITE_DATA(0x86);//Set the VCOM offset voltage: VMH â€“ 58  VML â€“ 58
 
     TFT_sendCMD(0x36);// Memory Access Control
     TFT_WRITE_DATA(0x48);//C8         //48 68???//28 E8 ???
@@ -384,7 +384,7 @@ uint8_t TFT_drawChar( uint8_t c, uint16_t poX, uint16_t poY, uint16_t size, uint
 	}
 	c -= firstChar;
 
-	if(isFixedWidthFont(Font))
+	if(TFT_isFixedWidthFont(Font))
 	{
 		//thielefont = 0;
 		width = FontRead(Font + FONT_FIXED_WIDTH);
@@ -657,30 +657,40 @@ void TFT_drawTriangle( int poX1, int poY1, int poX2, int poY2, int poX3, int poY
     TFT_drawLine(poX2, poY2, poX3, poY3, color);	
 }
 
-uint8_t TFT_drawNumber( long long_num, uint16_t poX, uint16_t poY, uint16_t size, uint16_t fgcolor )
+
+
+//////////////////////////////////////////////////////////////////////////
+//return count of symbols in long_num
+//////////////////////////////////////////////////////////////////////////
+uint8_t TFT_drawNumber( long long_num, uint16_t poX, uint16_t poY, uint16_t size, uint16_t fgcolor, uint16_t* out_width)
 {
     uint8_t char_buffer[10] = "";
     uint8_t i = 0;
     uint8_t f = 0;
+	uint8_t width = 0;
 
     if (long_num < 0)
     {
 	    f = 1;
-	    TFT_drawChar('-', poX, poY, size, fgcolor);
+	    width = TFT_drawChar('-', poX, poY, size, fgcolor);
+		//out_width += width;
 	    long_num = -long_num;
 	    if(poX < MAX_X)
 	    {
-		    poX += FONT_SPACE * size; /* Move cursor right */
+		    poX += /*FONT_SPACE*/width * size; /* Move cursor right */
+			out_width = poX;
 	    }
     }
     else if (long_num == 0)
     {
 	    f = 1;
-	    TFT_drawChar('0', poX, poY, size, fgcolor);
+	    width = TFT_drawChar('0', poX, poY, size, fgcolor);
+		//out_width += width;
 	    return f;
 	    if(poX < MAX_X)
 	    {
-		    poX += FONT_SPACE * size; /* Move cursor right */
+		    poX += /*FONT_SPACE*/width * size; /* Move cursor right */
+			out_width = poX;
 	    }
     }
 
@@ -693,10 +703,12 @@ uint8_t TFT_drawNumber( long long_num, uint16_t poX, uint16_t poY, uint16_t size
     f = f + i;
     for(; i > 0; i--)
     {
-	    TFT_drawChar('0' + char_buffer[i - 1], poX, poY, size, fgcolor);
+	    width = TFT_drawChar('0' + char_buffer[i - 1], poX, poY, size, fgcolor);
+		//out_width += width;
 	    if(poX < MAX_X)
 	    {
-		    poX += FONT_SPACE * size; /* Move cursor right */
+		    poX += /*FONT_SPACE*/width * size; /* Move cursor right */
+			out_width = poX;
 	    }
     }
     return f;	
@@ -708,13 +720,14 @@ uint8_t TFT_drawFloat( float floatNumber, uint8_t decimal, uint16_t poX, uint16_
     float decy = 0.0;
     float rounding = 0.5;
     uint8_t f = 0;
+	uint16_t width = 0;
     if(floatNumber < 0.0)
     {
-	    TFT_drawChar('-', poX, poY, size, fgcolor);
+	    width = TFT_drawChar('-', poX, poY, size, fgcolor);
 	    floatNumber = -floatNumber;
 	    if(poX < MAX_X)
 	    {
-		    poX += FONT_SPACE * size; /* Move cursor right */
+		    poX += /*FONT_SPACE*/width * size; /* Move cursor right */
 	    }
 	    f = 1;
     }
@@ -725,19 +738,19 @@ uint8_t TFT_drawFloat( float floatNumber, uint8_t decimal, uint16_t poX, uint16_
     floatNumber += rounding;
 
     temp = (uint16_t)floatNumber;
-    uint8_t howlong = TFT_drawNumber(temp, poX, poY, size, fgcolor);
+    uint8_t howlong = TFT_drawNumber(temp, poX, poY, size, fgcolor, &width);
     f += howlong;
     if((poX + 8 * size * howlong) < MAX_X)
     {
-	    poX += FONT_SPACE * size * howlong; /* Move cursor right */
+	    poX += /*FONT_SPACE*/width * size * howlong; /* Move cursor right */
     }
 
     if(decimal > 0)
     {
-	    TFT_drawChar('.', poX, poY, size, fgcolor);
+	    width = TFT_drawChar('.', poX, poY, size, fgcolor);
 	    if(poX < MAX_X)
 	    {
-		    poX += FONT_SPACE * size; /* Move cursor right */
+		    poX += /*FONT_SPACE*/width * size; /* Move cursor right */
 	    }
 	    f += 1;
     }
@@ -746,11 +759,12 @@ uint8_t TFT_drawFloat( float floatNumber, uint8_t decimal, uint16_t poX, uint16_
     {
 	    decy *= 10; /* for the next decimal */
 	    temp = decy; /* get the decimal */
-	    TFT_drawNumber(temp, poX, poY, size, fgcolor);
+		width =  0;
+	    TFT_drawNumber(temp, poX, poY, size, fgcolor, &width);
 	    floatNumber = -floatNumber;
 	    if(poX < MAX_X)
 	    {
-		    poX += FONT_SPACE * size; /* Move cursor right */
+		    poX += /*FONT_SPACE*/width * size; /* Move cursor right */
 	    }
 	    decy -= temp;
     }
@@ -758,20 +772,21 @@ uint8_t TFT_drawFloat( float floatNumber, uint8_t decimal, uint16_t poX, uint16_
     return f;	
 }
 
-uint8_t TFT_drawFloat1( float floatNumber, uint16_t poX, uint16_t poY, uint16_t size, uint16_t fgcolor )
+uint8_t TFT_drawFloatRound( float floatNumber, uint16_t poX, uint16_t poY, uint16_t size, uint16_t fgcolor )
 {
     uint8_t decimal = 2;
     uint16_t temp = 0;
     float decy = 0.0;
     float rounding = 0.5;
     uint8_t f = 0;
+	uint16_t width = 0;
     if(floatNumber < 0.0) /* floatNumber < 0 */
     {
-	    TFT_drawChar('-', poX, poY, size, fgcolor); /* add a '-' */
+	    width = TFT_drawChar('-', poX, poY, size, fgcolor); /* add a '-' */
 	    floatNumber = -floatNumber;
 	    if(poX < MAX_X)
 	    {
-		    poX += FONT_SPACE * size; /* Move cursor right */
+		    poX += /*FONT_SPACE*/width * size; /* Move cursor right */
 	    }
 	    f = 1;
     }
@@ -782,19 +797,19 @@ uint8_t TFT_drawFloat1( float floatNumber, uint16_t poX, uint16_t poY, uint16_t 
     floatNumber += rounding;
 
     temp = (uint16_t)floatNumber;
-    uint8_t howlong = TFT_drawNumber(temp, poX, poY, size, fgcolor);
+    uint8_t howlong = TFT_drawNumber(temp, poX, poY, size, fgcolor, &width);
     f += howlong;
     if((poX + 8 * size * howlong) < MAX_X)
     {
-	    poX += FONT_SPACE * size * howlong; /* Move cursor right */
+	    poX += /*FONT_SPACE*/width * size * howlong; /* Move cursor right */
     }
 
     if(decimal > 0)
     {
-	    TFT_drawChar('.', poX, poY, size, fgcolor);
+	    width = TFT_drawChar('.', poX, poY, size, fgcolor);
 	    if(poX < MAX_X)
 	    {
-		    poX += FONT_SPACE * size; /* Move cursor right */
+		    poX += /*FONT_SPACE*/width * size; /* Move cursor right */
 	    }
 	    f += 1;
     }
@@ -803,11 +818,11 @@ uint8_t TFT_drawFloat1( float floatNumber, uint16_t poX, uint16_t poY, uint16_t 
     {
 	    decy *= 10; /* for the next decimal */
 	    temp = decy; /* get the decimal */
-	    TFT_drawNumber(temp, poX, poY, size, fgcolor);
+	    TFT_drawNumber(temp, poX, poY, size, fgcolor, &width);
 	    floatNumber = -floatNumber;
 	    if(poX < MAX_X)
 	    {
-		    poX += FONT_SPACE * size; /* Move cursor right */
+		    poX += /*FONT_SPACE*/width * size; /* Move cursor right */
 	    }
 	    decy -= temp;
     }
@@ -815,12 +830,12 @@ uint8_t TFT_drawFloat1( float floatNumber, uint16_t poX, uint16_t poY, uint16_t 
     return f;	
 }
 
-uint8_t ReadFontData(const uint8_t* ptr)
+uint8_t TFT_ReadFontData(const uint8_t* ptr)
 {
 	return pgm_read_byte(ptr);
 }
 
-void SelectFont(const uint8_t* font, FontCallback callback, uint8_t color)
+void TFT_SelectFont(const uint8_t* font, FontCallback callback, uint8_t color)
 {
 	Font = font;
 	FontRead = callback;
@@ -855,6 +870,11 @@ uint8_t CharWidth(char c)
 	uint8_t charCount = FontRead(Font + FONT_CHAR_COUNT);
 	
 	// read width data
+	if (TFT_isFixedWidthFont(Font))
+	{
+		width = FontRead(Font + FONT_FIXED_WIDTH);
+		return width;
+	}
 	if(c >= firstChar && c < (firstChar + charCount))
 	{
 		c -= firstChar;
@@ -864,7 +884,7 @@ uint8_t CharWidth(char c)
 	return width;
 }
 
-uint16_t StringWidth(const char* str)
+uint16_t TFT_StringWidth(const char* str)
 {
 	uint8_t width = 0;
 	

@@ -1,4 +1,4 @@
-#ifndef GLOBAL_H_
+п»ї#ifndef GLOBAL_H_
 #define GLOBAL_H_
 
 #include <avr/io.h>
@@ -55,8 +55,8 @@ typedef struct
 #define DEBOUNCE	10//x*16ms
 #define LONG_PRESS	100//x*16ms
 
-//количество импульсов в секунду при максимальном потоке 
-//через датчик - литр в минуту
+//РєРѕР»РёС‡РµСЃС‚РІРѕ РёРјРїСѓР»СЊСЃРѕРІ РІ СЃРµРєСѓРЅРґСѓ РїСЂРё РјР°РєСЃРёРјР°Р»СЊРЅРѕРј РїРѕС‚РѕРєРµ 
+//С‡РµСЂРµР· РґР°С‚С‡РёРє - Р»РёС‚СЂ РІ РјРёРЅСѓС‚Сѓ
 //static const double IMPULSES_PER_GRAM_SECOND = (10000.0 / (60.0 * 60.0));
 #define IMPULSES_PER_GRAM_SECOND  (10000.0 / (60.0 * 60.0))
 

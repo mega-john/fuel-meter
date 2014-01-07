@@ -1,4 +1,4 @@
-#ifndef DS18x20_H
+﻿#ifndef DS18x20_H
 #define DS18x20_H
 
 #include "..\wire\onewire.h"

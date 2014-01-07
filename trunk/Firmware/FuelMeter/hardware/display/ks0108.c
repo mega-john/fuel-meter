@@ -1,4 +1,4 @@
-#include <inttypes.h>
+ï»¿#include <inttypes.h>
 #include <avr/io.h>
 #include <avr/pgmspace.h>
 #include <util/delay.h>
@@ -50,7 +50,7 @@ void ks0108DrawLine(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2, uint8_t colo
 	} 
 	else 
 	{
-		// angle >= 45°
+		// angle >= 45Â°
 		if((y2 - y1) >= (x2 - x1) || (y1 - y2) >= (x2 - x1)) 
 		{
 			// x1 must be smaller than x2
@@ -97,7 +97,7 @@ void ks0108DrawLine(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2, uint8_t colo
 				}
 			}
 		
-		// angle < 45°
+		// angle < 45Â°
 		} 
 		else 
 		{
@@ -566,19 +566,25 @@ void ks0108GotoXY(uint8_t x, uint8_t y)
 	ks0108WriteCommand(cmd, CHIP2);
 }
 
-inline void ks0108InitPorts()
-{
-	//LCD_DATA_DIR	 = 0xFF;
-	//LCD_DATA_OUT 	 = 0;
-	LCD_CMD_DIR 	|= (1<<D_I)|(1<<R_W)|(1<<EN);
-	LCD_CMD_PORT 	|= (0<<EN);
-	LCD_CSEL_PORT   |= (1<<CSEL1)|(1<<CSEL2);
-	LCD_CSEL_DIR	|= (1<<CSEL1)|(1<<CSEL2);
-}
+//inline void ks0108InitPorts()
+//{
+	////LCD_DATA_DIR	 = 0xFF;
+	////LCD_DATA_OUT 	 = 0;
+	//LCD_CMD_DIR 	|= (1<<D_I)|(1<<R_W)|(1<<EN);
+	//LCD_CMD_PORT 	|= (0<<EN);
+	//LCD_CSEL_PORT |= (1<<CSEL1)|(1<<CSEL2);
+	//LCD_CSEL_DIR	|= (1<<CSEL1)|(1<<CSEL2);
+//}
 
 void ks0108Init(uint8_t invert)
 {
-	ks0108InitPorts();
+	//ks0108InitPorts();
+	//
+	LCD_CMD_DIR 	|= (1<<D_I)|(1<<R_W)|(1<<EN);
+	LCD_CMD_PORT 	|= (0<<EN);
+	LCD_CSEL_PORT   |= (1<<CSEL1)|(1<<CSEL2);
+	LCD_CSEL_DIR	|= (1<<CSEL1)|(1<<CSEL2);	
+	
 	ks0108Coord.x = 0;
 	ks0108Coord.y = 0;
 	ks0108Coord.page = 0;

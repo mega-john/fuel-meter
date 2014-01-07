@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Fixed width font for numbers
  *
  * This font is very useful when using overstrike as all characters & numbers

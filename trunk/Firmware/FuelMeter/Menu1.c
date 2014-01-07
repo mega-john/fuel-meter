@@ -1,166 +1,193 @@
-/*
+Ôªø/*
  * Menu1.c
  *
  * Created: 30.11.2013 15:26:02
  *  Author: john
+ 
+ —Å–ø–∏—Å–æ–∫ –æ—Å–Ω–æ–≤–Ω—ã—Ö —ç–∫—Ä–∞–Ω–æ–≤:
+ 1. —Ä–∞—Å—Ö–æ–¥ - –º–≥–Ω–æ–≤–µ–Ω–Ω—ã–π/—Å—Ä–µ–¥–Ω–∏–π –∑–∞ –ø–æ–µ–∑–¥–∫—É
+ 2. –æ—Å—Ç–∞—Ç–æ–∫ —Ç–æ–ø–ª–∏–≤–∞/–ø—Ä–æ–≥–Ω–æ–∑ –ø—Ä–æ–±–µ–≥–∞
+ 3. —Å–∫–æ—Ä–æ—Å—Ç—å —Ç–µ–∫—É—â–∞—è/—Å—Ä–µ–¥–Ω—è—è/–º–∞–∫—Å–∏–º–∞–ª—å–Ω–∞—è
+ 4. —Ä–∞–∑–≥–æ–Ω –¥–æ —Å–æ—Ç–Ω–∏, –∑–∞–º–µ—Ä –Ω–∞—á–∏–Ω–∞–µ—Ç—Å—è –ø–æ—Å–ª–µ –∫–∞–∂–¥–æ–π –æ—Å—Ç–∞–Ω–æ–≤–∫–∏
+ 5. —Ç–µ–º–ø–µ—Ä–∞—Ç—É—Ä–∞ –∑–∞ –±–æ—Ä—Ç–æ–º/–≤ —Å–∞–ª–æ–Ω–µ (—Ç–µ–º–ø–µ—Ä–∞—Ç—É—Ä–∞ –∑–∞ –±–æ—Ä—Ç–æ–º –ø–æ–∫–∞–∑—ã–≤–∞–µ—Ç—Å—è –Ω–∞ –≤—Å–µ—Ö —ç–∫—Ä–∞–Ω–∞—Ö)*
+ 6. –≤—Ä–µ–º—è –≤ –ø—É—Ç–∏
+ 7. –Ω–∞–ø—Ä—è–∂–µ–Ω–∏–µ –±–æ—Ä—Ç–æ–≤–æ–π —Å–µ—Ç–∏
  */ 
-#include <avr/pgmspace.h>
 #include "Menu1.h"
-#include "global.h"
-#include "keyboard.h"
-#include "messages.h"
-#include "hardware/display/ili9341.h"
 
-typedef struct PROGMEM{
-	void       *Next;
-	void       *Previous;
-	void       *Parent;
-	void       *Child;
-	uint8_t     Select;
-	const char  Text[12];
-} menuItem;
+/////////////////////////////////////////////////////////////
+//function prototypes
+void DrawMainMenuBackground();
+void MainMenuPage1(uint8_t cmd);
+void MainMenuPage2(uint8_t cmd);
+void MainMenuPage3(uint8_t cmd);
+void MainMenuPage4(uint8_t cmd);
+void MainMenuPage5(uint8_t cmd);
+void MainMenuPage6(uint8_t cmd);
+void MainMenuPage7(uint8_t cmd);
+void SetMainMenuPage(uint8_t page_index);
+void DrawTime();
+//end function prototypes
+/////////////////////////////////////////////////////////////
 
-menuItem* selectedMenuItem; // ÚÂÍÛ˘ËÈ ÔÛÌÍÚ ÏÂÌ˛
+#define MAIN_PAGES_COUNT	7
+uint8_t CurrentMainMenuIndex = 0;
+typedef void (*MainMenuFuncPtr)(uint8_t cmd);
+MainMenuFuncPtr CurrentMainMenuPage = NULL;
+bool IsMainMenuMode = true;
+volatile status_flags flags;
+volatile time_struct ts;
+volatile double peak_consumption = 0.0;
+volatile double total_consumption = 0.0;
 
-menuItem* menuStack[10];
-volatile uint8_t menuStackTop;
 
-
-#define MAKE_MENU(Name, Next, Previous, Parent, Child, Select, Text) \
-extern const menuItem Next;     \
-extern const menuItem Previous; \
-extern const menuItem Parent;   \
-extern const menuItem Child;	\
-const menuItem Name = {(void*)&Next, (void*)&Previous, (void*)&Parent, (void*)&Child, (uint8_t)Select, { Text }}
-
-#define PREVIOUS   ((menuItem*)pgm_read_word(&selectedMenuItem->Previous))
-#define NEXT       ((menuItem*)pgm_read_word(&selectedMenuItem->Next))
-#define PARENT     ((menuItem*)pgm_read_word(&selectedMenuItem->Parent))
-#define CHILD      ((menuItem*)pgm_read_word(&selectedMenuItem->Child))
-#define SELECT		(pgm_read_byte(&selectedMenuItem->Select))
-
-const char strNULL[] PROGMEM = "";
-
-#define NULL_ENTRY Null_Menu
-const menuItem        Null_Menu = {(void*)0, (void*)0, (void*)0, (void*)0, 0, {0x00}};
-
-//                 NEXT,		PREVIOUS	PARENT,		CHILD
-MAKE_MENU(m_s1i1,  m_s1i2,		m_s1i3,		NULL_ENTRY, m_s2i1,       0, "History");
-	MAKE_MENU(m_s2i1,  m_s2i2,    NULL_ENTRY,  m_s1i1,     NULL_ENTRY,   MENU_MODE1, "Mode 1");
-	MAKE_MENU(m_s2i2,  m_s2i3,    m_s2i1,      m_s1i1,     NULL_ENTRY,   MENU_MODE2, "Mode 2");
-	MAKE_MENU(m_s2i3,  NULL_ENTRY,m_s2i2,      m_s1i1,     NULL_ENTRY,   MENU_MODE3, "Mode 3");
-
-MAKE_MENU(m_s1i2,  m_s1i3,		m_s1i1,		NULL_ENTRY, m_s3i1,       0, "Settings");	
-	MAKE_MENU(m_s3i1,  m_s3i2,    NULL_ENTRY,  m_s1i2,     m_s4i1,       0, "Temperature");
-		MAKE_MENU(m_s4i1,  m_s4i2,		m_s4i3,		m_s3i1,     NULL_ENTRY,   MENU_SENS1, "Sensor 1");
-		MAKE_MENU(m_s4i2,  m_s4i3,		m_s4i1,     m_s3i1,     NULL_ENTRY,   MENU_SENS2, "Sensor 2");
-		MAKE_MENU(m_s4i3,  m_s4i1,		m_s4i2,     m_s3i1,     NULL_ENTRY,   MENU_SENS3, "Sensor 3");	
-	MAKE_MENU(m_s3i2,  NULL_ENTRY,m_s3i1,      m_s1i2,     m_s5i1,       0, "Time");
-		MAKE_MENU(m_s5i1,  m_s5i2,    NULL_ENTRY,  m_s3i2,     NULL_ENTRY,   MENU_WARM, "Warm");
-		MAKE_MENU(m_s5i2,  NULL_ENTRY,m_s5i1,      m_s3i2,     NULL_ENTRY,   MENU_PROCESS, "Process");
-
-MAKE_MENU(m_s1i3,  m_s1i1,		m_s1i2,		NULL_ENTRY, NULL_ENTRY,   MENU_RESET, "Reset");
-
-void menuChange(menuItem* NewMenu)
+const MainMenuFuncPtr MainMenuFuncPtrTable[MAIN_PAGES_COUNT] PROGMEM=
 {
-	if ((void*)NewMenu == (void*)&NULL_ENTRY)
-	{
-		return;
-	}
+	MainMenuPage1,
+	MainMenuPage2,
+	MainMenuPage3,
+	MainMenuPage4,
+	MainMenuPage5,
+	MainMenuPage6,
+	MainMenuPage7
+};
 
-	selectedMenuItem = NewMenu;
+void SetMainMenuPage(uint8_t page_index)
+{
+	CurrentMainMenuPage = (MainMenuFuncPtr)pgm_read_word(&MainMenuFuncPtrTable[page_index]);
+	flags.update_menu = true;
 }
 
-unsigned char dispMenu(msg_par par) 
+void LongButtonPress(uint8_t button_index)
 {
-	//menuItem* tempMenu;
-
-	//lcd_clrscr(1);
-	//// ÔÂ‚‡ˇ ÒÚÓÍ‡ - Á‡„ÓÎÓ‚ÓÍ. »ÎË ÔÛÌÍÚ ÏÂÌ˛ ‚ÂıÌÂ„Ó ÛÓ‚Ìˇ
-	//lcd_gotoxy(1,0);
-	//tempMenu = (menuItem*)pgm_read_word(&selectedMenuItem->Parent);
-	//if ((void*)tempMenu == (void*)&NULL_ENTRY) { // Ï˚ Ì‡ ‚ÂıÌÂÏ ÛÓ‚ÌÂ
-		//lcd_puts_p(PSTR("MENU:"));
-		//} else {
-		//lcd_puts_p((char *)tempMenu->Text);
-	//}
-//
-	//lcd_clrscr(2);
-	//// ¬ÚÓ‡ˇ ÒÚÓÍ‡ - ÚÂÍÛ˘ËÈ ÔÛÌÍÚ ÏÂÌ˛
-	//lcd_gotoxy(2,1);
-	//lcd_puts_p((char *)selectedMenuItem->Text);
-//
-	return (1);
+	
 }
 
-uint8_t menuKey(msg_par par) 
+void ShortButtonPress(uint8_t button_index) 
 {
-	switch (par) 
+	if (IsMainMenuMode)
 	{
-		case 0: 
+		switch (button_index)
 		{
-			return 1;
-		}
-		case KEY_LEFT: 
-		{
-			menuChange(PREVIOUS);
-			break;
-		}
-		case KEY_RIGHT: 
-		{
-			menuChange(NEXT);
-			break;
-		}
-		case KEY_DOWN:
-		;
-		case KEY_OK:
-		{ // ‚˚·Ó ÔÛÌÍÚ‡
-			uint8_t sel;
-			sel = SELECT;
-			if (sel != 0) 
+			case BTN_LEFT:
 			{
-				sendMessage(MSG_MENU_SELECT, sel);
-
-				killHandler(MSG_KEY_PRESS, &menuKey);
-				killHandler(MSG_DISP_REFRESH, &dispMenu);
-
-				return (1);
-			} 
-			else 
-			{
-				menuChange(CHILD);
+				if(CurrentMainMenuIndex == 0)
+				{
+					CurrentMainMenuIndex = MAIN_PAGES_COUNT - 1;
+				}
+				else
+				{
+					--CurrentMainMenuIndex;
+				}
+				SetMainMenuPage(CurrentMainMenuIndex);
+				break;
 			}
-			break;
+			case BTN_RIGHT:
+			{
+				if(CurrentMainMenuIndex == MAIN_PAGES_COUNT - 1)
+				{
+					CurrentMainMenuIndex = 0;
+				}
+				else
+				{
+					++CurrentMainMenuIndex;
+				}
+				SetMainMenuPage(CurrentMainMenuIndex);
+				break;
+			}
+			case BTN_DOWN:
+			{
+				break;
+			}
+			case BTN_UP:
+			{
+				break;
+			}
 		}
-		case KEY_UP: 
-		{ // ÓÚÏÂÌ‡ ‚˚·Ó‡ (‚ÓÁ‚‡Ú)
-			menuChange(PARENT);
-		}
+	} 
+	else
+	{
 	}
-	dispMenu(0);
-	return (1);
+	
+	
 }
 
-uint8_t startMenu() 
+void DrawMainMenuBackground()
 {
-	selectedMenuItem = (menuItem*)&m_s1i1;
+	displaySelectFont(fixednums15x31, TFT_WHITE);
+	uint_fast16_t width = TFT_StringWidth("14:02");
+	TFT_drawString("14:02", 120 - (width >> 1), 10, 1, TFT_WHITE);
+	TFT_fillRectangle(10, 47, MAX_X - 20, 3, TFT_WHITE);
 
-	dispMenu(0);
-	setHandler(MSG_KEY_PRESS, &menuKey);
-	setHandler(MSG_DISP_REFRESH, &dispMenu);
-	return (0);
+	TFT_fillRectangle(10, 226, MAX_X - 20, 3, TFT_WHITE);
+
+	
+	TFT_fillRectangle(10, 268, MAX_X - 20, 3, TFT_WHITE);
+	TFT_drawNumber(width >> 1, 10, 270, 1, TFT_WHITE, 0);
 }
 
-void DrawMainBackground();
-
-void initMenu() 
+void MainMenuPage1(uint8_t cmd)
 {
-DrawMainBackground();
+	displaySelectFont(SystemRus5x7, TFT_WHITE);
+	TFT_fillRectangle(10, 230, MAX_X - 20, 38, TFT_BLACK);
+	TFT_drawString("MainMenuPage1", 10, 230, 1, TFT_WHITE);
 }
 
-void DrawMainBackground()
+void MainMenuPage2(uint8_t cmd)
 {
-	TFT_fillRectangle(10, 47, MAX_X - 20, 3, WHITE);
-	TFT_fillRectangle(10, 226, MAX_X - 20, 3, WHITE);
-	TFT_fillRectangle(10, 268, MAX_X - 20, 3, WHITE);
+	displaySelectFont(SystemRus5x7, 0xffff);
+	TFT_fillRectangle(10, 230, MAX_X - 20, 38, TFT_BLACK);
+	TFT_drawString("MainMenuPage2", 10, 230, 1, TFT_WHITE);
+}
+
+void MainMenuPage3(uint8_t cmd)
+{
+	displaySelectFont(SystemRus5x7, 0xffff);
+	TFT_fillRectangle(10, 230, MAX_X - 20, 38, TFT_BLACK);
+	TFT_drawString("MainMenuPage3", 10, 230, 1, TFT_WHITE);
+}
+
+void MainMenuPage4(uint8_t cmd)
+{
+	displaySelectFont(SystemRus5x7, 0xffff);
+	TFT_fillRectangle(10, 230, MAX_X - 20, 38, TFT_BLACK);
+	TFT_drawString("MainMenuPage4", 10, 230, 1, TFT_WHITE);
+}
+
+void MainMenuPage5(uint8_t cmd)
+{
+	displaySelectFont(SystemRus5x7, 0xffff);
+	TFT_fillRectangle(10, 230, MAX_X - 20, 38, TFT_BLACK);
+	TFT_drawString("MainMenuPage5", 10, 230, 1, TFT_WHITE);
+}
+
+void MainMenuPage6(uint8_t cmd)
+{
+	displaySelectFont(SystemRus5x7, 0xffff);
+	TFT_fillRectangle(10, 230, MAX_X - 20, 38, TFT_BLACK);
+	TFT_drawString("MainMenuPage6", 10, 230, 1, TFT_WHITE);
+}
+
+void MainMenuPage7(uint8_t cmd)
+{
+	displaySelectFont(SystemRus5x7, 0xffff);
+	TFT_fillRectangle(10, 230, MAX_X - 20, 38, TFT_BLACK);
+	TFT_drawString("MainMenuPage7", 10, 230, 1, TFT_WHITE);
+}
+
+void ProcessMenu( uint8_t cmd )
+{
+	if (flags.update_menu)
+	{
+		//TFT_fillScreen(0, 239, 0, 319, TFT_BLACK);
+		DrawMainMenuBackground();
+		CurrentMainMenuPage(cmd);
+		flags.update_menu = false;
+	}
+}
+
+void InitMenu()
+{
+	displayClear();
+	SetMainMenuPage(CurrentMainMenuIndex);
 }

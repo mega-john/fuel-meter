@@ -1,4 +1,4 @@
-#include "ds18x20.h"
+п»ї#include "ds18x20.h"
 
 char DS18x20_StartMeasure(void)
 {
@@ -93,7 +93,7 @@ char DS18x20_ReadData(unsigned char *rom, unsigned char *buffer)
 	buffer[1] = buff[1];
 	if (crc8(buff, 9)) 
 	{
-		return 0;	// если контрольная сумма не совпала, возвращаем ошибку
+		return 0;	// РµСЃР»Рё РєРѕРЅС‚СЂРѕР»СЊРЅР°СЏ СЃСѓРјРјР° РЅРµ СЃРѕРІРїР°Р»Р°, РІРѕР·РІСЂР°С‰Р°РµРј РѕС€РёР±РєСѓ
 	}
 #else 
 	//Read Scratchpad (only 2 first bytes)
