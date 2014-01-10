@@ -56,7 +56,7 @@ int main(void)
 	cli();
 	//init_ports();
 	//init_ext_interrupts();
-	//init_timers();
+	init_timers();
 	//eeInit();
 #ifndef DEBUG_IN_STUDIO
 	displayInit();
@@ -69,9 +69,8 @@ int main(void)
 	displaySelectFont(ArialNums40x37, TFT_WHITE);
 	//displayDrawString(str, 80, 80, 1, WHITE);
 	//displayClear();
-	TFT_set_orientation(LEFT2RIGHT);
-	TFT_drawNumber(123456, 0, 0, 2, TFT_WHITE, 0);
-	while(1){/*ProcessMenu(0);*/};
+
+	while(1){ProcessMenu(0);};
 	
 	while(1)
 	{
