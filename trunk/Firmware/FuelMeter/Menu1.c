@@ -113,13 +113,16 @@ void ShortButtonPress(uint8_t button_index)
 void DrawTime()
 {
 	displaySelectFont(fixednums15x31, TFT_WHITE);	
+	TFT_drawNumber(ts.hours, 50, 10, 1, TFT_WHITE, 0);
+	TFT_drawString(":", 60, 10, 1, TFT_WHITE);
+	TFT_drawNumber(ts.minutes, 70, 10, 1, TFT_WHITE, 0);
 }
 
 void DrawMainMenuBackground()
 {
 	//displaySelectFont(fixednums15x31, TFT_WHITE);
-	uint_fast16_t width = TFT_StringWidth("14:02");
-	TFT_drawString("14:02", 120 - (width >> 1), 10, 1, TFT_WHITE);
+	//uint_fast16_t width = TFT_StringWidth("14:02");
+	//TFT_drawString("14:02", 120 - (width >> 1), 10, 1, TFT_WHITE);
 	TFT_fillRectangle(10, 47, MAX_X - 20, 3, TFT_WHITE);
 
 	TFT_fillRectangle(10, 226, MAX_X - 20, 3, TFT_WHITE);
@@ -128,6 +131,8 @@ void DrawMainMenuBackground()
 	TFT_fillRectangle(10, 268, MAX_X - 20, 3, TFT_WHITE);
 	//TFT_drawNumber(width >> 1, 10, 270, 1, TFT_WHITE, 0);
 }
+
+static float prev_peak_consumption = 0;
 
 void MainMenuPage1(uint8_t cmd)
 {
@@ -139,9 +144,11 @@ void MainMenuPage1(uint8_t cmd)
 
 	if (flags.update_consumption)
 	{
+		DrawTime();
 		displaySelectFont(ArialNums40x37, TFT_WHITE);
-		TFT_fillRectangle(10, 50, MAX_X - 20, 38, TFT_BLACK);
-		TFT_drawFloat(peak_consumption, 4, 90, 60, 2, TFT_WHITE);
+		TFT_drawFloat(prev_peak_consumption, 2, 20, 60, 2, TFT_BLACK);
+		TFT_drawFloat(peak_consumption, 2, 20, 60, 2, TFT_WHITE);
+		prev_peak_consumption = peak_consumption;
 		flags.update_consumption = false;
 	}
 	
