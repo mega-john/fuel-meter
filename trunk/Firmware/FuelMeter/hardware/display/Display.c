@@ -24,10 +24,10 @@ void displayDrawLine( uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16
 #endif	
 }
 
-void displaySelectFont( const uint8_t* font, uint16_t color )
+void displaySelectFont(const uint8_t* font)
 {
 #ifdef ILI_DISPLAY
-	TFT_SelectFont(font, TFT_ReadFontData, color);
+	TFT_SelectFont(font);
 #else
 	//ks0108SelectFont(font, ks0108ReadFontData, color);
 #endif
@@ -42,10 +42,10 @@ void displayClear()
 #endif
 }
 
-void displayDrawString( const char *string, uint16_t poX, uint16_t poY, uint16_t size, uint16_t fgcolor )
+void displayDrawString( const char *string, uint16_t poX, uint16_t poY, uint16_t size, uint16_t fgcolor, uint16_t bgcolor)
 {
 #ifdef ILI_DISPLAY
-	TFT_drawString(string, poX, poY, size, fgcolor);
+	TFT_drawString(string, poX, poY, size, fgcolor, bgcolor);
 #else
 	//ks0108GotoXY(poX, poY);
 	//ks0108Puts(string);
