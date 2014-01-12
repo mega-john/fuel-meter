@@ -76,11 +76,11 @@
 void SPI_begin(void);
 void SPI_end(void);
 
-inline static uint8_t SPI_transfer(uint8_t data)
+static inline /*uint8_t*/void SPI_transfer(uint8_t data)
 {
 	SPDR = data;
 	while (!(SPSR & _BV(SPIF)));
-	return SPDR;
+	//return SPDR;
 }
 
 void SPI_setClockDivider(uint8_t rate);

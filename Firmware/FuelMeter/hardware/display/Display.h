@@ -16,9 +16,9 @@
 
 void displayInit();
 void displayDrawLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color);
-void displaySelectFont(const uint8_t* font, uint16_t color);
+void displaySelectFont(const uint8_t* font);
 void displayClear();
-void displayDrawString(const char *string, uint16_t poX, uint16_t poY, uint16_t size, uint16_t fgcolor);
+void displayDrawString(const char *string, uint16_t poX, uint16_t poY, uint16_t size, uint16_t fgcolor, uint16_t bgcolor);
 void displayFillRectangle(uint16_t poX, uint16_t poY, uint16_t length, uint16_t width, uint16_t color);
 
 #endif /* DISPLAY_H_ */

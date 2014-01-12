@@ -89,8 +89,8 @@ void TFT_fillScreen(uint16_t XL, uint16_t XR, uint16_t YU, uint16_t YD, uint16_t
 void TFT_fillScreen1(void);
 //uint8_t TFT_readID(void);
 
-uint8_t TFT_drawChar(uint8_t ascii, uint16_t poX, uint16_t poY, uint16_t size, uint16_t fgcolor);
-void TFT_drawString(const char *string, uint16_t poX, uint16_t poY, uint16_t size, uint16_t fgcolor);
+uint8_t TFT_drawChar(uint8_t ascii, uint16_t poX, uint16_t poY, uint16_t size, uint16_t fgcolor, uint16_t bgcolor);
+void TFT_drawString(const char *string, uint16_t poX, uint16_t poY, uint16_t size, uint16_t fgcolor, uint16_t bgcolor);
 void TFT_fillRectangle(uint16_t poX, uint16_t poY, uint16_t length, uint16_t width, uint16_t color);
 
 void TFT_drawLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t color);
@@ -102,9 +102,9 @@ void TFT_drawCircle(int poX, int poY, int r, uint16_t color);
 void TFT_fillCircle(int poX, int poY, int r, uint16_t color);
 
 void TFT_drawTriangle(int poX1, int poY1, int poX2, int poY2, int poX3, int poY3, uint16_t color);
-uint8_t TFT_drawNumber(long long_num, uint16_t poX, uint16_t poY, uint16_t size, uint16_t fgcolor, uint16_t* out_width);
-uint8_t TFT_drawFloat(float floatNumber, uint8_t decimal, uint16_t poX, uint16_t poY, uint16_t size, uint16_t fgcolor);
-uint8_t TFT_drawFloatRound(float floatNumber, uint16_t poX, uint16_t poY, uint16_t size, uint16_t fgcolor);
+uint8_t TFT_drawNumber(long long_num, uint16_t poX, uint16_t poY, uint16_t size, uint16_t fgcolor, uint16_t bgcolor, uint16_t* out_width);
+uint8_t TFT_drawFloat(float floatNumber, uint8_t decimal, uint16_t poX, uint16_t poY, uint16_t size, uint16_t fgcolor, uint16_t bgcolor);
+uint8_t TFT_drawFloatRound(float floatNumber, uint16_t poX, uint16_t poY, uint16_t size, uint16_t fgcolor, uint16_t bgcolor);
 
 //void TFT_setOrientation(uint8_t HV);
 void TFT_setDisplayDirect(uint8_t data);
@@ -113,7 +113,7 @@ void TFT_set_orientation(uint8_t orientation);
 
 // Font Functions
 #define TFT_isFixedWidthFont(font)  ((FontRead(font + FONT_LENGTH) == 0) && (FontRead(font + FONT_LENGTH + 1) == 0))
-void TFT_SelectFont(const uint8_t* font, FontCallback callback, uint8_t color);
+void TFT_SelectFont(const uint8_t* font);
 uint8_t TFT_ReadFontData(const uint8_t* ptr);		//Standard Read Callback
 uint16_t TFT_StringWidth(const char* str);
 

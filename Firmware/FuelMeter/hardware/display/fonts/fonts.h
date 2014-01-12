@@ -11,6 +11,6 @@
 
 #include "fixednums15x31.h"
 #include "ArialNums40x37.h"
-//#include "SystemRus5x7.h"
+#include "SystemRus5x7.h"
 
 #endif /* FONTS_H_ */

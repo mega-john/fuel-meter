@@ -32,37 +32,38 @@ void RepeatButton()
 
 void ProcessButton(uint8_t button_index)
 {
+	uint8_t bi = button_index - BTN_UP;
 	if (/*bit_is_clear*/!CheckBit(BTN_PIN, button_index))
 	{
-		if(bs[button_index].state == BS_UNPRESSED)
+		if(bs[bi].state == BS_UNPRESSED)
 		{
-			bs[button_index].pressed_time = 0;
-			bs[button_index].state = BS_PRESSED;
+			bs[bi].pressed_time = 0;
+			bs[bi].state = BS_PRESSED;
 		}
-		else if(bs[button_index].state != BS_LONGPRESSED)
+		else if(bs[bi].state != BS_LONGPRESSED)
 		{
-			bs[button_index].pressed_time++;
-			if(bs[button_index].pressed_time++ > LONG_PRESS)
+			bs[bi].pressed_time++;
+			if(bs[bi].pressed_time++ > LONG_PRESS)
 			{
 //				LongButtonPress();
 				//tb(PORTD, PINC5);
-				bs[button_index].state = BS_LONGPRESSED;
+				bs[bi].state = BS_LONGPRESSED;
 				//flags.update_menu = 1;
 			}
 		}
 	}
 	else
 	{
-		if(bs[button_index].state == BS_PRESSED)
+		if(bs[bi].state == BS_PRESSED)
 		{
-			if(bs[button_index].pressed_time > DEBOUNCE)
+			if(bs[bi].pressed_time > DEBOUNCE)
 			{
 				//tb(PORTD, PINC4);
 				ShortButtonPress(button_index);
 				//flags.update_menu = 1;
 			}
 		}
-		bs[button_index].state = BS_UNPRESSED;
+		bs[bi].state = BS_UNPRESSED;
 	}
 }
 
@@ -73,6 +74,7 @@ ISR(TIMER0_OVF_vect)
 	ProcessButton(BTN_DOWN);
 	ProcessButton(BTN_RIGHT);
 	ProcessButton(BTN_LEFT);
+	peak_consumption += 0.01;
 }
 
 ISR(TIMER1_OVF_vect/*, ISR_BLOCK*/)

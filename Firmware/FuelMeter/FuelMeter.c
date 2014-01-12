@@ -64,9 +64,10 @@ int main(void)
 #endif	
 	sei();	
 	
-	
+	TFT_set_orientation(RIGHT2LEFT);
+
 	//SelectFont(SystemRus5x7, ReadFontData, 0);
-	displaySelectFont(ArialNums40x37, TFT_WHITE);
+	displaySelectFont(ArialNums40x37);
 	//displayDrawString(str, 80, 80, 1, WHITE);
 	//displayClear();
 
@@ -81,12 +82,12 @@ int main(void)
 		//displayFillRectangle(10, 268, MAX_X - 20, 3, WHITE);
 		//
 		//displaySelectFont(fixednums15x31, ReadFontData, 0);
-		displayDrawString(str, 80, 10, 1, TFT_WHITE);
+		displayDrawString(str, 80, 10, 1, TFT_WHITE, TFT_BLACK);
 		
 		//displaySelectFont(SystemRus5x7, 0xffff);
-		displayDrawString("1/10", MAX_X - 80, 150, 2, TFT_WHITE);
-		TFT_drawFloat(66.6789, 5, MAX_X - 80, 170, 1, TFT_WHITE);
-		TFT_drawFloatRound(-66.6489, MAX_X - 80, 190, 1, TFT_WHITE);
+		displayDrawString("1/10", MAX_X - 80, 150, 2, TFT_WHITE, TFT_BLACK);
+		TFT_drawFloat(66.6789, 5, MAX_X - 80, 170, 1, TFT_WHITE, TFT_BLACK);
+		TFT_drawFloatRound(-66.6489, MAX_X - 80, 190, 1, TFT_WHITE, TFT_BLACK);
 		////TFT_fillScreen(0, 239, 0, 319, BLACK);
 		//TFT_drawString(str, 100, 100, 1, RED);
 		//_delay_ms(2000);

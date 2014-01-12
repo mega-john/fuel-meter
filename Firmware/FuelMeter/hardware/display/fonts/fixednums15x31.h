@@ -19,7 +19,6 @@
 #include <inttypes.h>
 #include <avr/pgmspace.h>
 
-
 static const uint8_t fixednums15x31[] PROGMEM = {
     0x0, 0x0,	// size of zero indicates fixed width font
     15,		// width
