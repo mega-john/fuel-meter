@@ -28,25 +28,27 @@ volatile uint16_t total_measurements = 0;
   
 void init_ports(void)
 {
-  // Input/Output Ports initialization
+	// Input/Output Ports initialization
   
-  // Port A initialization
-  DDRA = 0xff;
-  PORTA = 0x00;
+	// Port A initialization
+	DDRA = 0xff;
+	PORTA = 0x00;
   
-  // Port B initialization
-  DDRB = 0xff;
-  PORTB = 0xFF;
+	// Port B initialization
+	DDRB = 0xff;
+	PORTB = 0xFF;
 
-  // Port C initialization
-  //если DDRx pin установлен в единицу, то вывод назначен как выход, если 0 то вход
-  DDRC = 0xf8;//0b11111000;
-  //If PORTxn is written logic one when the pin is configured as an input pin, the pull-up resistor is activated
-  PORTC = 0x07;//0b00000111;
+	// Port C initialization
+	//если DDRx pin установлен в единицу, то вывод назначен как выход, если 0 то вход
+	DDRC = 0xf8;//0b11111000;
+	//If PORTxn is written logic one when the pin is configured as an input pin, the pull-up resistor is activated
+	PORTC = 0x07;//0b00000111;
 
-  // Port D initialization
-  DDRD = 0x00;
-  PORTD = 0xf0;
+	// Port D initialization
+	// Function: Bit7=In Bit6=In Bit5=In Bit4=In Bit3=In Bit2=In Bit1=In Bit0=In
+	DDRD=(0<<DDD7) | (0<<DDD6) | (0<<DDD5) | (0<<DDD4) | (0<<DDD3) | (0<<DDD2) | (0<<DDD1) | (0<<DDD0);
+	// State: Bit7=P Bit6=P Bit5=P Bit4=P Bit3=T Bit2=T Bit1=T Bit0=T
+	PORTD=(1<<PIND7) | (1<<PIND6) | (1<<PIND5) | (1<<PIND4) | (0<<PIND3) | (0<<PIND2) | (0<<PIND1) | (0<<PIND0);
 }
 
 const char * str = "19:49";
@@ -54,10 +56,10 @@ const char * str = "19:49";
 int main(void)
 {
 	cli();
-	//init_ports();
-	//init_ext_interrupts();
+	init_ports();
+	init_ext_interrupts();
 	init_timers();
-	//eeInit();
+	eeInit();
 #ifndef DEBUG_IN_STUDIO
 	displayInit();
 	InitMenu();
